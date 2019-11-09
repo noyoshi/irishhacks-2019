@@ -246,6 +246,18 @@ def add_to_posts():
     return render_template("posts.html", token_uuid=get_userid())
 
 
+@app.route("/posts/<post_id>")
+def view_post(postid):
+    """
+    we are going to have some filtering going on...
+    """
+
+    # get post id from request, create post object, add a volunteer to the post object, update
+    post = Post.init_from_uid(postid)
+
+    return render_template("post.html", post=post)
+
+
 @app.route("/community")
 def community():
     """

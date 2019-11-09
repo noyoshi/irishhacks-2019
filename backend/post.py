@@ -39,6 +39,7 @@ class Post:
     def __init__(self, title: str, description: str, location: str,
             skill_set: List[str], num_volunteers: int, is_request: bool, user_id: int, tags: List[str] = None, volunteers: List[str] = None, uuid: str=""):
         if not uuid: self.uuid = str(uuid1())
+        else: self.uuid = uuid
         self.title = title
         self.description = description
         self.location = location
@@ -51,6 +52,7 @@ class Post:
 
     def to_dict(self):
         return {
+            "uuid" : self.uuid,
             "title" : self.title,
             "description" : self.description,
             "location" : self.location,
