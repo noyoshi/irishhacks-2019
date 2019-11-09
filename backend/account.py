@@ -208,7 +208,7 @@ class Person(Account):
             curs.execute(Person.SQL_SELECT_UUID, (uuid,))
             per_data = curs.fetchone()
             if not per_data: return None
-            return Person(data[1], per_data[1], data[2], data[3], data[5], data[6], ','.join(per_data[2]), data[0])
+            return Person(data[1], per_data[1], data[2], data[3], data[5], data[6], ','.join(per_data[2]) if per_data[2] else None, data[0])
 
     @classmethod
     def init_table(cls) -> None:

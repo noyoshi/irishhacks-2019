@@ -58,7 +58,7 @@ class Post:
             curs.execute(Post.SQL_SELECT_UUID, (uuid,))
             data = curs.fetchone()
             if not data: return None
-            return Post(data[1], data[2], data[3], data[4].split(','), data[5], data[6], data[7], data[8].split(','), data[0])
+            return Post(data[1], data[2], data[3], data[4].split(','), data[5], data[6], data[7], data[8].split(',') if data[8] is not None else None, data[0])
 
     @classmethod
     def delete_from_uid(cls, uuid: str="") -> None:
