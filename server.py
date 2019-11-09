@@ -223,6 +223,23 @@ def posts():
     return render_template("posts.html", token_uuid=get_userid())
 
 
+# TODO if they are logged in, they can respond to the post
+@app.route("/posts/add_to_post")
+def add_to_posts():
+    """
+    we are going to have some filtering going on...
+    """
+
+    # get post id from request, create post object, add a volunteer to the post object, update
+    post_id = request.json.post_id
+    post = Post.init_from_uid(post_id)
+    uuid = get_userid()
+    post.add_volunteer(uuid)
+    post.update_in_db()
+
+    return render_template("posts.html", token_uuid=get_userid())
+
+
 @app.route("/community")
 def community():
     """

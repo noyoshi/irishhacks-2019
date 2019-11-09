@@ -15,6 +15,20 @@ function getList() {
     });
 }
 
+function addVolunteer(postId){
+    filters = {
+        "postId": postId
+    }
+    postData("/posts/add_to_post", filters).then(res => {
+        if (res.status === "success") {
+            console.log("post filter success");
+        } else {
+            console.log("post filter failure");
+            alert(res.issue);
+        }
+    });
+}
+
 
 async function postData(url = '', data = {}) {
     // Default options are marked with *
