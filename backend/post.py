@@ -5,6 +5,7 @@ import os
 import sqlite3
 
 from uuid import uuid1
+from typing import List
 
 from typing import List
 
@@ -24,7 +25,7 @@ class Post:
 
 
     def __init__(self, title: str, description: str, location: str,
-            skill_set: List[str], num_volunteers: int, is_request: bool, tags: List[str]=None):
+            skill_set: List[str], num_volunteers: int, is_request: bool, tags: List[str] = None):
         self.uuid = str(uuid1())
         self.title = title
         self.description = description
@@ -35,7 +36,7 @@ class Post:
         self.tags = tags
 
     @classmethod
-    def init_from_uid(cls, uuid: str=""):
+    def init_from_uid(cls, uuid: str = ""):
         """Initializes a new Post from the database, using the uuid"""
         if not uuid: return None
         

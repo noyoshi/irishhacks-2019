@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>Irish Hacks</title>
+    <link rel="stylesheet" href="/static/assets/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Montserrat:400,400i,700,700i,600,600i">
+    <link rel="stylesheet" href="/static/assets/fonts/simple-line-icons.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/baguettebox.js/1.10.0/baguetteBox.min.css">
+    <link rel="stylesheet" href="/static/assets/css/Registration-Form-with-Photo.css">
+    <link rel="stylesheet" href="/static/assets/css/smoothproducts.css">
+</head>
+
+<body>
+    <section class="clean-block clean-form dark" style="height: 711px;">
+        <div class="container">
+            <div class="block-heading">
+                <h2 class="text-info">Log In</h2>
+                <p></p>
+            </div>
+            <form>
+                <div class="form-group"><label for="email">Email</label><input class="form-control item" type="text" id="email"></div>
+                <div class="form-group"><label for="password">Password</label><input class="form-control" type="password" id="password"></div>
+                <button class="btn btn-primary btn-block" onclick="login()" type="button">Log In</button></form>
+        </div>
+    </section>
+    <script src="/static/assets/js/jquery.min.js"></script>
+    <script src="/static/assets/bootstrap/js/bootstrap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/baguettebox.js/1.10.0/baguetteBox.min.js"></script>
+    <script src="/static/assets/js/smoothproducts.min.js"></script>
+    <script src="/static/assets/js/theme.js"></script>
+    <script>
+        function login() {
+            // Sends the stuff to the server?
+            var email = document.getElementById('email').value;
+            var password = document.getElementById('password').value;
+            console.log(email, password);
+            postData("/test", {email: email, password:password}).then(res => console.log(res));
+        }
+
+        async function postData(url = '', data = {}) {
+            // Default options are marked with *
+            const response = await fetch(url, {
+              method: 'POST', // *GET, POST, PUT, DELETE, etc.
+              mode: 'cors', // no-cors, *cors, same-origin
+              cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
+              credentials: 'same-origin', // include, *same-origin, omit
+              headers: {
+                'Content-Type': 'application/json'
+                // 'Content-Type': 'application/x-www-form-urlencoded',
+              },
+              redirect: 'follow', // manual, *follow, error
+              referrer: 'no-referrer', // no-referrer, *client
+              body: JSON.stringify(data) // body data type must match "Content-Type" header
+            });
+            return await response.json(); // parses JSON response into native JavaScript objects
+          }
+    </script>
+</body>
+
+</html>

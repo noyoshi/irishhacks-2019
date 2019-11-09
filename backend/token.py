@@ -29,7 +29,7 @@ class TokenTable:
 
     def _get_epoch_time(self):
         ''' returns current epoch time '''
-        return int(time.time())
+        return int(time())
 
     def validate(self, uid, token_id):
         ''' Checks if userid has token and the token is valid '''
