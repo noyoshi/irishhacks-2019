@@ -208,13 +208,8 @@ def signup():
 
     # if they are logge din with valid cookie
     if user_id and cookie and token_conn.validate(user_id, cookie):
-<<<<<<< HEAD
-        return render_template("signup.html", logged_in=True, **account.to_dict())
-
-=======
         return render_template("signup.html", token_uuid=get_userid(), logged_in=True, **account.to_dict())
     
->>>>>>> 4b837ca0328922c81493e55809186a4a05e60957
     return render_template("signup.html")
 
 
@@ -289,16 +284,6 @@ def save_profile_edits():
 
     data = request.json
     if "firstname" or "lastname" in data:
-<<<<<<< HEAD
-        account.set_name(data.get("firstname", "") + " " + data.get("lastname", ""))
-
-    if "email" in data:
-        account.set_email(data["email"])
-
-    print(type(account))
-    print("New account ==")
-    print(*account.to_dict())
-=======
         if not data["firstname"] and not data["lastname"]:
             pass
         else:
@@ -318,7 +303,6 @@ def save_profile_edits():
     if "phone_number" in data and data["phone_number"]:
         account.set_phone(data["phone_number"])
     
->>>>>>> 4b837ca0328922c81493e55809186a4a05e60957
     account.update_into_db()
 
     Person.dump_table()
