@@ -23,6 +23,18 @@ class Post:
     SQL_GET_USER_POSTS = 'SELECT * FROM Postdb WHERE user_id = ?'
 
 
+    SQL_CREATE_POST_TABLE = '''CREATE TABLE IF NOT EXISTS Postdb(
+                uuid VARCHAR(100) PRIMARY KEY,
+                title VARCHAR(100),
+                description mediumtext,
+                location VARCHAR(100),
+                skill_set VARCHAR(200),
+                num_volunteers int,
+                is_request bool,
+                user_id varchar(100),
+                tags VARCHAR(200)
+            )'''
+
     def __init__(self, title: str, description: str, location: str,
             skill_set: List[str], num_volunteers: int, is_request: bool, user_id: int, tags: List[str] = None, uuid: str=""):
         if not uuid: self.uuid = str(uuid1())
@@ -86,6 +98,14 @@ class Post:
         # return list
         print('performing query: {}'.format(query))
         return [Post.init_from_uid(row[0]) for row in curs.execute(query)]
+
+    @classmethod
+    def init_table(cls) -> None:
+        ''' Attempts to make SQL table if not already existing '''
+        conn = sqlite3.connect(DATABASE_FILE)
+        with conn:
+            curs = conn.cursor()
+            curs.execute(Post.SQL_CREATE_POST_TABLE)
 
     def insert_into_db(self) -> None:
         """ Inserts object into database """

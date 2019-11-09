@@ -23,6 +23,16 @@ class Account():
     SQL_SELECT_EMAIL = 'SELECT * FROM Account WHERE email = ?'
     SQL_CHECK_VALID = 'SELECT * FROM Account WHERE email = ? and password = ?'
 
+    SQL_CREATE_ACCOUNT_TABLE = '''CREATE TABLE IF NOT EXISTS Account(
+            uuid VARCHAR(100) PRIMARY KEY,
+            email VARCHAR(100),
+            password VARCHAR(100),
+            is_personal bool,
+            phone CHAR(10),
+            name VARCHAR(100),
+            bio TEXT
+        )'''
+
     def __init__(self, name: str, email: str, password: str, is_personal: bool, bio: str=None, phone:str=None, uuid:str=""):
         # Uuid attached to Accoutn for identification
         self.uuid = str(uuid1()) if not uuid else uuid
@@ -94,6 +104,14 @@ class Account():
                 print(row)
             print('--------------------')
     
+    @classmethod
+    def init_table(cls) -> None:
+        ''' Attempts to make SQL table if not already existing '''
+        conn = sqlite3.connect(DATABASE_FILE)
+        with conn:
+            curs = conn.cursor()
+            curs.execute(Account.SQL_CREATE_ACCOUNT_TABLE)
+    
     def insert_into_db(self) -> None:
         conn = sqlite3.connect(Account.DEFAULT_PATH)
         with conn:
@@ -158,6 +176,13 @@ class Person(Account):
     SQL_UPDATE_PERSON = '''UPDATE Person SET dob=?, skills=? WHERE uuid=?'''
     SQL_DELETE_PERSON = 'DELETE FROM Person WHERE uuid = ?'
 
+    SQL_CREATE_PERSON_TABLE = '''CREATE TABLE IF NOT EXISTS Person(
+        uuid VARCHAR(100) PRIMARY KEY,
+        dob DATE,
+        skils VARCHAR(100)
+    )'''
+
+
     def __init__(self, name: str, dob: str, email: str, password: str, bio: str=None, phone: str=None, skills: List[str]=None, uuid: str=""):
         super(Person, self).__init__(name, email, password, True, bio, phone, uuid)
         self.dob = dob
@@ -184,6 +209,14 @@ class Person(Account):
             per_data = curs.fetchone()
             if not per_data: return None
             return Person(data[1], per_data[1], data[2], data[3], data[5], data[6], per_data[2], ','.join(data[0]))
+
+    @classmethod
+    def init_table(cls) -> None:
+        ''' Attempts to make SQL table if not already existing '''
+        conn = sqlite3.connect(DATABASE_FILE)
+        with conn:
+            curs = conn.cursor()
+            curs.execute(Person.SQL_CREATE_PERSON_TABLE)
 
     def get_dob(self) -> str:
         return self.dob
@@ -224,6 +257,12 @@ class Organization(Account):
     
     SQL_UPDATE_ORG = 'UPDATE Organization SET industry=? WHERE uuid=?'
     SQL_DELETE_ORG = 'DELETE FROM Organization WHERE uuid = ?'
+
+    SQL_CREATE_ORG_TABLE = '''CREATE TABLE IF NOT EXISTS Organization(
+        uuid VARCHAR(100) PRIMARY KEY,
+        industry VARCHAR(100)
+    )'''
+
 
     def __init__(self, name, email, password, bio=None, phone=None, industry:str="", uuid: str=""):
         super(Organization, self).__init__(name, email, password, bio, phone, uuid)
@@ -276,6 +315,14 @@ class Organization(Account):
             org_data = curs.fetchone()
             if not org_data: return None
             return Organization(data[1], data[2], data[3], data[5], data[6], org_data[1], data[0])
+    
+    @classmethod
+    def init_table(cls) -> None:
+        ''' Attempts to make SQL table if not already existing '''
+        conn = sqlite3.connect(DATABASE_FILE)
+        with conn:
+            curs = conn.cursor()
+            curs.execute(Organization.SQL_CREATE_ORG_TABLE)
 
 if __name__ == '__main__':
     conn = sqlite3.connect(DATABASE_FILE)
