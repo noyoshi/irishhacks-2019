@@ -4,6 +4,9 @@ from uuid import uuid1
 import os
 import sqlite3
 from constants import DATABASE_FILE
+from post import Post
+
+from typing import List
 
 class Account():
 
@@ -14,6 +17,12 @@ class Account():
         self.bio = bio
         self.phone = phone
 
+    def create_post(self, title: str, description: str, location: str,
+            skill_set: List[str], num_volunteers: int, is_request: bool, tags: List[str] = None):
+        ''' Creates post in DB at attaches it to user account '''
+        new_post = Post(title, description, location, skill_set, num_volunteers, is_request, self.uuid, tags)
+        new_post.insert_into_db()
+    
 
     def get_name(self):
         ''' gets user name '''
