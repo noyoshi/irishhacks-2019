@@ -193,35 +193,13 @@ if __name__ == '__main__':
     conn = sqlite3.connect(DATABASE_FILE)
     with conn:
         curs = conn.cursor()
-        SQL_CREATE_PERSON_TABLE = '''CREATE TABLE IF NOT EXISTS Person(
+        SQL_CREATE_PERSON_TABLE = '''CREATE TABLE IF NOT EXISTS Organization(
                     uuid VARCHAR(100) PRIMARY KEY,
                     email VARCHAR(100),
                     phone CHAR(10),
                     name VARCHAR(100),
                     bio TEXT,
-                    dob DATE,
-                    skills VARCHAR(100)
+                    industry VARCHAR(100)
                 )'''
 
         curs.execute(SQL_CREATE_PERSON_TABLE)
-
-        o = Organization("ACCN", "consulto")
-        o.insert_into_db()
-
-        for row in curs.execute('SELECT * FROM Organization'):
-            print(row)
-
-        print('test')
-        o.set_name("Garvin New Name")
-        o.set_bio("This is my biography")
-        o.update_into_db()
-
-        for row in curs.execute('SELECT * FROM Organization'):
-            print(row)
-
-        Organization.del_from_db(o.uuid)
-
-        print('After delete\n')
-        o.set_name("Fake")
-        for row in curs.execute('SELECT * FROM Organization'):
-            print(row)
