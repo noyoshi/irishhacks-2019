@@ -62,6 +62,7 @@ class Person(Account):
     DEFAULT_PATH = os.path.expanduser('example.db')
 
     SQL_SELECT_UUID = 'SELECT * FROM Person WHERE uuid = ?'
+    SQL_INSERT_PERSON = '''INSERT INTO Person VALUES(?, ?, ?, ?, ?, ?, ?)'''
 
 
     def __init__(self, name, dob, bio=None, email=None, phone=None, skills=None):
@@ -80,6 +81,15 @@ class Person(Account):
 
     def set_skills(self, new_skills):
         self.skills = new_skills
+
+
+    def insert_into_db(self):
+        skills = ','.join([skill for skill in self.skills]) if self.skills else self.skills
+        conn = sqlite3.connect(Organization.DEFAULT_PATH)
+        with conn:
+            curs = conn.cursor()
+            ins_tuple = (self.uuid, self.email, self.phone, self.name, self.bio, self.dob, skills)
+            curs.execute(Person.SQL_INSERT_PERSON, ins_tuple)
 
 
     @classmethod
@@ -143,19 +153,20 @@ if __name__ == '__main__':
     conn = sqlite3.connect('example.db')
     with conn:
         curs = conn.cursor()
-        SQL_CREATE_ORG_TABLE = '''CREATE TABLE IF NOT EXISTS Organization(
+        SQL_CREATE_ORG_TABLE = '''CREATE TABLE IF NOT EXISTS Person(
                     uuid VARCHAR(100) PRIMARY KEY,
                     email VARCHAR(100),
                     phone CHAR(10),
                     name VARCHAR(100),
                     bio TEXT,
-                    industry VARCHAR(100)
+                    dob DATE,
+                    skills VARCHAR(100)
                 )'''
 
         curs.execute(SQL_CREATE_ORG_TABLE)
 
-        o = Organization("computing", "amzn")
-        o.insert_into_db()
+        p = Person("Garvin", "8-20-1999")
+        p.insert_into_db()
 
-        for row in curs.execute('SELECT * FROM Organization'):
+        for row in curs.execute('SELECT * FROM Person'):
             print(row)
