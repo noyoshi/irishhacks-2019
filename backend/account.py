@@ -64,16 +64,38 @@ class Account():
         conn = sqlite3.connect(Account.DEFAULT_PATH)
         with conn:
             curs = conn.cursor()
-            curs.execute(Person.SQL_SELECT_UUID, (uuid,))
+            curs.execute(Account.SQL_SELECT_UUID, (uuid,))
 
             # check if exists
             data = curs.fetchone()
             if not data: return None
-
+            print(data)
             # dispatch to proper initializers
-            if data[4]: return Person.init_from_uid(uuid)
-            else:       return Organization.init_from_uid(uuid)
+            if data[4]: return Person.init_from_uid(uuid, data)
+            else:       return Organization.init_from_uid(uuid, data)
+    
+    @classmethod
+    def del_from_db(cls, uuid: str) -> None:
+        uuid = str(uuid)
+        conn = sqlite3.connect(Account.DEFAULT_PATH)
+        with conn:
+            curs = conn.cursor()
+            curs.execute(Account.SQL_DELETE_ACCOUNT, (uuid,))
+    
+    def insert_into_db(self) -> None:
+        conn = sqlite3.connect(Account.DEFAULT_PATH)
+        with conn:
+            curs = conn.cursor()
+            ins_tuple = (self.uuid, self.name, self.email, self.password, self.is_personal, self.bio, self.phone)
+            curs.execute(Account.SQL_INSERT_ACCOUNT, ins_tuple)
 
+    def update_into_db(self) -> None:
+        conn = sqlite3.connect(Account.DEFAULT_PATH)
+        with conn:
+            curs = conn.cursor()
+            ins_tuple = (self.name, self.email, self.password, self.is_personal, self.bio, self.phone, self.uuid)
+            curs.execute(Account.SQL_UPDATE_ACCOUNT, ins_tuple)
+    
     def create_post(self, title: str, description: str, location: str,
             skill_set: List[str], num_volunteers: int, is_request: bool, tags: List[str] = None) -> None:
         ''' Creates post in DB at attaches it to user account '''
@@ -120,14 +142,36 @@ class Person(Account):
     DEFAULT_PATH = os.path.expanduser(DATABASE_FILE)
 
     SQL_SELECT_UUID = 'SELECT * FROM Person WHERE uuid = ?'
-    SQL_INSERT_PERSON = '''INSERT INTO Person VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?)'''
-    SQL_UPDATE_PERSON = '''UPDATE Person SET name=?, dob=?, bio=?, email=?, phone=?, skills=?, password=? WHERE uuid=?'''
+    SQL_INSERT_PERSON = '''INSERT INTO Person VALUES(?, ?, ?)'''
+    SQL_UPDATE_PERSON = '''UPDATE Person SET dob=?, skills=? WHERE uuid=?'''
     SQL_DELETE_PERSON = 'DELETE FROM Person WHERE uuid = ?'
 
     def __init__(self, name: str, dob: str, email: str, password: str, bio: str=None, phone: str=None, skills: List[str]=None, uuid: str=""):
-        super(Person, self).__init__(name, email, password, True, bio, email, phone, uuid)
+        super(Person, self).__init__(name, email, password, True, bio, phone, uuid)
         self.dob = dob
         self.skills = skills
+
+    @classmethod
+    def del_from_db(cls, uuid: str) -> None:
+        ''' deletes from both db's based on uuid '''
+        super().del_from_db(uuid)
+        conn = sqlite3.connect(Person.DEFAULT_PATH)
+        with conn:
+            curs = conn.cursor()
+            curs.execute(Person.SQL_DELETE_PERSON, (uuid,))
+
+    @classmethod
+    def init_from_uid(cls, uuid: str="", data: List[str]=None) -> None:
+        """Initializes a new Person from the database, using the uuid"""
+        if not uuid: return None
+
+        conn = sqlite3.connect(Person.DEFAULT_PATH)
+        with conn:
+            curs = conn.cursor()
+            curs.execute(Person.SQL_SELECT_UUID, (uuid,))
+            per_data = curs.fetchone()
+            if not per_data: return None
+            return Person(data[1], per_data[1], data[2], data[3], data[5], data[6], per_data[2], ','.join(data[0]))
 
     def get_dob(self) -> str:
         return self.dob
@@ -139,43 +183,23 @@ class Person(Account):
         self.skills = new_skills
 
     def insert_into_db(self) -> None:
+        super(Person, self).insert_into_db()
         skills = ','.join([skill for skill in self.skills]) if self.skills else self.skills
         conn = sqlite3.connect(Person.DEFAULT_PATH)
         with conn:
             curs = conn.cursor()
-            ins_tuple = (self.uuid, self.email, self.password, self.phone, self.name, self.bio, self.dob, skills)
+            ins_tuple = (self.uuid, self.dob, skills)
             curs.execute(Person.SQL_INSERT_PERSON, ins_tuple)
 
 
     def update_into_db(self) -> None:
+        super(Person, self).update_into_db()
         skills = ','.join([skill for skill in self.skills]) if self.skills else self.skills
         conn = sqlite3.connect(Person.DEFAULT_PATH)
         with conn:
             curs = conn.cursor()
             ins_tuple = (self.email, self.phone, self.name, self.bio, self.dob, skills, self.uuid, self.password)
             curs.execute(Person.SQL_UPDATE_PERSON, ins_tuple)
-
-    @classmethod
-    def del_from_db(cls, uuid: str) -> None:
-        uuid = str(uuid)
-        conn = sqlite3.connect(Person.DEFAULT_PATH)
-        with conn:
-            curs = conn.cursor()
-            curs.execute(Person.SQL_DELETE_PERSON, (uuid,))
-
-
-    @classmethod
-    def init_from_uid(cls, uuid: str="") -> None:
-        """Initializes a new Person from the database, using the uuid"""
-        if not uuid: return None
-
-        conn = sqlite3.connect(Person.DEFAULT_PATH)
-        with conn:
-            curs = conn.cursor()
-            curs.execute(Person.SQL_SELECT_UUID, (uuid,))
-            data = curs.fetchone()
-            if not data: return None
-            return Person(data[0], data[1], data[2], data[3], data[4], data[5], data[6], data[7])
 
 
 class Organization(Account):
@@ -184,14 +208,14 @@ class Organization(Account):
     DEFAULT_PATH = os.path.expanduser(DATABASE_FILE)
 
     SQL_SELECT_UUID = 'SELECT * FROM Organization WHERE uuid = ?'
-    SQL_INSERT_ORG = 'INSERT INTO Organization VALUES(?, ?, ?, ?, ?, ?)'
-    SQL_UPDATE_ORG = 'UPDATE Organization SET email=?, phone=?, name=?, bio=?, industry=? WHERE uuid=?'
+    SQL_INSERT_ORG = 'INSERT INTO Organization VALUES(?, ?)'
+    
+    SQL_UPDATE_ORG = 'UPDATE Organization SET industry=? WHERE uuid=?'
     SQL_DELETE_ORG = 'DELETE FROM Organization WHERE uuid = ?'
 
-    def __init__(self, industry, name, email, password, bio=None, phone=None, uuid: str=""):
+    def __init__(self, name, email, password, bio=None, phone=None, industry:str="", uuid: str=""):
         super(Organization, self).__init__(name, email, password, bio, phone, uuid)
         self.industry = industry
-
 
     def get_industry(self):
         return self.industry
@@ -202,6 +226,7 @@ class Organization(Account):
 
 
     def update_into_db(self):
+        super(Organization, self).update_into_db()
         conn = sqlite3.connect(Organization.DEFAULT_PATH)
         with conn:
             curs = conn.cursor()
@@ -210,16 +235,17 @@ class Organization(Account):
 
 
     def insert_into_db(self):
+        super(Organization, self).insert_into_db()
         conn = sqlite3.connect(Organization.DEFAULT_PATH)
         with conn:
             curs = conn.cursor()
-            ins_tuple = (self.uuid, self.email, self.phone, self.name, self.bio, self.industry)
+            ins_tuple = (self.uuid, self.industry)
             curs.execute(Organization.SQL_INSERT_ORG, ins_tuple)
 
 
     @classmethod
-    def del_from_db(cls, uuid):
-        uuid = str(uuid)
+    def del_from_db(cls, uuid: str) -> None:
+        super().del_from_db(uuid) # call super
         conn = sqlite3.connect(Organization.DEFAULT_PATH)
         with conn:
             curs = conn.cursor()
@@ -227,7 +253,7 @@ class Organization(Account):
 
 
     @classmethod
-    def init_from_uid(cls, uuid=""):
+    def init_from_uid(cls, uuid="", data: List[str]=None):
         """Initializes a new Post from the database, using the uuid"""
         if not uuid: return None
 
@@ -235,22 +261,58 @@ class Organization(Account):
         with conn:
             curs = conn.cursor()
             curs.execute(Organization.SQL_SELECT_UUID, (uuid,))
-            data = curs.fetchone()
-            if not data: return None
-            return Organization(data[0], data[1], data[2], data[3], data[4])
+            org_data = curs.fetchone()
+            if not org_data: return None
+            return Organization(data[1], data[2], data[3], data[5], data[6], org_data[1], data[0])
 
 if __name__ == '__main__':
     conn = sqlite3.connect(DATABASE_FILE)
     with conn:
         curs = conn.cursor()
-        SQL_CREATE_PERSON_TABLE = '''CREATE TABLE IF NOT EXISTS Organization(
+        SQL_CREATE_ACCOUNT_TABLE = '''CREATE TABLE IF NOT EXISTS Account(
                     uuid VARCHAR(100) PRIMARY KEY,
                     email VARCHAR(100),
                     password VARCHAR(100),
+                    is_personal bool,
                     phone CHAR(10),
                     name VARCHAR(100),
-                    bio TEXT,
-                    dob DATE,
-                    industry VARCHAR(100)
+                    bio TEXT
                 )'''
+        curs.execute(SQL_CREATE_ACCOUNT_TABLE)
+
+        SQL_CREATE_ORG_TABLE = '''CREATE TABLE IF NOT EXISTS Organization(
+            uuid VARCHAR(100) PRIMARY KEY,
+            industry VARCHAR(100)
+        )'''
+
+        curs.execute(SQL_CREATE_ORG_TABLE)
+
+        SQL_CREATE_PERSON_TABLE = '''CREATE TABLE IF NOT EXISTS Person(
+            uuid VARCHAR(100) PRIMARY KEY,
+            dob DATE,
+            skils VARCHAR(100)
+        )'''
+
         curs.execute(SQL_CREATE_PERSON_TABLE)
+    
+        test_account = Organization("bob", "bob@test", "1234password", "i make money", "574-222-2222", "money makers")
+
+        test_account.insert_into_db()
+
+        for row in curs.execute('SELECT * FROM Account'):
+            print(row)
+
+
+        for row in curs.execute('SELECT * from organization'):
+            print(row)
+
+        test_other = Person("joe", "02/25/1999", "yeet@boi.com","1233yeet","a man who likes to bool", "574-030-3039", None)
+
+        test_other.insert_into_db()
+
+        for row in curs.execute('SELECT * FROM Account'):
+            print(row)
+
+
+        for row in curs.execute('SELECT * from Person'):
+            print(row)
