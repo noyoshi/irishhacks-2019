@@ -332,7 +332,6 @@ def get_filtered_posts():
         print(loc)
 
     print(request.json)
-
     return json.dumps({'status': 'success'})
 
 
