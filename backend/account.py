@@ -270,7 +270,7 @@ class Person(Account):
         conn = sqlite3.connect(Person.DEFAULT_PATH)
         with conn:
             curs = conn.cursor()
-            ins_tuple = (self.email, self.phone, self.name, self.bio, self.dob, skills, self.uuid, self.password)
+            ins_tuple = (self.uuid, self.dob, self.skills)
             curs.execute(Person.SQL_UPDATE_PERSON, ins_tuple)
 
 
