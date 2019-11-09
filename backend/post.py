@@ -106,7 +106,11 @@ class Post:
 
         # return list
         print('performing query: {}'.format(query))
-        return [Post.init_from_uid(row[0]).to_dict() for row in curs.execute(query)]
+
+        conn = sqlite3.connect(DATABASE_FILE)
+        with conn:
+            curs = conn.cursor()
+            return [Post.init_from_uid(row[0]).to_dict() for row in curs.execute(query)]
 
     @classmethod
     def init_table(cls) -> None:
@@ -242,7 +246,8 @@ if __name__ == '__main__':
                     num_volunteers int,
                     is_request bool,
                     user_id varchar(100),
-                    tags VARCHAR(200)
+                    tags VARCHAR(200),
+                    volunteers VARCHAR(200)
                 )'''
 
         curs.execute(SQL_CREATE_POST_TABLE)
@@ -268,4 +273,4 @@ if __name__ == '__main__':
 
         print()
         for post in Post.get_with_filter({'tags': ['boi']}):
-            print(post.tags)
+            print(post['tags'])
