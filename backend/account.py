@@ -2,10 +2,12 @@
 
 from uuid import uuid1
 
-class Contact:
-    def __init__(self, name, email=None, phone=None):
+class Account():
+    def __init__(self, name, bio=None, email=None, phone=None):
         self.name = name
+        self.uuid = str(uuid1())
         self.email = email
+        self.bio = bio
         self.phone = phone
 
     def get_name(self):
@@ -35,7 +37,13 @@ class Contact:
         ''' sets user phone '''
         self.phone = new_phone
 
-class Person:
+    def get_bio(self):
+        return self.bio
+    
+    def set_bio(self, new_bio):
+        self.bio = new_bio
+
+class Person(Account):
     def __init__(self, dob, skills=None):
         self.dob = dob
         self.skills = skills
@@ -45,9 +53,16 @@ class Person:
 
     def get_skills(self):
         return self.skills
-        
+
     def set_skills(self, new_skills):
         self.skills = new_skills
-    
-class Account:
-    def __init__(self, Contact, 
+
+class Organization(Account):
+    def __init__(self, industry):
+        self.industry = industry
+
+    def get_industry(self):
+        return self.industry
+
+    def set_industry(self, new_industry):
+        self.industry = new_industry
