@@ -101,7 +101,7 @@ class Post:
                 if one_made:
                     query += ' or '
                     one_made = True
-                query += '{} like \'%{}%\''.format('tagstr)
+                query += '{} like \'%{}%\''.format('tags', tag)
                 one_made = True
 
         # return list
