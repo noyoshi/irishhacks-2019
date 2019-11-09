@@ -3,7 +3,7 @@
 from uuid import uuid1
 import os
 import sqlite3
-
+from constants import DATABASE_FILE
 
 class Account():
 
@@ -60,7 +60,7 @@ class Account():
 class Person(Account):
     '''in db: uuid, email, phone, name, bio, dob, skills'''
 
-    DEFAULT_PATH = os.path.expanduser('example.db')
+    DEFAULT_PATH = os.path.expanduser(DATABASE_FILE)
 
     SQL_SELECT_UUID = 'SELECT * FROM Person WHERE uuid = ?'
     SQL_INSERT_PERSON = '''INSERT INTO Person VALUES(?, ?, ?, ?, ?, ?, ?)'''
@@ -129,7 +129,7 @@ class Person(Account):
 class Organization(Account):
     '''in db: uuid, email, phone, name, bio, industry'''
 
-    DEFAULT_PATH = os.path.expanduser('example.db')
+    DEFAULT_PATH = os.path.expanduser(DATABASE_FILE)
 
     SQL_SELECT_UUID = 'SELECT * FROM Organization WHERE uuid = ?'
     SQL_INSERT_ORG = 'INSERT INTO Organization VALUES(?, ?, ?, ?, ?, ?)'
@@ -190,7 +190,7 @@ class Organization(Account):
 
 
 if __name__ == '__main__':
-    conn = sqlite3.connect('example.db')
+    conn = sqlite3.connect(DATABASE_FILE)
     with conn:
         curs = conn.cursor()
         SQL_CREATE_PERSON_TABLE = '''CREATE TABLE IF NOT EXISTS Person(

@@ -8,12 +8,14 @@ from uuid import uuid1
 
 from typing import List
 
+from constants import DATABASE_FILE
+
 class Post:
     '''
     Class to represent a general post.
     '''
 
-    DEFAULT_PATH = os.path.expanduser('Postdb.db')
+    DEFAULT_PATH = os.path.expanduser(DATABASE_FILE)
 
     SQL_SELECT_UUID = 'SELECT * FROM Postdb WHERE uuid = ?'
     SQL_INSERT_POST = 'INSERT INTO Postdb (uuid, title, description, location, skill_set, num_volunteers, is_request, tags) VALUES (?, ?, ?, ?, ?, ?, ?, ?)'
@@ -152,7 +154,7 @@ class Post:
 
 
 if __name__ == '__main__':
-    conn = sqlite3.connect('Postdb.db')
+    conn = sqlite3.connect(DATABASE_FILE)
     with conn:
         curs = conn.cursor()
         SQL_CREATE_POST_TABLE = '''CREATE TABLE IF NOT EXISTS Postdb(

@@ -1,8 +1,10 @@
 # Token -> user uuid database
 
 import sqlite3
-
+import os
 from time import time
+
+from constants import DATABASE_FILE
 
 class TokenTable:
 
@@ -13,7 +15,7 @@ class TokenTable:
                             Primary Key(token)
                         )'''
 
-    TABLE_PATH = 'tokens.db'
+    TABLE_PATH = os.path.expanduser(DATABASE_PATH)
 
     MAX_TTL = 69
 
