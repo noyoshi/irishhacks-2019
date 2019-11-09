@@ -6,19 +6,23 @@ import sqlite3
 
 from uuid import uuid1
 
+from typing import List
+
 class Post:
     '''
     Class to represent a general post.
     '''
 
-    DEFAULT_PATH = os.path.expanduser('~../db')
+    DEFAULT_PATH = os.path.expanduser('Postdb.db')
 
     SQL_SELECT_UUID = 'SELECT * FROM Postdb WHERE uuid = ?'
-    SQL_INSERT_POST = 'INSERT INTO Postdb (uuid, title, description, location, skill_set, num_volunteers, is_requests, tags) VALUES (?, ?, ?, ?, ?, ?, ?, ?)'
+    SQL_INSERT_POST = 'INSERT INTO Postdb (uuid, title, description, location, skill_set, num_volunteers, is_request, tags) VALUES (?, ?, ?, ?, ?, ?, ?, ?)'
+    SQL_UPDATE_POST = 'UPDATE Postdb SET title=?, description=?, location=?, skill_set=?, num_volunteers=?, is_request=?, tags=? WHERE uuid=?'
+    SQL_DELETE_POST = 'DELETE from Postdb where uuid=?'
 
 
     def __init__(self, title: str, description: str, location: str,
-            skill_set: List(str), num_volunteers: int, is_request: bool, tags=None: List(str)):
+            skill_set: List[str], num_volunteers: int, is_request: bool, tags: List[str]=None):
         self.uuid = str(uuid1())
         self.title = title
         self.description = description
@@ -29,7 +33,7 @@ class Post:
         self.tags = tags
 
     @classmethod
-    def init_from_uid(cls, uuid="": str) -> Post:
+    def init_from_uid(cls, uuid: str=""):
         """Initializes a new Post from the database, using the uuid"""
         if not uuid: return None
         
@@ -39,17 +43,48 @@ class Post:
             curs.execute(Post.SQL_SELECT_UUID, (uuid,))
             data = curs.fetchone()
             if not data: return None
-            return Post(data[0], data[1], data[2], data[3], data[4], data[5], data[6])
+            return Post(data[0], data[1], data[2], data[3].split(','), data[4], data[5], data[6].split(','))
 
-    def insert_in_db(self) -> None:
+    @classmethod
+    def delete_from_uid(cls, uuid: str="") -> None:
+        """ Deletes a post from database based on uuid """
+        if not uuid: return
+    
+        # open connection
+        conn = sqlite3.connect(Post.DEFAULT_PATH)
+
+        with conn:
+            curs = conn.cursor()
+            # perform delete
+            curs.execute(Post.SQL_DELETE_POST, (uuid,))
+
+    def insert_into_db(self) -> None:
+        """ Inserts object into database """
         conn = sqlite3.connect(Post.DEFAULT_PATH)
         with conn:
             curs = conn.cursor()
             # create tuple of input
-            data = (self.uuid, self.title, self.description, self.location, self.skill_set, self.num_volunteers, self.is_request, self.tags)
+            data = (self.uuid, self.title, self.description, self.location, ','.join(self.skill_set), self.num_volunteers, self.is_request, ','.join(self.tags))
             # execute SQL insert
             curs.execute(Post.SQL_INSERT_POST, data)
 
+    def update_in_db(self) -> None:
+        """ Updates object in database """
+        conn = sqlite3.connect(Post.DEFAULT_PATH)
+        with conn:
+            curs = conn.cursor()
+            # create input tuple to match SQL_UPDATE_POST's ? operators
+            data = (self.title, self.description, self.location, ','.join(self.skill_set), self.num_volunteers, self.is_request, ','.join(self.tags), self.uuid)
+            # perform sql update
+            curs.execute(Post.SQL_UPDATE_POST, data)
+
+    def delete_in_db(self) -> None:
+        """ Deletes object from database """
+        conn = sqlite3.connect(Post.DEFAULT_PATH)
+        with conn:
+            curs = conn.cursor()
+            # call delete
+            curs.execute(Post.SQL_DELETE_POST, (self.uuid, ))
 
     def get_uuid(self) -> str:
         ''' returns uuid '''
@@ -79,11 +114,11 @@ class Post:
         ''' sets location of post '''
         self.location = location
 
-    def get_skill_set(self) -> List(str):
+    def get_skill_set(self) -> List[str]:
         ''' returns skill set attached to post '''
         return self.skill_set
 
-    def set_skill_set(self, skill_set: List(str)) -> None:
+    def set_skill_set(self, skill_set: List[str]) -> None:
         ''' sets skill set attached to post '''
         self.skill_set = skill_set
 
@@ -103,14 +138,52 @@ class Post:
         ''' sets if the post is a request '''
         self.is_request = is_request
 
-    def get_tags(self) -> List(str):
+    def get_tags(self) -> List[str]:
         ''' gets tags from post '''
         return self.tags
 
-    def set_tags(self, tags: List(str)) -> None:
+    def set_tags(self, tags: List[str]) -> None:
         ''' sets tags of post '''
         self.tags = tags
 
     def add_tag(self, tag: str) -> None:
         ''' add an additonal tag to post '''
         self.tags.append(tag)
+
+
+if __name__ == '__main__':
+    conn = sqlite3.connect('Postdb.db')
+    with conn:
+        curs = conn.cursor()
+        SQL_CREATE_POST_TABLE = '''CREATE TABLE IF NOT EXISTS Postdb(
+                    uuid VARCHAR(100) PRIMARY KEY,
+                    title VARCHAR(100),
+                    description mediumtext,
+                    location VARCHAR(100),
+                    skill_set VARCHAR(200),
+                    num_volunteers int,
+                    is_request bool,
+                    tags VARCHAR(200)
+                )'''
+
+        curs.execute(SQL_CREATE_POST_TABLE)
+
+        o = Post("test boi", "mr manager", "ur moms house", ['yeet'], 69, True, ['yeet'])
+        o.insert_into_db()
+
+        for row in curs.execute('SELECT * FROM Postdb'):
+            print(row) 
+
+        o.set_num_volunteers(3)
+
+        o.update_in_db()
+
+        for row in curs.execute('SELECT * FROM Postdb'):
+            print(row)
+
+        o.delete_in_db()
+        
+        for row in curs.execute('SELECT * FROM Postdb'):
+            print(row)
+
+
