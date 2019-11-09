@@ -106,7 +106,7 @@ class Post:
 
         # return list
         print('performing query: {}'.format(query))
-        return [Post.init_from_uid(row[0]) for row in curs.execute(query)]
+        return [Post.init_from_uid(row[0]).to_dict() for row in curs.execute(query)]
 
     @classmethod
     def init_table(cls) -> None:
