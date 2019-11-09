@@ -200,7 +200,7 @@ class Person(Account):
     SQL_CREATE_PERSON_TABLE = '''CREATE TABLE IF NOT EXISTS Person(
         uuid VARCHAR(100) PRIMARY KEY,
         dob DATE,
-        skils VARCHAR(100)
+        skills VARCHAR(100)
     )'''
 
 
