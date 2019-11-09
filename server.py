@@ -26,7 +26,7 @@ def get_userid():
     if not user_id or not token_conn.validate(user_id, cookie):
         print("INVALID_TOKEN: {}".format(cookie))
         return None
-    
+
     return user_id
 
 @app.route("/")
@@ -59,27 +59,27 @@ def edit_post(postid):
 def handle_login():
     # this handles the login
     # if login is success, return succcess
-    # if login fails, return fail 
+    # if login fails, return fail
     fail = json.dumps({"status": "failure"})
     success = make_response(json.dumps({"status": "success"}))
     request_json = request.json
-    
+
     if not request.json:
         return fail
-    
+
     email = request_json.get("email")
     password = request_json.get("password")
 
     if not email:
         return json.dumps({"status": "failure", "issue": "no email"})
-    
+
     if not password:
         return json.dumps({"status": "failure", "issue": "no password"})
-    
+
     # otherwise, chceck to make sure email and password match
     # if they do, add cookie to success
     # if they do not, response with failure
-    # TODO 
+    # TODO
 
     # TODO while waiting for sam, assume they do match
     account = Account.validate(email, password)
@@ -100,27 +100,27 @@ def handle_login():
 def handle_signin():
     # this handles the login
     # if login is success, return succcess
-    # if login fails, return fail 
+    # if login fails, return fail
     print(request.json)
     request_json = request.json
 
     fail = json.dumps({"status": "failure"})
     success = make_response(json.dumps({"status": "success"}))
     # request_json = json.loads(request.json)
-    
+
     if not request.json:
         return fail
-    
+
     email = request_json.get("email")
     password = request_json.get("password")
     name = request_json.get("name")
 
     if not email:
         return json.dumps({"status": "failure", "issue": "no email"})
-    
+
     if not password:
         return json.dumps({"status": "failure", "issue": "no password"})
-    
+
     if not name:
         return json.dumps({"status": "failure", "issue": "no name"})
     # TODO check to see if email exists in the db, if so, return failure
@@ -150,31 +150,31 @@ def login():
         # after login, they are given the uuid token
     # 2. if they login with an existing email and, check the password to see if it matches, it if does, they get the cookie with uuid
         # if the password does not match, they are again prompted to this page
-    # TODO the login route should also have info about the route they were trying to go down before, so tif they are logged in / 
+    # TODO the login route should also have info about the route they were trying to go down before, so tif they are logged in /
     # when they are logged in, it should send them to the right place
-    
+
     cookie = request.cookies.get(TOKEN_NAME)
 
     # # no cookie
     if not cookie:
         return render_template("login.html")
-    
+
     token_conn = TokenTable()
     user_id = token_conn.get_uuid(cookie)
 
     # malformed cookie
     if not user_id:
         return render_template("login.html")
-    
+
     # # valid user_id expired token -> make a new token?
     if user_id and cookie and not token_conn.validate(user_id, cookie):
         return render_template("login.html")
-    
+
     # user is logged in
     if user_id and cookie and token_conn.validate(user_id, cookie):
         user = Account.init_from_uuid(user_id)
         return render_template("login.html", logged_in=True, token_uuid=user_id, **user.to_dict())
-    
+
     print("error?")
     return render_template("login.html")
 
@@ -186,13 +186,13 @@ def signup():
     password (string) **not hashed yet!
     """
     # similar to the login route
-    
+
     cookie = request.cookies.get(TOKEN_NAME)
 
     # # no cookie
     if not cookie:
         return render_template("signup.html")
-    
+
     token_conn = TokenTable()
     user_id = token_conn.get_uuid(cookie)
     account = Account.init_from_uuid(user_id)
@@ -200,7 +200,7 @@ def signup():
     # if they are logge din with valid cookie
     if user_id and cookie and token_conn.validate(user_id, cookie):
         return render_template("signup.html", logged_in=True, **account.to_dict())
-    
+
     return render_template("signup.html")
 
 
@@ -241,7 +241,7 @@ def user_profile(userid):
 @app.route("/profile/edit/<userid>")
 def edit_profile(userid):
     token_user_id = get_userid()
-    
+
     if token_user_id != userid:
         print("ERROR CANNOT EDIT ANOTHER USERS PAGE")
         return "error cannot edit another persons user page"
@@ -268,7 +268,7 @@ def save_profile_edits():
     if not token_user_id:
         # expired token
         return FAIL_MSG
-    
+
     account = Account.init_from_uuid(token_user_id)
     if not account:
         return FAIL_MSG
@@ -276,18 +276,18 @@ def save_profile_edits():
     data = request.json
     if "firstname" or "lastname" in data:
         account.set_name(data.get("firstname", "") + " " + data.get("lastname", ""))
-    
+
     if "email" in data:
         account.set_email(data["email"])
-    
+
     print(type(account))
     print("New account ==")
     print(*account.to_dict())
     account.update_into_db()
 
     Person.dump_table()
-    return json.dumps({ 
-        "status": "success", 
+    return json.dumps({
+        "status": "success",
         "uuid": account.get_uuid()
     })
     # make sure to return something with the uuid in it!
@@ -302,6 +302,15 @@ def save_post_edits():
 @app.route("/posts/handle_post_filter", methods=["POST"])
 def get_filtered_posts():
     ''' not actually posting anything lol '''
+
+    # Handle distance filter by user's location
+    req = request.json
+    if req['distance']:
+        uid = get_userid()
+        a = Account.init_from_uuid(uid)
+        loc = a.get_location()
+        print(loc)
+
     print(request.json)
     return json.dumps({'status': 'success'})
 

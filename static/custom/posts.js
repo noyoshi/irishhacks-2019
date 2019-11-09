@@ -1,32 +1,18 @@
 function getList() {
     filters = {}
-    if (navigator.geolocation){
-        console.log("geo on ");
-        navigator.geolocation.getCurrentPosition(function(position) {
-            console.log("geo in");
-            filters['maxdist'] = document.getElementById('distance').value;
-            postData("/posts/handle_post_filter", filters).then(res => {
-                if (res.status === "success") {
-                    console.log("post filter success");
-                    alert("yeet baby");
-                } else {
-                    console.log("post filter failure");
-                    alert(res.issue);
-                }
-            });
-        });
-    } else {
-        filters['maxdist'] = document.getElementById('distance').value;
-        postData("/posts/handle_post_filter", filters).then(res => {
-            if (res.status === "success") {
-                console.log("post filter success");
-                alert("yeet baby");
-            } else {
-                console.log("post filter failure");
-                alert(res.issue);
-            }
-        });
-    }
+    filters['maxdist'] = document.getElementById('distance').value;
+    filters['type'] = document.getElementById('type').value;
+    filters['hours'] = document.getElementById('hours').value;
+    console.log(filters)
+    postData("/posts/handle_post_filter", filters).then(res => {
+        if (res.status === "success") {
+            console.log("post filter success");
+            alert("yeet baby");
+        } else {
+            console.log("post filter failure");
+            alert(res.issue);
+        }
+    });
 }
 
 
