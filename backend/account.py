@@ -1,8 +1,11 @@
 # Account.py
 
 from uuid import uuid1
+import os
+import sqlite3
 
 class Account():
+
     def __init__(self, name, bio=None, email=None, phone=None):
         self.name = name
         self.uuid = str(uuid1())
@@ -44,6 +47,11 @@ class Account():
         self.bio = new_bio
 
 class Person(Account):
+
+    DEFAULT_PATH = os.path.expanduser('~../db')
+
+    SQL_SELECT_UUID = 'SELECT * FROM Persondb WHERE uuid = ?'
+
     def __init__(self, dob, skills=None):
         self.dob = dob
         self.skills = skills
@@ -57,7 +65,25 @@ class Person(Account):
     def set_skills(self, new_skills):
         self.skills = new_skills
 
+    @classmethod
+    def init_from_uid(uuid=""):
+        """Initializes a new Post from the database, using the uuid"""
+        if not uuid: return None
+        
+        conn = sqlite3.connect(Person.DEFAULT_PATH)
+        with conn:
+            curs = conn.cursor()
+            curs.execute(Person.SQL_SELECT_UUID, (uuid,))
+            data = curs.fetchone()
+            if not data: return None
+            return Person(data[0], data[1])
+
 class Organization(Account):
+
+    DEFAULT_PATH = os.path.expanduser('~../db')
+
+    SQL_SELECT_UUID = 'SELECT * FROM Persondb WHERE uuid = ?'
+
     def __init__(self, industry):
         self.industry = industry
 
@@ -66,3 +92,16 @@ class Organization(Account):
 
     def set_industry(self, new_industry):
         self.industry = new_industry
+
+    @classmethod
+    def init_from_uid(uuid=""):
+        """Initializes a new Post from the database, using the uuid"""
+        if not uuid: return None
+        
+        conn = sqlite3.connect(Organization.DEFAULT_PATH)
+        with conn:
+            curs = conn.cursor()
+            curs.execute(Organization.SQL_SELECT_UUID, (uuid,))
+            data = curs.fetchone()
+            if not data: return None
+            return Organization(data[0])
