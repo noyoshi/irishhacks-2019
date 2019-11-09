@@ -29,7 +29,7 @@ class Post:
         self.tags = tags
 
     @classmethod
-    def init_from_uid(uuid=""):
+    def init_from_uid(cls, uuid=""):
         """Initializes a new Post from the database, using the uuid"""
         if not uuid: return None
         

@@ -1,32 +1,41 @@
 import sys
 from flask import Flask, render_template
+from backend.account import Person, Organization 
+from backend.post import Post
 
-sys.path.append('../frontend')
+sys.path.append('./frontend')
+sys.path.append('./bakcend')
 
 app = Flask(__name__)
 
 @app.route("/")
 def index():
-    return 'Welcome to Volunteerer'
+    return render_template("main.html")
 
 
 @app.route("/about")
 def about():
-    return "about"
+    return render_template("about.html")
 
 
 @app.route("/help")
 def help():
-    return "help"
+    return render_template("help.html")
 
 
 @app.route("/edit/post/<postid>")
 def edit_post(postid):
+    post = Post.init_from_uid(postid)
+    # TODO edit the post object
+    # TODO save the post object
     return "edit post {}".format(postid)
 
 
 @app.route("/edit/profile/<userid>")
 def edit_profile(userid):
+    person = Person.init_from_uid(userid)
+    # TODO edit the person object
+    # TODO save the person object
     return "edit profile {}".format(userid)
 
 
@@ -58,7 +67,7 @@ def posts():
 
 
 @app.route("/user_profile/<userid>")
-def profile(userid):
+def user_profile(userid):
     """
     userid (string)
     first_name (string)
@@ -71,7 +80,7 @@ def profile(userid):
 
 
 @app.route("/org_profile/<userid>")
-def profile(userid):
+def org_profile(userid):
     """
     userid (string)
     first_name (string)
