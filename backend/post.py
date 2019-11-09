@@ -1,11 +1,20 @@
 # Post.py
 
+import os
+
+import sqlite3
+
 from uuid import uuid1
 
 class Post:
     '''
     Class to represent a general post.
     '''
+
+    DEFAULT_PATH = os.path.expanduser('~../db')
+
+    SQL_SELECT_UUID = 'SELECT * FROM Postdb WHERE uuid = ?'
+
 
     def __init__(self, title, description, location,
                  skill_set, num_volunteers, is_request, tags=None):
@@ -18,13 +27,18 @@ class Post:
         self.is_request = is_request
         self.tags = tags
 
-    def init_from_uid(query=""):
-        # TODO get some stuff from the database, and get the 
+    @classmethod
+    def init_from_uid(uuid=""):
         """Initializes a new Post from the database, using the uuid"""
-        # 1. create a cursor
-        # 2. call query
-        # 3. get the data out of the query result
-        # return Post()
+        if not uuid: return None
+        
+        conn = sqlite3.connect(Post.DEFAULT_PATH)
+        with conn:
+            curs = conn.cursor()
+            curs.execute(Post.SQL_SELECT_UUID, (uuid,))
+            data = curs.fetchone()
+            if not data: return None
+            return Post(data[0], data[1], data[2], data[3], data[4], data[5], data[6])
 
     def get_uuid(self):
         return self.uuid
