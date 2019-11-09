@@ -299,6 +299,12 @@ def save_post_edits():
     pass
 
 
+@app.route("/posts/handle_post_filter", methods=["POST"])
+def get_filtered_posts():
+    ''' not actually posting anything lol '''
+    print(request.json)
+    return json.dumps({'status': 'success'})
+
 
 if __name__ == '__main__':
     app.run(debug=True, host='127.0.0.1', port='41001')
