@@ -7,8 +7,6 @@ import sqlite3
 from uuid import uuid1
 from typing import List
 
-from account import Account
-
 from constants import DATABASE_FILE
 
 class Post:
@@ -39,7 +37,7 @@ class Post:
             )'''
 
     def __init__(self, title: str, description: str, location: str,
-            skill_set: List[str], num_volunteers: int, is_request: bool, user_id: int, tags: List[str] = None, volunteers: List[Account] = None, uuid: str=""):
+            skill_set: List[str], num_volunteers: int, is_request: bool, user_id: int, tags: List[str] = None, volunteers: List[str] = None, uuid: str=""):
         if not uuid: self.uuid = str(uuid1())
         self.title = title
         self.description = description
@@ -103,7 +101,7 @@ class Post:
                 if one_made:
                     query += ' or '
                     one_made = True
-                query += '{} like \'%{}%\''.format('tags', tag)
+                query += '{} like \'%{}%\''.format('tagstr)
                 one_made = True
 
         # return list
@@ -221,14 +219,14 @@ class Post:
         ''' add an additonal tag to post '''
         self.tags.append(tag)
 
-    def get_volunteers(self) -> List[Account]:
+    def get_volunteers(self) -> List[str]:
         return self.volunteers
     
-    def set_volunteers(self, volunteers: List[Account]) -> None:
+    def set_volunteers(self, volunteers: List[str]) -> None:
         self.volunteers = volunteers
 
-    def add_volunteer(self, acc: Account) -> None:
-        self.volunteers.append(acc)
+    def add_volunteer(self, acc_id: str) -> None:
+        self.volunteers.append(acc_id)
     
 
 if __name__ == '__main__':
