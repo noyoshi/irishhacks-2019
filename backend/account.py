@@ -82,6 +82,16 @@ class Account():
             curs = conn.cursor()
             curs.execute(Account.SQL_DELETE_ACCOUNT, (uuid,))
     
+    @classmethod
+    def dump_table(cls) -> None:
+        conn = sqlite3.connect(Account.DEFAULT_PATH)
+        with conn:
+            curs = conn.cursor()
+            print('------ Account -----')
+            for row in curs.execute('SELECT * from Account'):
+                print(row)
+            print('--------------------')
+    
     def insert_into_db(self) -> None:
         conn = sqlite3.connect(Account.DEFAULT_PATH)
         with conn:
@@ -95,7 +105,7 @@ class Account():
             curs = conn.cursor()
             ins_tuple = (self.name, self.email, self.password, self.is_personal, self.bio, self.phone, self.uuid)
             curs.execute(Account.SQL_UPDATE_ACCOUNT, ins_tuple)
-    
+
     def create_post(self, title: str, description: str, location: str,
             skill_set: List[str], num_volunteers: int, is_request: bool, tags: List[str] = None) -> None:
         ''' Creates post in DB at attaches it to user account '''
@@ -316,3 +326,5 @@ if __name__ == '__main__':
 
         for row in curs.execute('SELECT * from Person'):
             print(row)
+
+        Account.dump_table()
