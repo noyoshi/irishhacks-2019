@@ -2,7 +2,7 @@
 
 import sqlite3
 import os
-from time import time, sleep
+from time import time
 from uuid import uuid1
 
 from constants import DATABASE_FILE
@@ -19,6 +19,7 @@ class TokenTable:
     TABLE_PATH = os.path.expanduser(DATABASE_FILE)
 
     SQL_EXISTS = 'SELECT * from Tokens where uuid=? and token=?'
+    SQL_FIND = 'SELECT * from Tokens where token=?'
     SQL_INSERT_TOKEN = 'INSERT INTO Tokens (token, uuid, expire_time) VALUES (?, ?, ?)'
     SQL_DELETE_TOKEN = 'DELETE from Tokens where uuid=?'
 
@@ -67,6 +68,20 @@ class TokenTable:
 
             return tok
 
+    def get_uuid(self, token: str) -> str:
+        ''' Get user id attached to token '''
+        self.conn = sqlite3.connect(self.TABLE_PATH)
+
+        with self.conn:
+            curs = self.conn.cursor()
+            # perform query
+            curs.execute(self.SQL_FIND, (token,))
+            # check if there is a response
+            data = curs.fetchone()
+            if not data: return ""
+            # grab uuid
+            return data[1] 
+
     def delete(self, uid: str) -> None:
         ''' Delete token from table by user id '''
         self.conn = sqlite3.connect(self.TABLE_PATH)
@@ -92,6 +107,5 @@ if __name__ == '__main__':
     print("checking if in table")
 
     print(test_tok.validate(uid, tok))
-
-    sleep(5)
-    print(test_tok.validate(uid, tok))
+    
+    print(test_tok.get_uuid(tok))
