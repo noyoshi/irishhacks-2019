@@ -77,7 +77,6 @@ class Post:
     def get_with_filter(cls, filter: dict):
         # build query
         query = 'SELECT * from Postdb'
-
         
         if 'tags' in filter:
             if 'where' not in query: query += ' where '

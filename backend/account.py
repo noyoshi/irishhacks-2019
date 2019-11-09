@@ -16,8 +16,8 @@ class Account():
     DEFAULT_PATH = os.path.expanduser(DATABASE_FILE)
 
     SQL_SELECT_UUID = 'SELECT * FROM Account WHERE uuid = ?'
-    SQL_INSERT_ACCOUNT = '''INSERT INTO Account VALUES(?, ?, ?, ?, ?, ?, ?)'''
-    SQL_UPDATE_ACCOUNT = '''UPDATE Account SET name=?, email=?, password=?, is_personal=?, bio=?, phone=? WHERE uuid=?'''
+    SQL_INSERT_ACCOUNT = '''INSERT INTO Account VALUES(?, ?, ?, ?, ?, ?, ?, ?)'''
+    SQL_UPDATE_ACCOUNT = '''UPDATE Account SET name=?, email=?, password=?, is_personal=?, bio=?, phone=?, address=?, WHERE uuid=?'''
     SQL_DELETE_ACCOUNT = 'DELETE FROM Account WHERE uuid = ?'
 
     SQL_SELECT_EMAIL = 'SELECT * FROM Account WHERE email = ?'
@@ -25,15 +25,16 @@ class Account():
 
     SQL_CREATE_ACCOUNT_TABLE = '''CREATE TABLE IF NOT EXISTS Account(
             uuid VARCHAR(100) PRIMARY KEY,
+            name VARCHAR(100),
             email VARCHAR(100),
             password VARCHAR(100),
             is_personal bool,
+            bio TEXT,
             phone CHAR(10),
-            name VARCHAR(100),
-            bio TEXT
+            address VARCHAR(100) 
         )'''
 
-    def __init__(self, name: str, email: str, password: str, is_personal: bool, bio: str=None, phone:str=None, uuid:str=""):
+    def __init__(self, name: str, email: str, password: str, is_personal: bool, bio: str=None, phone:str=None, address:str=None, uuid:str=""):
         # Uuid attached to Accoutn for identification
         self.uuid = str(uuid1()) if not uuid else uuid
         self.name = name
@@ -42,6 +43,7 @@ class Account():
         self.is_personal = is_personal
         self.bio = bio
         self.phone = phone
+        self.address = address
     
     def to_dict(self):
         return {
@@ -50,6 +52,7 @@ class Account():
             "is_personal": self.is_personal,
             "bio": self.bio, 
             "phone": self.phone,
+            "address": self.address,
             "account_uuid": self.uuid
         }
     
@@ -126,14 +129,14 @@ class Account():
         conn = sqlite3.connect(Account.DEFAULT_PATH)
         with conn:
             curs = conn.cursor()
-            ins_tuple = (self.uuid, self.name, self.email, self.password, self.is_personal, self.bio, self.phone)
+            ins_tuple = (self.uuid, self.name, self.email, self.password, self.is_personal, self.bio, self.phone, self.address)
             curs.execute(Account.SQL_INSERT_ACCOUNT, ins_tuple)
 
     def update_into_db(self) -> None:
         conn = sqlite3.connect(Account.DEFAULT_PATH)
         with conn:
             curs = conn.cursor()
-            ins_tuple = (self.name, self.email, self.password, self.is_personal, self.bio, self.phone, self.uuid)
+            ins_tuple = (self.name, self.email, self.password, self.is_personal, self.bio, self.phone, self.address, self.uuid)
             curs.execute(Account.SQL_UPDATE_ACCOUNT, ins_tuple)
 
     def create_post(self, title: str, description: str, location: str,
@@ -174,6 +177,12 @@ class Account():
 
     def set_bio(self, new_bio: str) -> None:
         self.bio = new_bio
+    
+    def get_address(self) -> str:
+        return self.address
+    
+    def set_address(self, address: str) -> None:
+        self.address = address
 
 
 class Person(Account):
@@ -193,8 +202,8 @@ class Person(Account):
     )'''
 
 
-    def __init__(self, name: str, dob: str, email: str, password: str, bio: str=None, phone: str=None, skills: List[str]=None, uuid: str=""):
-        super(Person, self).__init__(name, email, password, True, bio, phone, uuid)
+    def __init__(self, name: str, dob: str, email: str, password: str, bio: str=None, phone: str=None, address: str=None, skills: List[str]=None, uuid: str=""):
+        super(Person, self).__init__(name, email, password, True, bio, phone, address, uuid)
         self.dob = dob
         self.skills = skills
     
@@ -224,7 +233,7 @@ class Person(Account):
             curs.execute(Person.SQL_SELECT_UUID, (uuid,))
             per_data = curs.fetchone()
             if not per_data: return None
-            return Person(data[1], per_data[1], data[2], data[3], data[5], data[6], ','.join(per_data[2]) if per_data[2] else None, data[0])
+            return Person(data[1], per_data[1], data[2], data[3], data[5], data[6], data[7], ','.join(per_data[2]) if per_data[2] else None, data[0])
 
     @classmethod
     def init_table(cls) -> None:
@@ -280,8 +289,8 @@ class Organization(Account):
     )'''
 
 
-    def __init__(self, name, email, password, bio=None, phone=None, industry:str="", uuid: str=""):
-        super(Organization, self).__init__(name, email, password, bio, phone, uuid)
+    def __init__(self, name: str, email: str, password: str, bio: str=None, phone: str=None, address: str=None, industry: str="", uuid: str=""):
+        super(Organization, self).__init__(name, email, password, bio, phone, address, uuid)
         self.industry = industry
     
     def to_dict(self):
@@ -302,7 +311,7 @@ class Organization(Account):
         conn = sqlite3.connect(Organization.DEFAULT_PATH)
         with conn:
             curs = conn.cursor()
-            ins_tuple = (self.email, self.phone, self.name, self.bio, self.industry, self.uuid)
+            ins_tuple = (self.industry, self.uuid)
             curs.execute(Organization.SQL_UPDATE_ORG, ins_tuple)
 
 
@@ -335,7 +344,7 @@ class Organization(Account):
             curs.execute(Organization.SQL_SELECT_UUID, (uuid,))
             org_data = curs.fetchone()
             if not org_data: return None
-            return Organization(data[1], data[2], data[3], data[5], data[6], org_data[1], data[0])
+            return Organization(data[1], data[2], data[3], data[5], data[6], data[7], org_data[1], data[0])
     
     @classmethod
     def init_table(cls) -> None:
