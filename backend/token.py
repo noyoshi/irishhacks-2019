@@ -2,24 +2,25 @@
 
 import sqlite3
 import os
-from time import time
+from time import time, sleep
 from uuid import uuid1
 
 from constants import DATABASE_FILE
 
 class TokenTable:
 
-    SQL_CREATE_TABLE = '''create TABLE if not exist token (
+    SQL_CREATE_TABLE = '''create TABLE if not exists Tokens (
                             token varchar(100),
                             uuid varchar(100),
                             expire_time int,
                             Primary Key(token)
                         )'''
 
-    TABLE_PATH = os.path.expanduser(DATABASE_PATH)
+    TABLE_PATH = os.path.expanduser(DATABASE_FILE)
 
     SQL_EXISTS = 'SELECT * from Tokens where uuid=? and token=?'
-    SQL_INSERT_POST = 'INSERT INTO Tokens (token, uuid, expire_time) VALUES (?, ?, ?)'
+    SQL_INSERT_TOKEN = 'INSERT INTO Tokens (token, uuid, expire_time) VALUES (?, ?, ?)'
+    SQL_DELETE_TOKEN = 'DELETE from Tokens where uuid=?'
 
     MAX_TTL = 69
 
@@ -62,5 +63,35 @@ class TokenTable:
             # create token
             tok = str(uuid1())
             # insert to table
-            curs.execute(self.SQL_INSERT_POST, (tok, uid, self._get_ttl()))
+            curs.execute(self.SQL_INSERT_TOKEN, (tok, uid, self._get_ttl()))
 
+            return tok
+
+    def delete(self, uid: str) -> None:
+        ''' Delete token from table by user id '''
+        self.conn = sqlite3.connect(self.TABLE_PATH)
+
+        with self.conn:
+            curs = self.conn.cursor()
+            # perform deletion
+            curs.execute(self.SQL_DELETE_TOKEN, (uid))
+
+
+
+# TEST
+
+if __name__ == '__main__':
+    test_tok = TokenTable()
+
+    print(test_tok.validate('69420', 'teet'))
+
+    uid = 'boi'
+    tok = test_tok.create(uid)
+    print('created token: {}'.format(tok))
+
+    print("checking if in table")
+
+    print(test_tok.validate(uid, tok))
+
+    sleep(5)
+    print(test_tok.validate(uid, tok))
