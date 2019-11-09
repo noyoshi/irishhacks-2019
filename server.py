@@ -288,7 +288,8 @@ def save_profile_edits():
         account.set_bio(data["bio"])
 
     if "dob" in data and data["dob"]:
-        account.set_dob(data["dob"])
+        if isinstance(type(account), type(Person)):
+            account.set_dob(data["dob"])
 
     if "phone_number" in data and data["phone_number"]:
         account.set_phone(data["phone_number"])

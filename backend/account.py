@@ -258,6 +258,9 @@ class Person(Account):
     def get_dob(self) -> str:
         return self.dob
 
+    def set_dob(self, dob):
+        self.dob = dob
+
     def get_skills(self) -> List[str]:
         return self.skills
 
