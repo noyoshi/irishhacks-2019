@@ -48,11 +48,11 @@ class Account():
 
 class Person(Account):
 
-    DEFAULT_PATH = os.path.expanduser('~../db')
+    DEFAULT_PATH = os.path.expanduser('example.db')
 
-    SQL_SELECT_UUID = 'SELECT * FROM Persondb WHERE uuid = ?'
+    SQL_SELECT_UUID = 'SELECT * FROM Person WHERE uuid = ?'
 
-    def __init__(self, name,  dob,bio=None, email=None, phone=None, skills=None):
+    def __init__(self, name, dob, bio=None, email=None, phone=None, skills=None):
         super(Person, self).__init__(name, bio, email, phone)
         self.dob = dob
         self.skills = skills
@@ -67,7 +67,7 @@ class Person(Account):
         self.skills = new_skills
 
     @classmethod
-    def init_from_uid(uuid=""):
+    def init_from_uid(cls, uuid=""):
         """Initializes a new Post from the database, using the uuid"""
         if not uuid: return None
         
@@ -81,9 +81,9 @@ class Person(Account):
 
 class Organization(Account):
 
-    DEFAULT_PATH = os.path.expanduser('~../db')
+    DEFAULT_PATH = os.path.expanduser('example.db')
 
-    SQL_SELECT_UUID = 'SELECT * FROM Persondb WHERE uuid = ?'
+    SQL_SELECT_UUID = 'SELECT * FROM Organization WHERE uuid = ?'
 
     def __init__(self, industry, name, bio=None, email=None, phone=None):
         super(Organization, self).__init__(name, bio, email, phone)
@@ -96,7 +96,7 @@ class Organization(Account):
         self.industry = new_industry
 
     @classmethod
-    def init_from_uid(uuid=""):
+    def init_from_uid(cls, uuid=""):
         """Initializes a new Post from the database, using the uuid"""
         if not uuid: return None
         
@@ -107,3 +107,26 @@ class Organization(Account):
             data = curs.fetchone()
             if not data: return None
             return Organization(data[0], data[1], data[2], data[3], data[4])
+
+
+if __name__ == '__main__':
+    conn = sqlite3.connect('example.db')
+    with conn:
+        SQL_CREATE_PERSON_TABLE = '''CREATE TABLE IF NOT EXISTS Organization(
+                    uuid VARCHAR(100) PRIMARY KEY,
+                    email VARCHAR(100),
+                    phone CHAR(10),
+                    name VARCHAR(100),
+                    bio TEXT,
+                    skills VARCHAR(200),
+                    industry VARCHAR(100)
+                )'''
+
+        conn.execute(SQL_CREATE_PERSON_TABLE)
+
+        SQL_INSERT_ORG = 'INSERT INTO Organization VALUES("123", "ginglisyo", "1234567890", "garvingarvin", "pair programmer", "nothing", "fuck")'
+        conn.execute(SQL_INSERT_ORG)
+        conn.commit()
+
+        o = Organization.init_from_uid("123")
+        print(o.name, o.bio, o.industry)
