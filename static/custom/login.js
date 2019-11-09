@@ -6,9 +6,10 @@ function login() {
     // TODO change to handle_login
     postData("/handle_login", {email: email, password:password}).then(res => {
         if (res.status === "success") {
-            console.log("signup success");
+            console.log("login success");
+            alert("login success");
         } else {
-            console.log("signup failure");
+            console.log("login failure");
             alert(res.issue);
         }
     });

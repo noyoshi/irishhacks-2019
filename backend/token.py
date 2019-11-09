@@ -23,7 +23,7 @@ class TokenTable:
     SQL_INSERT_TOKEN = 'INSERT INTO Tokens (token, uuid, expire_time) VALUES (?, ?, ?)'
     SQL_DELETE_TOKEN = 'DELETE from Tokens where uuid=?'
 
-    MAX_TTL = 1
+    MAX_TTL = 10
 
     def __init__(self):
         ''' Initialize SQL Table '''

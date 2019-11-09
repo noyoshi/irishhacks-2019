@@ -96,10 +96,11 @@ def handle_login():
     if not account:
         return json.dumps({"status": "failure", "issue": "invalid login / no account"})
 
-    user_id = account.get_user_id()
+    user_id = account.get_uuid()
     token_table = TokenTable()
     token_id = token_table.create(user_id)
     success.set_cookie(TOKEN_NAME, token_id)
+    print("login success")
 
     return success
 
