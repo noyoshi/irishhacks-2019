@@ -2,7 +2,7 @@ import sys
 import json
 
 from flask import Flask, render_template, make_response, request
-from backend.account import Person, Organization 
+from backend.account import Person, Organization, Account
 from backend.post import Post
 from backend.token import TokenTable
 
@@ -53,7 +53,13 @@ def edit_post(postid):
 # TODO needs authentication
 @app.route("/edit/profile/<userid>")
 def edit_profile(userid):
-    person = Person.init_from_uid(userid)
+    account = Account.init_from_uuid(userid)
+    if isinstance(Person, account):
+        # we are a person
+        pass
+    else:
+        # we are an org
+        pass
     # TODO edit the person object
     # TODO save the person object
     return "edit profile {}".format(userid)
@@ -85,11 +91,16 @@ def handle_login():
     # TODO 
 
     # TODO while waiting for sam, assume they do match
-    # object = Account.validate(email, password)
-    # user_id = object.get_user_id()
-    # token_table = TokenTable()
-    # token_id = token_table.create(user_id)
-    success.set_cookie(TOKEN_NAME, "TEST_COOKIE")
+    account = Account.validate(email, password)
+    Account.dump_table()
+    if not account:
+        return json.dumps({"status": "failure", "issue": "invalid login / no account"})
+
+    user_id = account.get_user_id()
+    token_table = TokenTable()
+    token_id = token_table.create(user_id)
+    success.set_cookie(TOKEN_NAME, token_id)
+
     return success
 
 
@@ -122,9 +133,12 @@ def handle_signin():
         return json.dumps({"status": "failure", "issue": "no name"})
     # TODO check to see if email exists in the db, if so, return failure
 
-    # TODO otherwise, create a new user and return success and set cookie
-    user = Person(name, 10, email=email)
-    # user.insert_into_db()
+    if Account.exists(email):
+        return json.dumps({"status": "failure", "issue": "email exists"})
+
+    # TODO change for person vs org
+    user = Person(name, 10, email, password)
+    user.insert_into_db()
     # TODO set password
 
     user_id = user.get_uuid()

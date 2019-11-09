@@ -55,7 +55,9 @@ class Account():
             # check if exists
             data = curs.fetchone()
             # return if account is there 
-            return data
+            if not data:
+                return None
+            return Account.init_from_uuid(data[0])
 
     @classmethod
     def init_from_uuid(cls, uuid: str): # returns object that represents Account

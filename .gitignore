@@ -1,4 +1,5 @@
 .vscode/*
 staging/*
+volunteer.db
 __pycache__/*
 *.zip
