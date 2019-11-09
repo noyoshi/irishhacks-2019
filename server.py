@@ -4,6 +4,7 @@ import json
 from flask import Flask, render_template, make_response, request
 from backend.account import Person, Organization 
 from backend.post import Post
+from backend.token import TokenTable
 
 sys.path.append('./frontend')
 sys.path.append('./backend')
@@ -12,7 +13,8 @@ app = Flask(__name__)
 
 @app.route("/")
 def index():
-    return render_template("main.html")
+    cookie = request.cookies.get("custom_token")
+    return render_template("main.html", cookie=cookie)
 
 
 @app.route("/about")
@@ -50,7 +52,9 @@ def login():
     password    (string)
     """
     # we need to give the user a cookie, if they are not logged in, so that we can figure out if they are validated?
-    return render_template("login.html")
+    return get_handle_cookie(request, render_template("login.html"))
+    # return 
+    # return render_template("login.html")
 
 
 @app.route("/signup")
@@ -101,7 +105,9 @@ def org_profile(userid):
 def test():
     print(request.json)
     response = json.dumps({"status": "success"})
-    return handle_cookie(request, response)
+    return get_handle_cookie(request, response) # TODO think about the return type of handle_cookie - we are rendering
+    # a template if we are NOT logged in, but what if it was a POST request or something??
+
     # name = request.cookies.get('userID')
     # if not name:
     #     resp = make_response(render_template('test.html'))
@@ -112,13 +118,15 @@ def test():
 
     # return '<h1>welcome '+name+'</h1>'
 
-def handle_cookie(request, authed_response):
-    cookie = request.cookies.get("AUTH_TOKEN")
+# this should always be off a GET request
+def get_handle_cookie(request, authed_response):
+    cookie = request.cookies.get("custom_token")
     if not cookie:
+        print("no cookie!")
         # if there was no cookie, we need to show them the login page
         # OR, if the cookie was invalidated or something?
         response = make_response(render_template("login.html"))
-        response.set_cookie("AUTH_TOKEN", "TEST")
+        response.set_cookie("custom_token", "TEST")
         return response
 
     return authed_response
