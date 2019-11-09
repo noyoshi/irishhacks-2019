@@ -29,6 +29,15 @@ def get_userid():
     
     return user_id
 
+def find_distance(location):
+    ''' returns mile distance between current user's locaiton and the target location '''
+    from geopy.geocoders import Nominatim
+    from geopy.distance import great_circle
+    geolocator = Nominatim(user_agent="volunteersite")
+    user_location = geolocator.geocode(Account.init_from_uuid(get_userid).address)
+    post_location = geolocator.geocode(location)
+    return great_circle((user_location.latitude, user_location.longitude), (post_location.latitude, post_location.longitude)).miles
+
 @app.route("/")
 def index():
     # if they are logged in, they are going to have some small thing saying theya re looged in
@@ -314,6 +323,7 @@ def save_post_edits():
 def get_filtered_posts():
     ''' not actually posting anything lol '''
     print(request.json)
+
     return json.dumps({'status': 'success'})
 
 
