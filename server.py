@@ -27,19 +27,19 @@ def get_userid():
 @app.route("/")
 def index():
     # if they are logged in, they are going to have some small thing saying theya re looged in
-    return render_template("main.html", user_id=get_userid())
+    return render_template("main.html", uuid=get_userid())
 
 
 @app.route("/about")
 def about():
     # if they are logged in, they are going to have some small thing saying theya re looged in
-    return render_template("about.html", user_id=get_userid())
+    return render_template("about.html", uuid=get_userid())
 
 
 @app.route("/help")
 def help():
     # if they are logged in, they are going to have some small thing saying theya re looged in
-    return render_template("help.html", user_id=get_userid())
+    return render_template("help.html", uuid=get_userid())
 
 
 # TODO needs authentication
@@ -192,7 +192,7 @@ def signup():
 
     # if they are logge din with valid cookie
     if user_id and cookie and token_conn.validate(user_id, cookie):
-        return render_template("signup.html", logged_in=True, user_id=user_id)
+        return render_template("signup.html", logged_in=True, uuid=user_id)
     
     return render_template("signup.html")
 
@@ -204,7 +204,7 @@ def posts():
     we are going to have some filtering going on...
     """
     # if they are logged in, they are going to have a small thing saying they are logged in
-    return render_template("posts.html", user_id=get_userid())
+    return render_template("posts.html", uuid=get_userid())
 
 
 @app.route("/community")
@@ -212,7 +212,7 @@ def community():
     """
     returns a list of the people in the community!
     """
-    return render_template("community.html", user_id=get_userid())
+    return render_template("community.html", uuid=get_userid())
 
 @app.route("/profile/<userid>")
 def user_profile(userid):
@@ -225,11 +225,11 @@ def user_profile(userid):
     """
     # if they are logged in, they are going to have some small thing saying theya re looged in
     account = Account.init_from_uuid(userid)
-    return render_template("profile.html", user_id=userid, bio=account.get_bio())
+    return render_template("profile.html", uuid=get_userid(), **account.to_dict())
 
 
 # TODO needs authentication
-@app.route("/edit/profile/<userid>")
+@app.route("/profile/edit/<userid>")
 def edit_profile(userid):
     token_user_id = get_userid()
     
@@ -238,7 +238,7 @@ def edit_profile(userid):
         return "error cannot edit another persons user page"
 
     account = Account.init_from_uuid(userid)
-    if isinstance(Person, account):
+    if isinstance(type(Person), type(account)):
         # we are a person
         pass
     else:

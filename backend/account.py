@@ -43,6 +43,16 @@ class Account():
         self.bio = bio
         self.phone = phone
     
+    def to_dict(self):
+        return {
+            "name": self.name, 
+            "email": self.email,
+            "is_personal": self.is_personal,
+            "bio": self.bio, 
+            "phone": self.phone,
+            "account_uuid": self.uuid
+        }
+    
     @classmethod
     def exists(self, email: str) -> bool:
         ''' check if account exists'''
@@ -187,6 +197,12 @@ class Person(Account):
         super(Person, self).__init__(name, email, password, True, bio, phone, uuid)
         self.dob = dob
         self.skills = skills
+    
+    def to_dict(self):
+        d = super().to_dict()
+        d["dob"] = self.dob
+        d["skills"] = self.skills
+        return d
 
     @classmethod
     def del_from_db(cls, uuid: str) -> None:
@@ -267,6 +283,11 @@ class Organization(Account):
     def __init__(self, name, email, password, bio=None, phone=None, industry:str="", uuid: str=""):
         super(Organization, self).__init__(name, email, password, bio, phone, uuid)
         self.industry = industry
+    
+    def to_dict(self):
+        d = super().to_dict()
+        d["industry"] = self.industry
+        return d
 
     def get_industry(self):
         return self.industry
