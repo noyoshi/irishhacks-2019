@@ -24,8 +24,8 @@ class Post:
 
 
     def __init__(self, title: str, description: str, location: str,
-            skill_set: List[str], num_volunteers: int, is_request: bool, user_id: int, tags: List[str] = None):
-        self.uuid = str(uuid1())
+            skill_set: List[str], num_volunteers: int, is_request: bool, user_id: int, tags: List[str] = None, uuid: str=""):
+        if not uuid: self.uuid = str(uuid1())
         self.title = title
         self.description = description
         self.location = location
@@ -46,7 +46,7 @@ class Post:
             curs.execute(Post.SQL_SELECT_UUID, (uuid,))
             data = curs.fetchone()
             if not data: return None
-            return Post(data[0], data[1], data[2], data[3].split(','), data[4], data[5], data[6], data[7].split(','))
+            return Post(data[1], data[2], data[3], data[4].split(','), data[5], data[6], data[7], data[8].split(','), data[0])
 
     @classmethod
     def delete_from_uid(cls, uuid: str="") -> None:
@@ -60,6 +60,32 @@ class Post:
             curs = conn.cursor()
             # perform delete
             curs.execute(Post.SQL_DELETE_POST, (uuid,))
+    
+    @classmethod
+    def get_with_filter(cls, filter: dict):
+        # build query
+        query = 'SELECT * from Postdb'
+
+        
+        if 'tags' in filter:
+            if 'where' not in query: query += ' where '
+            one_made = False
+            for tag in filter['tags']:
+                print(tag)
+                if one_made:
+                    query += ' or '
+                    one_made = True
+                query += '{} like \'%{}%\''.format('tags', tag)
+                one_made = True
+
+        if 'location' in filter:
+            if 'where' not in query:
+                query += ' where'
+            query += '{}={}'.format('location', filter['location'])
+        
+        # return list
+        print('performing query: {}'.format(query))
+        return [Post.init_from_uid(row[0]) for row in curs.execute(query)]
 
     def insert_into_db(self) -> None:
         """ Inserts object into database """
@@ -169,7 +195,6 @@ if __name__ == '__main__':
     conn = sqlite3.connect(DATABASE_FILE)
     with conn:
         curs = conn.cursor()
-        curs.execute("DROP TABLE Postdb")
         SQL_CREATE_POST_TABLE = '''CREATE TABLE IF NOT EXISTS Postdb(
                     uuid VARCHAR(100) PRIMARY KEY,
                     title VARCHAR(100),
@@ -184,7 +209,7 @@ if __name__ == '__main__':
 
         curs.execute(SQL_CREATE_POST_TABLE)
 
-        o = Post("test boinew", "desc", "loc", ['yeet'], 69, True, 'uid69420', ['tagyeet'])
+        o = Post("test boinew", "desc", "loc", ['yeet'], 69, True, 'uid69420', ['boiswag'])
         o.insert_into_db()
 
         o2 = Post("2ndpost", "desc2l", "loc2", ['yeetus'], 420, True, 'uid69420', ['tagyeet', 'yeettag'])
@@ -203,3 +228,6 @@ if __name__ == '__main__':
         res = Post.get_by_user_id("uid69420")
         print(res)
 
+        print()
+        for post in Post.get_with_filter({'tags': ['boi']}):
+            print(post.tags)
