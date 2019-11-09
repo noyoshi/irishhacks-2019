@@ -14,6 +14,7 @@ class Post:
     DEFAULT_PATH = os.path.expanduser('~../db')
 
     SQL_SELECT_UUID = 'SELECT * FROM Postdb WHERE uuid = ?'
+    SQL_INSERT_POST = 'INSERT INTO Postdb (uuid, title, description, location, skill_set, num_volunteers, is_requests, tags) VALUES (?, ?, ?, ?, ?, ?, ?, ?)'
 
 
     def __init__(self, title, description, location,
@@ -39,6 +40,13 @@ class Post:
             data = curs.fetchone()
             if not data: return None
             return Post(data[0], data[1], data[2], data[3], data[4], data[5], data[6])
+
+    def insert_in_db(self):
+        conn = sqlite3.connect(Post.DEFAULT_PATH)
+        with conn:
+            curs = conn.cursor()
+            curs.execute(Post.SQL_INSERT_POST, (self.uuid, self.title, self.description, self.location, self.skill_set, self.num_volunteers, self.is_request, self.tags,))
+
 
     def get_uuid(self):
         return self.uuid
