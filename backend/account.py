@@ -211,7 +211,7 @@ class Person(Account):
     
     def to_dict(self):
         d = super().to_dict()
-        # d["dob"] = self.dob
+        d["dob"] = self.dob
         # d["skills"] = self.skills
         return d
 
@@ -257,6 +257,9 @@ class Person(Account):
 
     def get_dob(self) -> str:
         return self.dob
+
+    def set_dob(self, dob):
+        self.dob = dob
 
     def get_skills(self) -> List[str]:
         return self.skills

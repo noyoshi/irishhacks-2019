@@ -101,11 +101,6 @@ class Post:
                 query += '{} like \'%{}%\''.format('tags', tag)
                 one_made = True
 
-        if 'location' in filter:
-            if 'where' not in query:
-                query += ' where'
-            query += '{}={}'.format('location', filter['location'])
-        
         # return list
         print('performing query: {}'.format(query))
         return [Post.init_from_uid(row[0]) for row in curs.execute(query)]

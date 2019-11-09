@@ -27,10 +27,10 @@
                     <li class="nav-item" role="presentation"><a class="nav-link" href="/community">Community</a></li>
                     <li class="nav-item" role="presentation"><a class="nav-link" href="/about">About US</a></li>
                     <li class="nav-item" role="presentation"><a class="nav-link" href="/help">Help</a></li>
-                    {% if not uuid %}
+                    {% if not token_uuid %}
                     <li class="nav-item" role="presentation"><a class="nav-link" href="/signup">Sign Up!</a></li>
                     {% else %}
-                    <li class="nav-item" role="presentation"><a class="nav-link" href="/profile/{{ uuid }}">My Account</a></li>
+                    <li class="nav-item" role="presentation"><a class="nav-link" href="/profile/{{ token_uuid }}">My Account</a></li>
                     <li class="nav-item" role="presentation"><a class="nav-link" href="/edit_post">Create / Edit a Posting</a></li>
                     {% endif %}
                 </ul>

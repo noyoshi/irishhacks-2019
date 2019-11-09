@@ -3,9 +3,20 @@ function editProfile() {
     var firstname = document.getElementById('firstname').value;
     var lastname = document.getElementById('lastname').value;
     var email = document.getElementById('email').value;
+    var bio = document.getElementById("bio").value;
+    var dob = document.getElementById("dob").value;
+    var phone_number = document.getElementById("phone_number").value;
+
     console.log(firstname, lastname);
     // TODO change to handle_login
-    postData("/profile/save_edits", {firstname: firstname, lastname:lastname, email:email}).then(res => {
+    postData("/profile/save_edits", {
+        firstname: firstname, 
+        lastname: lastname, 
+        email: email, 
+        bio: bio,
+        phone_number: phone_number,
+        bio: bio})
+    .then(res => {
         if (res.status === "success") {
             console.log("edit success");
             window.location.href = "/profile/" + res.uuid;
