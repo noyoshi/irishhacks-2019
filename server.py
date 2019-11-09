@@ -220,6 +220,10 @@ def posts():
     we are going to have some filtering going on...
     """
     # if they are logged in, they are going to have a small thing saying they are logged in
+
+    if request.json and 'type' in request.json:
+        filtered = Post.get_with_filter({'type:': request['type']})
+
     return render_template("posts.html", token_uuid=get_userid())
 
 
