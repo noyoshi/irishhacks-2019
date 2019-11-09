@@ -47,6 +47,18 @@ class Post:
         self.user_id = user_id
         self.tags = tags
 
+    def to_dict(self):
+        return {
+            "title" : self.title,
+            "description" : self.description,
+            "location" : self.location,
+            "skill_set" : self.skill_set,
+            "num_volunteers" : self.num_volunteers,
+            "is_request" : self.is_request,
+            "user_id" : self.user_id,
+            "tags" : self.tags
+        }
+
     @classmethod
     def init_from_uid(cls, uuid: str = ""):
         """Initializes a new Post from the database, using the uuid"""
