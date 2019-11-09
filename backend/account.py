@@ -63,6 +63,7 @@ class Person(Account):
 
     SQL_SELECT_UUID = 'SELECT * FROM Person WHERE uuid = ?'
     SQL_INSERT_PERSON = '''INSERT INTO Person VALUES(?, ?, ?, ?, ?, ?, ?)'''
+    SQL_UPDATE_PERSON = '''UPDATE Person SET name=?, dob=?, bio=?, email=?, phone=?, skills=? WHERE uuid=?'''
 
 
     def __init__(self, name, dob, bio=None, email=None, phone=None, skills=None):
@@ -92,6 +93,15 @@ class Person(Account):
             curs.execute(Person.SQL_INSERT_PERSON, ins_tuple)
 
 
+    def update_into_db(self):
+        skills = ','.join([skill for skill in self.skills]) if self.skills else self.skills
+        conn = sqlite3.connect(Organization.DEFAULT_PATH)
+        with conn:
+            curs = conn.cursor()
+            ins_tuple = (self.email, self.phone, self.name, self.bio, self.dob, skills, self.uuid)
+            curs.execute(Person.SQL_UPDATE_PERSON, ins_tuple)
+
+
     @classmethod
     def init_from_uid(cls, uuid=""):
         """Initializes a new Post from the database, using the uuid"""
@@ -112,6 +122,7 @@ class Organization(Account):
 
     SQL_SELECT_UUID = 'SELECT * FROM Organization WHERE uuid = ?'
     SQL_INSERT_ORG = '''INSERT INTO Organization VALUES(?, ?, ?, ?, ?, ?)'''
+    SQL_UPDATE_ORG = '''UPDATE Organization SET email=?, phone=?, name=?, bio=?, industry=? WHERE uuid=?'''
 
 
     def __init__(self, industry, name, bio=None, email=None, phone=None):
@@ -125,6 +136,14 @@ class Organization(Account):
 
     def set_industry(self, new_industry):
         self.industry = new_industry
+
+
+    def update_into_db(self):
+        conn = sqlite3.connect(Organization.DEFAULT_PATH)
+        with conn:
+            curs = conn.cursor()
+            ins_tuple = (self.email, self.phone, self.name, self.bio, self.industry, self.uuid)
+            curs.execute(Organization.SQL_UPDATE_ORG, ins_tuple)
 
 
     def insert_into_db(self):
@@ -153,7 +172,7 @@ if __name__ == '__main__':
     conn = sqlite3.connect('example.db')
     with conn:
         curs = conn.cursor()
-        SQL_CREATE_ORG_TABLE = '''CREATE TABLE IF NOT EXISTS Person(
+        SQL_CREATE_PERSON_TABLE = '''CREATE TABLE IF NOT EXISTS Person(
                     uuid VARCHAR(100) PRIMARY KEY,
                     email VARCHAR(100),
                     phone CHAR(10),
@@ -163,10 +182,18 @@ if __name__ == '__main__':
                     skills VARCHAR(100)
                 )'''
 
-        curs.execute(SQL_CREATE_ORG_TABLE)
+        curs.execute(SQL_CREATE_PERSON_TABLE)
 
-        p = Person("Garvin", "8-20-1999")
-        p.insert_into_db()
+        o = Organization("ACCN", "consulto")
+        o.insert_into_db()
 
-        for row in curs.execute('SELECT * FROM Person'):
+        for row in curs.execute('SELECT * FROM Organization'):
+            print(row)
+
+        print('test')
+        o.set_name("Garvin New Name")
+        o.set_bio("Got a bio now.")
+        o.update_into_db()
+
+        for row in curs.execute('SELECT * FROM Organization'):
             print(row)
