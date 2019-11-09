@@ -17,7 +17,7 @@ class Account():
 
     SQL_SELECT_UUID = 'SELECT * FROM Account WHERE uuid = ?'
     SQL_INSERT_ACCOUNT = '''INSERT INTO Account VALUES(?, ?, ?, ?, ?, ?, ?, ?)'''
-    SQL_UPDATE_ACCOUNT = '''UPDATE Account SET name=?, email=?, password=?, is_personal=?, bio=?, phone=?, address=?, WHERE uuid=?'''
+    SQL_UPDATE_ACCOUNT = '''UPDATE Account SET name=?, email=?, password=?, is_personal=?, bio=?, phone=?, address=? WHERE uuid=?'''
     SQL_DELETE_ACCOUNT = 'DELETE FROM Account WHERE uuid = ?'
 
     SQL_SELECT_EMAIL = 'SELECT * FROM Account WHERE email = ?'
