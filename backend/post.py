@@ -18,6 +18,14 @@ class Post:
         self.is_request = is_request
         self.tags = tags
 
+    def init_from_uid(query=""):
+        # TODO get some stuff from the database, and get the 
+        """Initializes a new Post from the database, using the uuid"""
+        # 1. create a cursor
+        # 2. call query
+        # 3. get the data out of the query result
+        # return Post()
+
     def get_uuid(self):
         return self.uuid
 
