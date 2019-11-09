@@ -11,20 +11,28 @@ sys.path.append('./backend')
 
 app = Flask(__name__)
 
+def get_userid():
+    token_conn = TokenTable()
+    cookie = request.cookies.get("custom_token")
+    user_id = token_conn.get_uuid(cookie)
+    return user_id
+
 @app.route("/")
 def index():
-    cookie = request.cookies.get("custom_token")
-    return render_template("main.html", cookie=cookie)
+    # if they are logged in, they are going to have some small thing saying theya re looged in
+    return render_template("main.html", user_id=get_userid())
 
 
 @app.route("/about")
 def about():
-    return render_template("about.html")
+    # if they are logged in, they are going to have some small thing saying theya re looged in
+    return render_template("about.html", user_id=get_userid())
 
 
 @app.route("/help")
 def help():
-    return render_template("help.html")
+    # if they are logged in, they are going to have some small thing saying theya re looged in
+    return render_template("help.html", user_id=get_userid())
 
 
 # TODO needs authentication
@@ -52,6 +60,10 @@ def login():
     password    (string)
     """
     # we need to give the user a cookie, if they are not logged in, so that we can figure out if they are validated?
+    # 1. if they are not logged in, then they are prompted to login
+        # after login, they are given the uuid token
+    # 2. if they login with an existing email and, check the password to see if it matches, it if does, they get the cookie with uuid
+        # if the password does not match, they are again prompted to this page
     return get_handle_cookie(request, render_template("login.html"))
     # return 
     # return render_template("login.html")
@@ -63,6 +75,7 @@ def signup():
     email    (string)
     password (string) **not hashed yet!
     """
+    # similar to the login route
     return "signpup"
 
 
@@ -72,7 +85,8 @@ def posts():
     """
     we are going to have some filtering going on...
     """
-    return "posts"
+    # if they are logged in, they are going to have a small thing saying they are logged in
+    return render_template("posts.html", user_id=get_userid())
 
 
 @app.route("/user_profile/<userid>")
@@ -84,7 +98,7 @@ def user_profile(userid):
     phone_number (number)
     email (string)
     """
-
+    # if they are logged in, they are going to have some small thing saying theya re looged in
     return userid
 
 
@@ -97,7 +111,7 @@ def org_profile(userid):
     phone_number (number)
     email (string)
     """
-
+    # if they are logged in, they are going to have some small thing saying theya re looged in
     return userid
 
 
