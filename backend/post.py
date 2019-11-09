@@ -1,5 +1,7 @@
 # Post.py
 
+from uuid import uuid1
+
 class Post:
     '''
     Class to represent a general post.
@@ -7,6 +9,7 @@ class Post:
 
     def __init__(self, title, description, location,
                  skill_set, num_volunteers, is_request, tags=None):
+        self.uuid = str(uuid1())
         self.title = title
         self.description = description
         self.location = location
@@ -14,6 +17,9 @@ class Post:
         self.num_volunteers = num_volunteers
         self.is_request = is_request
         self.tags = tags
+
+    def get_uuid(self):
+        return self.uuid
 
     def get_title(self):
         ''' returns title of post '''
