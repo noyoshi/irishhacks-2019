@@ -1,4 +1,4 @@
-class contact_info:
+class Contact:
     def __init__(self, name, email=None, phone=None):
         self.name = name
         self.email = email
