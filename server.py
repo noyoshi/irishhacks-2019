@@ -11,10 +11,16 @@ sys.path.append('./backend')
 
 app = Flask(__name__)
 
+TOKEN_NAME = "custom_token"
+
 def get_userid():
     token_conn = TokenTable()
     cookie = request.cookies.get("custom_token")
     user_id = token_conn.get_uuid(cookie)
+    if not user_id or not token_conn.validate(user_id, cookie):
+        print("INVALID_TOKEN: {}".format(cookie))
+        return None
+    
     return user_id
 
 @app.route("/")
@@ -52,6 +58,80 @@ def edit_profile(userid):
     # TODO save the person object
     return "edit profile {}".format(userid)
 
+@app.route("/handle_login", methods=["POST"])
+def handle_login():
+    # this handles the login
+    # if login is success, return succcess
+    # if login fails, return fail 
+    fail = json.dumps({"status": "failure"})
+    success = make_response(json.dumps({"status": "success"}))
+    request_json = request.json
+    
+    if not request.json:
+        return fail
+    
+    email = request_json.get("email")
+    password = request_json.get("password")
+
+    if not email:
+        return json.dumps({"status": "failure", "issue": "no email"})
+    
+    if not password:
+        return json.dumps({"status": "failure", "issue": "no password"})
+    
+    # otherwise, chceck to make sure email and password match
+    # if they do, add cookie to success
+    # if they do not, response with failure
+    # TODO 
+
+    # TODO while waiting for sam, assume they do match
+    # object = Account.validate(email, password)
+    # user_id = object.get_user_id()
+    # token_table = TokenTable()
+    # token_id = token_table.create(user_id)
+    success.set_cookie(TOKEN_NAME, "TEST_COOKIE")
+    return success
+
+
+@app.route("/handle_signup", methods=["POST"])
+def handle_signin():
+    # this handles the login
+    # if login is success, return succcess
+    # if login fails, return fail 
+    print(request.json)
+    request_json = request.json
+
+    fail = json.dumps({"status": "failure"})
+    success = make_response(json.dumps({"status": "success"}))
+    # request_json = json.loads(request.json)
+    
+    if not request.json:
+        return fail
+    
+    email = request_json.get("email")
+    password = request_json.get("password")
+    name = request_json.get("name")
+
+    if not email:
+        return json.dumps({"status": "failure", "issue": "no email"})
+    
+    if not password:
+        return json.dumps({"status": "failure", "issue": "no password"})
+    
+    if not name:
+        return json.dumps({"status": "failure", "issue": "no name"})
+    # TODO check to see if email exists in the db, if so, return failure
+
+    # TODO otherwise, create a new user and return success and set cookie
+    user = Person(name, 10, email=email)
+    # user.insert_into_db()
+    # TODO set password
+
+    user_id = user.get_uuid()
+    token_table = TokenTable()
+    token_id = token_table.create(user_id)
+    success.set_cookie(TOKEN_NAME, token_id)
+    return success
 
 @app.route("/login")
 def login():
@@ -64,9 +144,32 @@ def login():
         # after login, they are given the uuid token
     # 2. if they login with an existing email and, check the password to see if it matches, it if does, they get the cookie with uuid
         # if the password does not match, they are again prompted to this page
-    return get_handle_cookie(request, render_template("login.html"))
-    # return 
-    # return render_template("login.html")
+    # TODO the login route should also have info about the route they were trying to go down before, so tif they are logged in / 
+    # when they are logged in, it should send them to the right place
+    
+    cookie = request.cookies.get(TOKEN_NAME)
+
+    # # no cookie
+    if not cookie:
+        return render_template("login.html")
+    
+    token_conn = TokenTable()
+    user_id = token_conn.get_uuid(cookie)
+
+    # malformed cookie
+    if not user_id:
+        return render_template("login.html")
+    
+    # # valid user_id expired token -> make a new token?
+    if user_id and cookie and not token_conn.validate(user_id, cookie):
+        return render_template("login.html")
+    
+    # user is logged in
+    if user_id and cookie and token_conn.validate(user_id, cookie):
+        return render_template("login.html", logged_in=True)
+    
+    print("error?")
+    return render_template("login.html")
 
 
 @app.route("/signup")
@@ -76,7 +179,21 @@ def signup():
     password (string) **not hashed yet!
     """
     # similar to the login route
-    return "signpup"
+    
+    cookie = request.cookies.get(TOKEN_NAME)
+
+    # # no cookie
+    if not cookie:
+        return render_template("signup.html")
+    
+    token_conn = TokenTable()
+    user_id = token_conn.get_uuid(cookie)
+
+    # if they are logge din with valid cookie
+    if user_id and cookie and token_conn.validate(user_id, cookie):
+        return render_template("signup.html", logged_in=True, user_id=user_id)
+    
+    return render_template("signup.html")
 
 
 # TODO if they are logged in, they can respond to the post
@@ -113,37 +230,6 @@ def org_profile(userid):
     """
     # if they are logged in, they are going to have some small thing saying theya re looged in
     return userid
-
-
-@app.route("/test", methods=["GET", "POST"])
-def test():
-    print(request.json)
-    response = json.dumps({"status": "success"})
-    return get_handle_cookie(request, response) # TODO think about the return type of handle_cookie - we are rendering
-    # a template if we are NOT logged in, but what if it was a POST request or something??
-
-    # name = request.cookies.get('userID')
-    # if not name:
-    #     resp = make_response(render_template('test.html'))
-    #     resp.set_cookie('userID', "my_cookie")
-    #     print(resp)
-    #     print("NO COOKIES")
-    #     return resp
-
-    # return '<h1>welcome '+name+'</h1>'
-
-# this should always be off a GET request
-def get_handle_cookie(request, authed_response):
-    cookie = request.cookies.get("custom_token")
-    if not cookie:
-        print("no cookie!")
-        # if there was no cookie, we need to show them the login page
-        # OR, if the cookie was invalidated or something?
-        response = make_response(render_template("login.html"))
-        response.set_cookie("custom_token", "TEST")
-        return response
-
-    return authed_response
 
 
 if __name__ == '__main__':
