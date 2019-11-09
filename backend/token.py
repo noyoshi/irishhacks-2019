@@ -33,7 +33,7 @@ class TokenTable:
 
     def _get_epoch_time(self) -> int:
         ''' returns current epoch time '''
-        return int(time.time())
+        return int(time())
 
     def _get_ttl(self) -> int:
         ''' returns time + MAX_TTL constant '''
