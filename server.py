@@ -221,11 +221,13 @@ def posts():
     """
     # if they are logged in, they are going to have a small thing saying they are logged in
 
+    filter = {}
     if request.json and 'type' in request.json:
-        filtered = Post.get_with_filter({'type:': request['type']})
+        filter['type'] = request['type']
 
-    return render_template("posts.html", token_uuid=get_userid())
+    filtered = Post.get_with_filter(filter)
 
+    return render_template("posts.html", token_uuid=get_userid(), posts=filtered)
 
 # TODO if they are logged in, they can respond to the post
 @app.route("/posts/add_to_post")
