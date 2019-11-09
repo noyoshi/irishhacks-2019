@@ -142,7 +142,7 @@ class Account():
             curs.execute(Account.SQL_UPDATE_ACCOUNT, ins_tuple)
 
     def create_post(self, title: str, description: str, location: str,
-            skill_set: List[str], num_volunteers: int, is_request: bool, tags: List[str] = None, volunteers: List[Account] = None) -> None:
+            skill_set: List[str], num_volunteers: int, is_request: bool, tags: List[str] = None, volunteers: List[str] = None) -> None:
         ''' Creates post in DB at attaches it to user account '''
         new_post = Post(title, description, location, skill_set, num_volunteers, is_request, self.uuid, tags, volunteers)
         new_post.insert_into_db()
