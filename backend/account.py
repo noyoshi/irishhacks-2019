@@ -245,6 +245,16 @@ class Person(Account):
             curs = conn.cursor()
             curs.execute(Person.SQL_CREATE_PERSON_TABLE)
 
+    @classmethod
+    def dump_table(cls) -> None:
+        conn = sqlite3.connect(Person.DEFAULT_PATH)
+        with conn:
+            curs = conn.cursor()
+            print('------ Person -----')
+            for row in curs.execute('SELECT * from Person'):
+                print(row)
+            print('--------------------')
+
     def get_dob(self) -> str:
         return self.dob
 
