@@ -16,6 +16,7 @@ TOKEN_NAME = "custom_token"
 def get_userid():
     token_conn = TokenTable()
     cookie = request.cookies.get("custom_token")
+    print(cookie)
     user_id = token_conn.get_uuid(cookie)
     if not user_id or not token_conn.validate(user_id, cookie):
         print("INVALID_TOKEN: {}".format(cookie))
@@ -223,7 +224,8 @@ def user_profile(userid):
     email (string)
     """
     # if they are logged in, they are going to have some small thing saying theya re looged in
-    return userid
+    account = Account.init_from_uuid(userid)
+    return render_template("profile.html", user_id=userid, bio=account.get_bio())
 
 
 # TODO needs authentication

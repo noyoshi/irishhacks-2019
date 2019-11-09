@@ -1,1 +1,91 @@
 <!-- In here, we are going to edit our profile etc -->
+{% extends "_header.html" %}
+{% block body %}
+<!-- <body style="background-color: #f1f7fc;padding: 42px;"> -->
+    <div class="container profile profile-view" id="profile" style="padding: 23px;padding-top: 96px;background-color: #f1f7fc;">
+        <form class="border rounded-0 shadow" style="background-color: #fefefe;">
+            <div class="form-row profile-row" style="background-color: #f1f7fc;padding-top: 0px;margin: 41px;">
+                <div class="col-md-4 col-lg-5 offset-lg-0 relative" style="background-color: #ffffff;padding-left: 30px;padding-right: 30px;">
+                    <div class="avatar" style="background-color: #ffffff;">
+                        <div class="avatar-bg center" style="padding: 0px;padding-bottom: 0px;"></div>
+                    </div><input class="shadow-sm d-xl-flex align-items-xl-center form-control" type="file" name="avatar-file" style="padding: 0px;padding-left: 0px;padding-right: 0px;padding-bottom: 0px;padding-top: 0px;height: 27px;width: 241px;margin: 0px;margin-top: 16px;"></div>
+                <div
+                    class="col-md-8 col-lg-7" style="background-color: #ffffff;">
+                    <h1 style="padding-bottom: 16px;font-size: 28px;"><strong>Edit Profile </strong></h1>
+                    <div class="form-row">
+                        <div class="col-sm-12 col-md-6">
+                            <div class="form-group"><label>First Name</label><input class="form-control" type="text" name="firstname" style="background-color: rgba(237,237,237,0.31);"></div>
+                        </div>
+                        <div class="col-sm-12 col-md-6">
+                            <div class="form-group"><label>Last Name</label><input class="form-control" type="text" name="lastname" style="background-color: rgba(237,237,237,0.31);"></div>
+                        </div>
+                    </div>
+                    <div class="form-group"><label>Email </label><input class="form-control" type="email" autocomplete="off" required="" name="email" style="background-color: rgba(237,237,237,0.31);"></div>
+                    <div class="form-row">
+                        <div class="col-sm-12 col-md-6">
+                            <div class="form-group"><label>Phone Number</label><input class="form-control" type="password" name="password" autocomplete="off" required="" style="background-color: rgba(237,237,237,0.31);"></div>
+                        </div>
+                        <div class="col-sm-12 col-md-6">
+                            <div class="form-group"><label>Date of Birth</label><input class="form-control" type="password" name="confirmpass" autocomplete="off" required="" style="background-color: rgba(237,237,237,0.31);"></div>
+                        </div>
+                    </div>
+            </div>
+    </div>
+    </form>
+    </div>
+    <div class="container profile profile-view" id="profile" style="padding: 23px;padding-top: 14px;background-color: #f1f7fc;">
+        <form class="border rounded-0 shadow" style="background-color: #fefefe;">
+            <div class="form-row profile-row" style="background-color: #f1f7fc;padding-top: 0px;margin: 41px;">
+                <div class="col-md-8 col-lg-12" style="background-color: #ffffff;">
+                    <h1 style="font-size: 28px;"><strong>About Me</strong></h1>
+                    <div class="form-row">
+                        <div class="col-sm-12 col-md-6 col-lg-5" style="padding-top: 18px;padding-bottom: 1px;"><select class="border rounded-0 custom-select custom-select-lg" multiple="" style="padding-top: 14px;height: 214px;padding-bottom: 0px;"><optgroup label="Relevant Skills"><option value="12" selected="">Web Design</option><option value="13">Social Media</option><option value="14">Accounting</option><option value="">Family Law</option><option value="">Painting</option></optgroup></select></div>
+                        <div
+                            class="col-sm-12 col-md-6 col-lg-7" style="padding-top: 18px;padding-bottom: 11px;padding-left: 38px;">
+                            <h1 style="font-size: 22px;padding-top: 0px;"><strong>Public Bio</strong></h1><input class="form-control" type="text" style="height: 179px;padding-bottom: 0px;"></div>
+                </div>
+            </div>
+    </div>
+    </form>
+    </div>
+    <div class="container profile profile-view" id="profile" style="padding: 23px;padding-top: 14px;background-color: #f1f7fc;">
+        <form class="border rounded-0 shadow" style="background-color: #fefefe;">
+            <div class="form-row profile-row" style="background-color: #f1f7fc;padding-top: 0px;margin: 41px;">
+                <div class="col-md-8 col-lg-12" style="background-color: #ffffff;">
+                    <div class="form-row">
+                        <div class="col-sm-12 col-md-6">
+                            <div class="form-group"><label>Password </label><input class="form-control" type="password" name="password" autocomplete="off" required="" style="background-color: rgba(237,237,237,0.31);"></div>
+                        </div>
+                        <div class="col-sm-12 col-md-6">
+                            <div class="form-group"><label>Confirm Password</label><input class="form-control" type="password" name="confirmpass" autocomplete="off" required="" style="background-color: rgba(237,237,237,0.31);"></div>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="col-md-12 content-right" style="padding: 0px;padding-top: 8px;padding-bottom: -3px;padding-right: 41px;"><button class="btn btn-primary form-btn" type="submit" style="background-color: #00a3dd;">SAVE CHANGES</button><button class="btn btn-danger border-dark form-btn" type="reset" style="background-color: rgba(0,0,0,0.31);padding-top: 6px;">CANCEL </button></div>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+    <nav class="navbar navbar-light navbar-expand-lg fixed-top bg-white shadow-sm clean-navbar">
+        <div class="container"><a class="navbar-brand logo" href="3-homepage.html" style="font-family: 'Open Sans', sans-serif;font-size: 28px;"><strong>Volunteer</strong></a><button data-toggle="collapse" class="navbar-toggler" data-target="#navcol-1"><span class="sr-only">Toggle navigation</span><span class="navbar-toggler-icon"></span></button>
+            <div
+                class="collapse navbar-collapse" id="navcol-1">
+                <ul class="nav navbar-nav ml-auto">
+                    <li class="nav-item" role="presentation"><a class="nav-link" href="7-%20find-tasks.html">Find Tasks</a></li>
+                    <li class="nav-item" role="presentation"><a class="nav-link" href="features.html">Community</a></li>
+                    <li class="nav-item" role="presentation"><a class="nav-link" href="about-us.html">About US</a></li>
+                    <li class="nav-item" role="presentation"><a class="nav-link" href="help.html">Help</a></li>
+                    <li class="nav-item" role="presentation"><a class="nav-link" href="4%20-profile.html">My Profile</a></li>
+                </ul>
+        </div>
+        </div>
+    </nav>
+    <script src="assets/js/jquery.min.js"></script>
+    <script src="assets/bootstrap/js/bootstrap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/baguettebox.js/1.10.0/baguetteBox.min.js"></script>
+    <script src="assets/js/smoothproducts.min.js"></script>
+    <script src="assets/js/-Filterable-Cards-.js"></script>
+    <script src="assets/js/theme.js"></script>
+    <script src="assets/js/Profile-Edit-Form.js"></script>
+{% endblock %}
