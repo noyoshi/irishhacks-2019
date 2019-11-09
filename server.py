@@ -100,7 +100,8 @@ def org_profile(userid):
 @app.route("/test", methods=["GET", "POST"])
 def test():
     print(request.json)
-    return json.dumps({"status": "success"})
+    response = json.dumps({"status": "success"})
+    return handle_cookie(request, response)
     # name = request.cookies.get('userID')
     # if not name:
     #     resp = make_response(render_template('test.html'))
@@ -110,6 +111,17 @@ def test():
     #     return resp
 
     # return '<h1>welcome '+name+'</h1>'
+
+def handle_cookie(request, authed_response):
+    cookie = request.cookies.get("AUTH_TOKEN")
+    if not cookie:
+        # if there was no cookie, we need to show them the login page
+        # OR, if the cookie was invalidated or something?
+        response = make_response(render_template("login.html"))
+        response.set_cookie("AUTH_TOKEN", "TEST")
+        return response
+
+    return authed_response
 
 
 if __name__ == '__main__':
