@@ -52,7 +52,8 @@ class Person(Account):
 
     SQL_SELECT_UUID = 'SELECT * FROM Persondb WHERE uuid = ?'
 
-    def __init__(self, dob, skills=None):
+    def __init__(self, name,  dob,bio=None, email=None, phone=None, skills=None):
+        super(Person, self).__init__(name, bio, email, phone)
         self.dob = dob
         self.skills = skills
 
@@ -76,7 +77,7 @@ class Person(Account):
             curs.execute(Person.SQL_SELECT_UUID, (uuid,))
             data = curs.fetchone()
             if not data: return None
-            return Person(data[0], data[1])
+            return Person(data[0], data[1], data[2], data[3], data[4], data[5])
 
 class Organization(Account):
 
@@ -84,7 +85,8 @@ class Organization(Account):
 
     SQL_SELECT_UUID = 'SELECT * FROM Persondb WHERE uuid = ?'
 
-    def __init__(self, industry):
+    def __init__(self, industry, name, bio=None, email=None, phone=None):
+        super(Organization, self).__init__(name, bio, email, phone)
         self.industry = industry
 
     def get_industry(self):
@@ -104,4 +106,4 @@ class Organization(Account):
             curs.execute(Organization.SQL_SELECT_UUID, (uuid,))
             data = curs.fetchone()
             if not data: return None
-            return Organization(data[0])
+            return Organization(data[0], data[1], data[2], data[3], data[4])
