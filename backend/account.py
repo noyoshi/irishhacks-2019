@@ -64,6 +64,7 @@ class Person(Account):
     SQL_SELECT_UUID = 'SELECT * FROM Person WHERE uuid = ?'
     SQL_INSERT_PERSON = '''INSERT INTO Person VALUES(?, ?, ?, ?, ?, ?, ?)'''
     SQL_UPDATE_PERSON = '''UPDATE Person SET name=?, dob=?, bio=?, email=?, phone=?, skills=? WHERE uuid=?'''
+    SQL_DELETE_PERSON = 'DELETE FROM Person WHERE uuid = ?'
 
 
     def __init__(self, name, dob, bio=None, email=None, phone=None, skills=None):
@@ -101,10 +102,18 @@ class Person(Account):
             ins_tuple = (self.email, self.phone, self.name, self.bio, self.dob, skills, self.uuid)
             curs.execute(Person.SQL_UPDATE_PERSON, ins_tuple)
 
+    @classmethod
+    def del_from_db(cls, uuid):
+        uuid = str(uuid)
+        conn = sqlite3.connect(Organization.DEFAULT_PATH)
+        with conn:
+            curs = conn.cursor()
+            curs.execute(Person.SQL_DELETE_PERSON, (uuid,))
+
 
     @classmethod
     def init_from_uid(cls, uuid=""):
-        """Initializes a new Post from the database, using the uuid"""
+        """Initializes a new Person from the database, using the uuid"""
         if not uuid: return None
 
         conn = sqlite3.connect(Person.DEFAULT_PATH)
@@ -121,8 +130,9 @@ class Organization(Account):
     DEFAULT_PATH = os.path.expanduser('example.db')
 
     SQL_SELECT_UUID = 'SELECT * FROM Organization WHERE uuid = ?'
-    SQL_INSERT_ORG = '''INSERT INTO Organization VALUES(?, ?, ?, ?, ?, ?)'''
-    SQL_UPDATE_ORG = '''UPDATE Organization SET email=?, phone=?, name=?, bio=?, industry=? WHERE uuid=?'''
+    SQL_INSERT_ORG = 'INSERT INTO Organization VALUES(?, ?, ?, ?, ?, ?)'
+    SQL_UPDATE_ORG = 'UPDATE Organization SET email=?, phone=?, name=?, bio=?, industry=? WHERE uuid=?'
+    SQL_DELETE_ORG = 'DELETE FROM Organization WHERE uuid = ?'
 
 
     def __init__(self, industry, name, bio=None, email=None, phone=None):
@@ -152,6 +162,15 @@ class Organization(Account):
             curs = conn.cursor()
             ins_tuple = (self.uuid, self.email, self.phone, self.name, self.bio, self.industry)
             curs.execute(Organization.SQL_INSERT_ORG, ins_tuple)
+
+
+    @classmethod
+    def del_from_db(cls, uuid):
+        uuid = str(uuid)
+        conn = sqlite3.connect(Organization.DEFAULT_PATH)
+        with conn:
+            curs = conn.cursor()
+            curs.execute(Organization.SQL_DELETE_ORG, (uuid,))
 
 
     @classmethod
@@ -192,8 +211,15 @@ if __name__ == '__main__':
 
         print('test')
         o.set_name("Garvin New Name")
-        o.set_bio("Got a bio now.")
+        o.set_bio("This is my biography")
         o.update_into_db()
 
+        for row in curs.execute('SELECT * FROM Organization'):
+            print(row)
+
+        Organization.del_from_db(o.uuid)
+
+        print('After delete\n')
+        o.set_name("Fake")
         for row in curs.execute('SELECT * FROM Organization'):
             print(row)
