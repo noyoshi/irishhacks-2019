@@ -9,21 +9,27 @@
                     <div class="card clean-card text-center"><img class="card-img-top w-100 d-block" src="/static/assets/img/avatars/avatar1.jpg">
                         <div class="card-body info">
                             <h4 class="card-title">{{ name }}</h4>
-                            {% if bio %}
-                            <p class="card-text">{{ bio }}</p>
-                            {% endif %}
                             {% if token_uuid == uuid %}
-                            <p>This is editable by current user</p>
                             <a href="/profile/edit/{{ uuid }}">Edit Profile</a>
+                            <p>
+                            {% if dob %} dob: {{ dob }} <br>
                             {% endif %}
-                            <div class="icons"><a href="#"><i class="icon-social-facebook"></i></a><a href="#"><i class="icon-social-instagram"></i></a><a href="#"><i class="icon-social-twitter"></i></a></div>
+                            {% if phone %} Phone: {{ phone }}<br>
+                            {% endif %}
+                            {% if email %} email: {{ email }}<br>
+                            {% endif %}
+                            </p>
+                            {% endif %}
+                            <!-- <div class="icons"><a href="#"><i class="icon-social-facebook"></i></a><a href="#"><i class="icon-social-instagram"></i></a><a href="#"><i class="icon-social-twitter"></i></a></div> -->
                         </div>
                     </div>
                 </div>
                 <div class="col-md-6">
                     <div class="block-heading"></div>
-                    <h1>Heading</h1>
-                    <p>Paragraph</p>
+                    <h1>Bio</h1>
+                    {% if bio %}
+                    <p>{{ bio }}</p>
+                    {% endif %}
                 </div>
             </div>
         </div>

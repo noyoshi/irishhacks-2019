@@ -32,19 +32,19 @@ def get_userid():
 @app.route("/")
 def index():
     # if they are logged in, they are going to have some small thing saying theya re looged in
-    return render_template("main.html", uuid=get_userid())
+    return render_template("main.html", token_uuid=get_userid())
 
 
 @app.route("/about")
 def about():
     # if they are logged in, they are going to have some small thing saying theya re looged in
-    return render_template("about.html", uuid=get_userid())
+    return render_template("about.html", token_uuid=get_userid())
 
 
 @app.route("/help")
 def help():
     # if they are logged in, they are going to have some small thing saying theya re looged in
-    return render_template("help.html", uuid=get_userid())
+    return render_template("help.html", token_uuid=get_userid())
 
 
 # TODO needs authentication
@@ -199,7 +199,7 @@ def signup():
 
     # if they are logge din with valid cookie
     if user_id and cookie and token_conn.validate(user_id, cookie):
-        return render_template("signup.html", logged_in=True, **account.to_dict())
+        return render_template("signup.html", token_uuid=get_userid(), logged_in=True, **account.to_dict())
     
     return render_template("signup.html")
 
@@ -211,7 +211,7 @@ def posts():
     we are going to have some filtering going on...
     """
     # if they are logged in, they are going to have a small thing saying they are logged in
-    return render_template("posts.html", uuid=get_userid())
+    return render_template("posts.html", token_uuid=get_userid())
 
 
 @app.route("/community")
@@ -219,7 +219,7 @@ def community():
     """
     returns a list of the people in the community!
     """
-    return render_template("community.html", uuid=get_userid())
+    return render_template("community.html", token_uuid=get_userid())
 
 @app.route("/profile/<userid>")
 def user_profile(userid):
@@ -275,14 +275,24 @@ def save_profile_edits():
 
     data = request.json
     if "firstname" or "lastname" in data:
-        account.set_name(data.get("firstname", "") + " " + data.get("lastname", ""))
+        if not data["firstname"] and not data["lastname"]:
+            pass
+        else:
+            account.set_name(data.get("firstname", "") + " " + data.get("lastname", ""))
     
-    if "email" in data:
+
+    if "email" in data and data["email"]:
         account.set_email(data["email"])
     
-    print(type(account))
-    print("New account ==")
-    print(*account.to_dict())
+    if "bio" in data and data["bio"]:
+        account.set_bio(data["bio"])
+
+    if "dob" in data and data["dob"]:
+        account.set_dob(data["dob"])
+
+    if "phone_number" in data and data["phone_number"]:
+        account.set_phone(data["phone_number"])
+    
     account.update_into_db()
 
     Person.dump_table()
