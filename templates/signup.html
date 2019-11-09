@@ -5,8 +5,8 @@
             <div class="form-container">
                 <div class="image-holder" size="100%"" style="background-image: url(&quot;/static/assets/img/Hands%20In2.jpg&quot;);"></div>
                 <form method="post">
-                    {% if not logged_in %}
                     <h2 class="text-center" id="msg"><strong>Create</strong> an account.</h2>
+                    {% if not logged_in %}
                     <div class="form-group"><input class="form-control" type="name" name="name" placeholder="Name" id="name"></div>
                     <div class="form-group"><input class="form-control" type="email" name="email" placeholder="Email" id="email"></div>
                     <div class="form-group"><input class="form-control" type="password" name="password" placeholder="Password" id="password"></div>
@@ -16,7 +16,7 @@
                     </div>
                     <div class="form-group"><button class="btn btn-primary btn-block" type="button" style="background-color: rgb(0,123,255);" onclick="signup()">Sign Up</button></div><a class="already" href="/login">You already have an account? Login here.</a></form>
                     {% else %}
-                    <h2 class="text-center" id="msg">Already logged in as <strong>{{ user_id }}</strong></h2>
+                    <h2 class="text-center" id="msg">Already logged in as <strong>{{ name }}</strong></h2>
                     {% endif %}
             </div>
         </div>

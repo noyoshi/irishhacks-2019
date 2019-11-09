@@ -36,6 +36,8 @@ class Account():
 
     def __init__(self, name: str, email: str, password: str, is_personal: bool, bio: str=None, phone:str=None, address:str=None, uuid:str=""):
         # Uuid attached to Accoutn for identification
+        if not uuid:
+            print("ACCOUNT CREATED")
         self.uuid = str(uuid1()) if not uuid else uuid
         self.name = name
         self.email = email
@@ -53,7 +55,7 @@ class Account():
             "bio": self.bio, 
             "phone": self.phone,
             "address": self.address,
-            "account_uuid": self.uuid
+            "uuid": self.uuid
         }
     
     @classmethod
@@ -209,8 +211,8 @@ class Person(Account):
     
     def to_dict(self):
         d = super().to_dict()
-        d["dob"] = self.dob
-        d["skills"] = self.skills
+        # d["dob"] = self.dob
+        # d["skills"] = self.skills
         return d
 
     @classmethod
@@ -253,7 +255,7 @@ class Person(Account):
         self.skills = new_skills
 
     def insert_into_db(self) -> None:
-        super(Person, self).insert_into_db()
+        super().insert_into_db()
         skills = ','.join([skill for skill in self.skills]) if self.skills else self.skills
         conn = sqlite3.connect(Person.DEFAULT_PATH)
         with conn:

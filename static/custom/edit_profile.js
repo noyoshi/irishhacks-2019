@@ -1,15 +1,16 @@
-function login() {
+function editProfile() {
     // Sends the stuff to the server?
+    var firstname = document.getElementById('firstname').value;
+    var lastname = document.getElementById('lastname').value;
     var email = document.getElementById('email').value;
-    var password = document.getElementById('password').value;
-    console.log(email, password);
+    console.log(firstname, lastname);
     // TODO change to handle_login
-    postData("/handle_login", {email: email, password:password}).then(res => {
+    postData("/profile/save_edits", {firstname: firstname, lastname:lastname, email:email}).then(res => {
         if (res.status === "success") {
-            console.log("login success");
-            window.location.href = "/login";
+            console.log("edit success");
+            window.location.href = "/profile/" + res.uuid;
         } else {
-            console.log("login failure");
+            console.log("edit failure");
             alert(res.issue);
         }
     });

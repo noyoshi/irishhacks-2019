@@ -12,7 +12,10 @@
                 <div class="form-group"><label for="password">Password</label><input class="form-control" type="password" id="password"></div>
                 <button class="btn btn-primary btn-block" onclick="login()" type="button">Log In</button></form>
             {% else %}
-            <p>logged in</p>
+            <div class="block-heading">
+                <h2 class="text-info">Hello <b>{{ name }}</b>, you are logged in!</h2>
+                <p></p>
+            </div>            
             {% endif %}
         </div>
     </section>

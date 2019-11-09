@@ -12,6 +12,11 @@ sys.path.append('./backend')
 app = Flask(__name__)
 
 TOKEN_NAME = "custom_token"
+FAIL_MSG = json.dumps({"status": "failure"})
+
+Person.init_table()
+Account.init_table()
+Organization.init_table()
 
 def get_userid():
     token_conn = TokenTable()
@@ -167,7 +172,8 @@ def login():
     
     # user is logged in
     if user_id and cookie and token_conn.validate(user_id, cookie):
-        return render_template("login.html", logged_in=True)
+        user = Account.init_from_uuid(user_id)
+        return render_template("login.html", logged_in=True, token_uuid=user_id, **user.to_dict())
     
     print("error?")
     return render_template("login.html")
@@ -189,10 +195,11 @@ def signup():
     
     token_conn = TokenTable()
     user_id = token_conn.get_uuid(cookie)
+    account = Account.init_from_uuid(user_id)
 
     # if they are logge din with valid cookie
     if user_id and cookie and token_conn.validate(user_id, cookie):
-        return render_template("signup.html", logged_in=True, uuid=user_id)
+        return render_template("signup.html", logged_in=True, **account.to_dict())
     
     return render_template("signup.html")
 
@@ -225,7 +232,9 @@ def user_profile(userid):
     """
     # if they are logged in, they are going to have some small thing saying theya re looged in
     account = Account.init_from_uuid(userid)
-    return render_template("profile.html", uuid=get_userid(), **account.to_dict())
+    if not account:
+        return "no profile"
+    return render_template("profile.html", token_uuid=get_userid(), **account.to_dict())
 
 
 # TODO needs authentication
@@ -238,6 +247,9 @@ def edit_profile(userid):
         return "error cannot edit another persons user page"
 
     account = Account.init_from_uuid(userid)
+    if not account:
+        print("Nontype account for token user id {} and userid {}".format(token_user_id, userid))
+        return render_template("login.html")
     if isinstance(type(Person), type(account)):
         # we are a person
         pass
@@ -246,13 +258,39 @@ def edit_profile(userid):
         pass
     # TODO edit the person object
     # TODO save the person object
-    return "edit profile {}".format(userid)
+    return render_template("edit_profile.html", token_uuid=token_user_id, **account.to_dict())
 
 
 @app.route("/profile/save_edits", methods=["POST"])
 def save_profile_edits():
     """Saves the profile edits that we get from the user"""
-    pass
+    token_user_id = get_userid()
+    if not token_user_id:
+        # expired token
+        return FAIL_MSG
+    
+    account = Account.init_from_uuid(token_user_id)
+    if not account:
+        return FAIL_MSG
+
+    data = request.json
+    if "firstname" or "lastname" in data:
+        account.set_name(data.get("firstname", "") + " " + data.get("lastname", ""))
+    
+    if "email" in data:
+        account.set_email(data["email"])
+    
+    print(type(account))
+    print("New account ==")
+    print(*account.to_dict())
+    account.update_into_db()
+
+    Person.dump_table()
+    return json.dumps({ 
+        "status": "success", 
+        "uuid": account.get_uuid()
+    })
+    # make sure to return something with the uuid in it!
 
 
 @app.route("/post/save_edits", methods=["POST"])

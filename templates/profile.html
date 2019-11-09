@@ -12,7 +12,7 @@
                             {% if bio %}
                             <p class="card-text">{{ bio }}</p>
                             {% endif %}
-                            {% if account_uuid == uuid %}
+                            {% if token_uuid == uuid %}
                             <p>This is editable by current user</p>
                             <a href="/profile/edit/{{ uuid }}">Edit Profile</a>
                             {% endif %}
