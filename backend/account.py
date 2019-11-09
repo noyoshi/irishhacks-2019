@@ -58,6 +58,7 @@ class Account():
 
 
 class Person(Account):
+    '''in db: uuid, email, phone, name, bio, dob, skills'''
 
     DEFAULT_PATH = os.path.expanduser('example.db')
 
@@ -126,6 +127,7 @@ class Person(Account):
 
 
 class Organization(Account):
+    '''in db: uuid, email, phone, name, bio, industry'''
 
     DEFAULT_PATH = os.path.expanduser('example.db')
 
