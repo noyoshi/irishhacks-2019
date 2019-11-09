@@ -247,13 +247,13 @@ def add_to_posts():
 
 
 @app.route("/posts/<post_id>")
-def view_post(postid):
+def view_post(post_id):
     """
     we are going to have some filtering going on...
     """
 
     # get post id from request, create post object, add a volunteer to the post object, update
-    post = Post.init_from_uid(postid)
+    post = Post.init_from_uid(post_id)
 
     return render_template("post.html", post=post)
 
