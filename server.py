@@ -49,21 +49,6 @@ def edit_post(postid):
     # TODO save the post object
     return "edit post {}".format(postid)
 
-
-# TODO needs authentication
-@app.route("/edit/profile/<userid>")
-def edit_profile(userid):
-    account = Account.init_from_uuid(userid)
-    if isinstance(Person, account):
-        # we are a person
-        pass
-    else:
-        # we are an org
-        pass
-    # TODO edit the person object
-    # TODO save the person object
-    return "edit profile {}".format(userid)
-
 @app.route("/handle_login", methods=["POST"])
 def handle_login():
     # this handles the login
@@ -221,7 +206,14 @@ def posts():
     return render_template("posts.html", user_id=get_userid())
 
 
-@app.route("/user_profile/<userid>")
+@app.route("/community")
+def community():
+    """
+    returns a list of the people in the community!
+    """
+    return render_template("community.html", user_id=get_userid())
+
+@app.route("/profile/<userid>")
 def user_profile(userid):
     """
     userid (string)
@@ -234,17 +226,38 @@ def user_profile(userid):
     return userid
 
 
-@app.route("/org_profile/<userid>")
-def org_profile(userid):
-    """
-    userid (string)
-    first_name (string)
-    last_name (string)
-    phone_number (number)
-    email (string)
-    """
-    # if they are logged in, they are going to have some small thing saying theya re looged in
-    return userid
+# TODO needs authentication
+@app.route("/edit/profile/<userid>")
+def edit_profile(userid):
+    token_user_id = get_userid()
+    
+    if token_user_id != userid:
+        print("ERROR CANNOT EDIT ANOTHER USERS PAGE")
+        return "error cannot edit another persons user page"
+
+    account = Account.init_from_uuid(userid)
+    if isinstance(Person, account):
+        # we are a person
+        pass
+    else:
+        # we are an org
+        pass
+    # TODO edit the person object
+    # TODO save the person object
+    return "edit profile {}".format(userid)
+
+
+@app.route("/profile/save_edits", methods=["POST"])
+def save_profile_edits():
+    """Saves the profile edits that we get from the user"""
+    pass
+
+
+@app.route("/post/save_edits", methods=["POST"])
+def save_post_edits():
+    """Saves the post edits that we got form the user"""
+    pass
+
 
 
 if __name__ == '__main__':

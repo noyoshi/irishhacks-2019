@@ -1,6 +1,53 @@
-<h1>Help</h1>
-{% if user_id %}
-<h2>{{ user_id }}</h2>
-{% else %}
-<h2>No user_id</h2>
-{% endif %}
+{% extends "_header.html" %}
+{% block body %}
+    <div class="contact-clean">
+        <section class="clean-block about-us">
+            <div class="container">
+                <div class="block-heading">
+                    <h2 class="text-info">How to Use Volunteer</h2>
+                    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc quam urna, dignissim nec auctor in, mattis vitae leo.</p>
+                </div>
+                <div class="row justify-content-center">
+                    <div class="col-sm-6 col-lg-4">
+                        <div class="card clean-card text-center"><img class="card-img-top w-100 d-block" src="/static/assets/img/meeting.jpg">
+                            <div class="card-body info">
+                                <h4 class="card-title">John Smith</h4>
+                                <p class="card-text">Lorem ipsum dolor sit amet, consectetur adipisicing elit.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-6 col-lg-4">
+                        <div class="card clean-card text-center"><img class="card-img-top w-100 d-block" src="/static/assets/img/kelly-sikkema--1_RZL8BGBM-unsplash.jpg">
+                            <div class="card-body info">
+                                <h4 class="card-title">Robert Downturn</h4>
+                                <p class="card-text">Lorem ipsum dolor sit amet, consectetur adipisicing elit.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-6 col-lg-4">
+                        <div class="card clean-card text-center"><img class="card-img-top w-100 d-block" src="/static/assets/img/Hands%20In.jpg">
+                            <div class="card-body info">
+                                <h4 class="card-title">Ally Sanders</h4>
+                                <p class="card-text">Lorem ipsum dolor sit amet, consectetur adipisicing elit.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <form method="post">
+            <h2 class="text-center">Contact us</h2>
+            <div class="form-group"><input class="form-control" type="text" name="name" placeholder="Name"></div>
+            <div class="form-group"><input class="form-control is-invalid" type="email" name="email" placeholder="Email"><small class="form-text text-danger">Please enter a correct email address.</small></div>
+            <div class="form-group"><textarea class="form-control" name="message" placeholder="Message" rows="14"></textarea></div>
+            <div class="form-group"><button class="btn btn-primary" type="submit">send </button></div>
+        </form>
+    </div>
+    <main class="page"></main>
+    <script src="/static/assets/js/jquery.min.js"></script>
+    <script src="/static/assets/bootstrap/js/bootstrap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/baguettebox.js/1.10.0/baguetteBox.min.js"></script>
+    <script src="/static/assets/js/smoothproducts.min.js"></script>
+    <script src="/static/assets/js/-Filterable-Cards-.js"></script>
+    <script src="/static/assets/js/theme.js"></script>
+{% endblock %}
