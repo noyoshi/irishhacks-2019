@@ -17,9 +17,10 @@ class Post:
     DEFAULT_PATH = os.path.expanduser(DATABASE_FILE)
 
     SQL_SELECT_UUID = 'SELECT * FROM Postdb WHERE uuid = ?'
-    SQL_INSERT_POST = 'INSERT INTO Postdb (uuid, title, description, location, skill_set, num_volunteers, is_request, tags) VALUES (?, ?, ?, ?, ?, ?, ?, ?)'
-    SQL_UPDATE_POST = 'UPDATE Postdb SET title=?, description=?, location=?, skill_set=?, num_volunteers=?, is_request=?, tags=? WHERE uuid=?'
+    SQL_INSERT_POST = 'INSERT INTO Postdb (uuid, title, description, location, skill_set, num_volunteers, is_request, user_id, tags) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)'
+    SQL_UPDATE_POST = 'UPDATE Postdb SET title=?, description=?, location=?, skill_set=?, num_volunteers=?, is_request=?, user_id=?, tags=? WHERE uuid=?'
     SQL_DELETE_POST = 'DELETE from Postdb where uuid=?'
+    SQL_GET_USER_POSTS = 'SELECT * FROM Postdb WHERE user_id = ?'
 
 
     def __init__(self, title: str, description: str, location: str,
@@ -38,7 +39,7 @@ class Post:
     def init_from_uid(cls, uuid: str = ""):
         """Initializes a new Post from the database, using the uuid"""
         if not uuid: return None
-        
+
         conn = sqlite3.connect(Post.DEFAULT_PATH)
         with conn:
             curs = conn.cursor()
@@ -51,7 +52,7 @@ class Post:
     def delete_from_uid(cls, uuid: str="") -> None:
         """ Deletes a post from database based on uuid """
         if not uuid: return
-    
+
         # open connection
         conn = sqlite3.connect(Post.DEFAULT_PATH)
 
@@ -87,6 +88,17 @@ class Post:
             curs = conn.cursor()
             # call delete
             curs.execute(Post.SQL_DELETE_POST, (self.uuid, ))
+
+    @classmethod
+    def get_by_user_id(cls, user_id):
+        """ Get all posts made by a user """
+        conn = sqlite3.connect(Post.DEFAULT_PATH)
+        with conn:
+            curs = conn.cursor()
+            # call delete
+            curs.execute(Post.SQL_GET_USER_POSTS, (user_id, ))
+            return curs.fetchall()
+
 
     def get_uuid(self) -> str:
         ''' returns uuid '''
@@ -127,7 +139,7 @@ class Post:
     def get_num_volunteers(self) -> int:
         ''' returns number of volunteers available/needed '''
         return self.num_volunteers
-    
+
     def set_num_volunteers(self, num_volunteers: int):
         ''' sets number of volunteers needed/available '''
         self.num_volunteers = num_volunteers
@@ -157,6 +169,7 @@ if __name__ == '__main__':
     conn = sqlite3.connect(DATABASE_FILE)
     with conn:
         curs = conn.cursor()
+        curs.execute("DROP TABLE Postdb")
         SQL_CREATE_POST_TABLE = '''CREATE TABLE IF NOT EXISTS Postdb(
                     uuid VARCHAR(100) PRIMARY KEY,
                     title VARCHAR(100),
@@ -171,11 +184,14 @@ if __name__ == '__main__':
 
         curs.execute(SQL_CREATE_POST_TABLE)
 
-        o = Post("test boi", "mr manager", "ur moms house", ['yeet'], 69, True, '69420', ['yeet'])
+        o = Post("test boinew", "desc", "loc", ['yeet'], 69, True, 'uid69420', ['tagyeet'])
         o.insert_into_db()
 
+        o2 = Post("2ndpost", "desc2l", "loc2", ['yeetus'], 420, True, 'uid69420', ['tagyeet', 'yeettag'])
+        o2.insert_into_db()
+
         for row in curs.execute('SELECT * FROM Postdb'):
-            print(row) 
+            print(row)
 
         o.set_num_volunteers(3)
 
@@ -184,9 +200,6 @@ if __name__ == '__main__':
         for row in curs.execute('SELECT * FROM Postdb'):
             print(row)
 
-        o.delete_in_db()
-        
-        for row in curs.execute('SELECT * FROM Postdb'):
-            print(row)
-
+        res = Post.get_by_user_id("uid69420")
+        print(res)
 
