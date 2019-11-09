@@ -325,13 +325,15 @@ def get_filtered_posts():
 
     # Handle distance filter by user's location
     req = request.json
-    if req['distance']:
-        uid = get_userid()
-        a = Account.init_from_uuid(uid)
-        loc = a.get_location()
-        print(loc)
-
     print(request.json)
+
+    posts = []
+
+    if req['type'] != 'Type':
+        posts += Post.get_with_filter({'type': req['type']})
+
+    if req['maxdist'] != 'Distance':
+        pass
     return json.dumps({'status': 'success'})
 
 
