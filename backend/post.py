@@ -163,7 +163,7 @@ class Post:
             curs = conn.cursor()
             # create input tuple to match SQL_UPDATE_POST's ? operators
             data = (self.title, self.description, self.location, ','.join(self.skill_set), self.num_volunteers, self.is_request,
-                    self.user_id, ','.join(self.tags) if self.tags else None, ','.join(self.volunteers) if self.volunteers else None, self.uuid)
+                    self.user_id, ','.join(self.tags) if self.tags else None, ','.join(self.volunteers) if self.volunteers else None, self.date, self.length, self.uuid)
             # perform sql update
             curs.execute(Post.SQL_UPDATE_POST, data)
 
