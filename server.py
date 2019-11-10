@@ -62,13 +62,17 @@ def help():
     return render_template("help.html", token_uuid=get_userid())
 
 
+@app.route("/make_post")
+def new_post():
+    return render_template("edit_post.html")
+
 # TODO needs authentication
 @app.route("/edit/post/<postid>")
 def edit_post(postid):
     post = Post.init_from_uid(postid)
     # TODO edit the post object
     # TODO save the post object
-    return "edit post {}".format(postid)
+    return render_template("edit_post.html")
 
 
 @app.route("/handle_login", methods=["POST"])
@@ -383,6 +387,7 @@ def get_filtered_posts():
     if req['maxdist'] != 'Distance':
         pass
     return json.dumps({'status': 'success'})
+
 
 if __name__ == '__main__':
     app.run(debug=True, host='127.0.0.1', port='41001')
