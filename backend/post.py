@@ -38,8 +38,9 @@ class Post:
                 length int
             )'''
 
-    def __init__(self, title: str, description: str, location: str,
-                 skill_set: List[str], num_volunteers: int, is_request: bool, user_id: int, tags: List[str] = None, volunteers: List[str] = None, date=None, length=None, uuid: str = ""):
+    def __init__(self, title: str=None, description: str=None, location: str=None,
+                 skill_set: List[str]=None, num_volunteers: int=None, is_request: bool=False,
+                 user_id: int=None, tags: List[str] = None, volunteers: List[str] = None, date=None, length=None, uuid: str = ""):
         if not uuid:
             self.uuid = str(uuid1())
         else:
@@ -85,7 +86,22 @@ class Post:
             data = curs.fetchone()
             if not data:
                 return None
-            return Post(data[1], data[2], data[3], data[4].split(','), data[5], data[6], data[7], data[8].split(',') if data[8] is not None else None, data[9].split(',') if data[9] else None, data[10], data[11], data[0])
+
+            post_input = {
+                "uuid": data[0],
+                "title": data[1],
+                "description": data[2],
+                "location": data[3],
+                "skill_set": data[4].split(',') if data[4] else None,
+                "num_volunteers": data[5],
+                "is_request": data[6],
+                "user_id": data[7],
+                "tags": data[8] if data[8] else None,
+                "volunteers": data[9].split(',') if data[9] else None,
+                "length": data[10],
+                "date": data[11],
+            }
+            return Post(**post_input)
 
     @classmethod
     def delete_from_uid(cls, uuid: str = "") -> None:
@@ -282,27 +298,21 @@ if __name__ == '__main__':
 
         curs.execute(SQL_CREATE_POST_TABLE)
 
-        o = Post("test boinew", "desc", "loc", [
-                 'technology'], 69, True, 'uid69420', ['technology'])
+        post_input = {
+            "title": 'test boi new',
+            "description": 'this is a description. There are many like it, but this one is a test.',
+            "location": 'bui\'s office',
+            "skill_set": ['technology'],
+            "num_volunteers": 1,
+            "is_request": True,
+            "user_id": 'uid69420',
+            "tags": ['technology'],
+            "length": 1,
+            "date": '02/05/2019'
+        }
+
+        o = Post(**post_input)
         o.insert_into_db()
 
-        o2 = Post("2ndpost", "desc2l", "loc2", [
-                  'technology'], 420, True, 'uid69420', ['technology', 'plumbing'])
-        o2.insert_into_db()
-
         for row in curs.execute('SELECT * FROM Postdb'):
             print(row)
-
-        o.set_num_volunteers(3)
-
-        o.update_in_db()
-
-        for row in curs.execute('SELECT * FROM Postdb'):
-            print(row)
-
-        res = Post.get_by_user_id("uid69420")
-        print(res)
-
-        print()
-        for post in Post.get_with_filter({'tags': ['boi']}):
-            print(post['tags'])

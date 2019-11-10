@@ -30,8 +30,16 @@ LEN  = (0,1,2,4,5,6,7,8)
 
 
 def create_post(user: Person):
-    user.create_post(random.choice(TITLE), random.choice(DESC), random.choice(LOC), random.choice(SKILL_SET), random.choice(NUM_VOLS),
-    random.choice(IS_REQ), random.choice(TAGS), random.choice(DATE), random.choice(LEN))
+    user.create_post(**{
+        'title': random.choice(TITLE),
+        'description': random.choice(DESC),
+        'location': random.choice(LOC),
+        'skill_set': random.choice(SKILL_SET),
+        'num_volunteers': random.choice(NUM_VOLS),
+        'is_request': random.choice(IS_REQ),
+        'tags': random.choice(TAGS),
+        'date': random.choice(DATE),
+        'length': random.choice(LEN)})
 
 if __name__ == '__main__':
     Account.init_table()

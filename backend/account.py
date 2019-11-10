@@ -37,7 +37,7 @@ class Account():
             address VARCHAR(100) 
         )'''
 
-    def __init__(self, name: str, email: str, password: str, is_personal: bool, bio: str=None, phone:str=None, address:str=None, uuid:str=""):
+    def __init__(self, name: str = None, email: str = None, password: str = None, is_personal: bool = None, bio: str=None, phone:str=None, address:str=None, uuid:str=""):
         # Uuid attached to Accoutn for identification
         if not uuid:
             print("ACCOUNT CREATED")
@@ -156,10 +156,25 @@ class Account():
             ins_tuple = (self.name, self.email, self.password, self.is_personal, self.bio, self.phone, self.address, self.uuid)
             curs.execute(Account.SQL_UPDATE_ACCOUNT, ins_tuple)
 
-    def create_post(self, title: str, description: str, location: str,
-            skill_set: List[str], num_volunteers: int, is_request: bool, tags: List[str] = None, volunteers: List[str] = None, date: str = None, length: int = 0) -> None:
+    def create_post(self, title: str = None, description: str = None, location: str=None,
+            skill_set: List[str]=None, num_volunteers: int=0, is_request: bool=False, tags: List[str] = None, volunteers: List[str] = None, date: str = None, length: int = 0) -> None:
         ''' Creates post in DB at attaches it to user account '''
-        new_post = Post(title, description, location, skill_set, num_volunteers, is_request, self.uuid, tags, volunteers, date, length)
+
+        inst_dict = {
+            'title': title,
+            'description': description,
+            'location': location,
+            'skill_set': skill_set,
+            'num_volunteers': num_volunteers,
+            'is_request': is_request,
+            'user_id': self.uuid,
+            'tags': tags,
+            'volunteers': volunteers,
+            'date': date,
+            'length': length
+        }
+
+        new_post = Post(**inst_dict)
         new_post.insert_into_db()
 
         return new_post
@@ -221,8 +236,18 @@ class Person(Account):
     )'''
 
 
-    def __init__(self, name: str, email: str, password: str, dob: str = None,bio: str=None, phone: str=None, address: str=None, skills: List[str]=None, uuid: str=""):
-        super(Person, self).__init__(name, email, password, True, bio, phone, address, uuid)
+    def __init__(self, name: str = None, email: str = None, password: str = None, dob: str = None,bio: str=None, phone: str=None, address: str=None, skills: List[str]=None, uuid: str=""):
+        dic = {
+            'name': name,
+            'email': email,
+            'password': password,
+            'is_personal': True,
+            'bio': bio,
+            'phone': phone,
+            'address': address,
+            'uuid': uuid
+        }
+        super(Person, self).__init__(**dic)
         self.dob = dob
         self.skills = skills
     
@@ -252,7 +277,20 @@ class Person(Account):
             curs.execute(Person.SQL_SELECT_UUID, (uuid,))
             per_data = curs.fetchone()
             if not per_data: return None
-            return Person(data[1], data[2], data[3], per_data[1], data[5], data[6], data[7], ','.join(per_data[2]) if per_data[2] else None, data[0])
+
+            inp = {
+                'name': data[1],
+                'email': data[2],
+                'password': data[3],
+                'dob': per_data[1],
+                'bio': data[5],
+                'phone': data[6],
+                'address': data[7],
+                'skills': ','.join(per_data[2]) if per_data[2] else None,
+                'uuid': data[0]
+            }
+
+            return Person(**inp)
 
     @classmethod
     def init_table(cls) -> None:
@@ -321,8 +359,18 @@ class Organization(Account):
     )'''
 
 
-    def __init__(self, name: str, email: str, password: str, bio: str=None, phone: str=None, address: str=None, industry: str="", uuid: str=""):
-        super(Organization, self).__init__(name, email, password, 0, bio, phone, address, uuid)
+    def __init__(self, name: str=None, email: str=None, password: str=None, bio: str=None, phone: str=None, address: str=None, industry: str="", uuid: str=""):
+        dic = {
+            'name': name,
+            'email': email,
+            'is_personal': False,
+            'password': password,
+            'bio': bio,
+            'phone': phone,
+            'address': address,
+            'uuid': uuid
+        }
+        super(Organization, self).__init__(**dic)
         self.industry = industry
     
     def to_dict(self):
@@ -376,7 +424,19 @@ class Organization(Account):
             curs.execute(Organization.SQL_SELECT_UUID, (uuid,))
             org_data = curs.fetchone()
             if not org_data: return None
-            return Organization(data[1], data[2], data[3], data[5], data[6], data[7], org_data[1], data[0])
+
+            inp = {
+                'name': data[1],
+                'email': data[2],
+                'password': data[3],
+                'bio': data[5],
+                'phone': data[6],
+                'address': data[7],
+                'industry':  org_data[1],
+                'uuid': data[0]
+            }
+
+            return Organization(**inp)
     
     @classmethod
     def init_table(cls) -> None:
@@ -415,8 +475,18 @@ if __name__ == '__main__':
         )'''
 
         curs.execute(SQL_CREATE_PERSON_TABLE)
-    
-        test_account = Organization("bob", "bob@test", "1234password", "i make money", "574-222-2222", "money makers")
+
+        org_input = {
+            'name': 'bob',
+            'email': 'bob@test',
+            'password': '1234password',
+            'bio': 'i make money',
+            'phone': '867-5309',
+            'address': '123 fake street',
+            'industry':  'business'
+        }
+
+        test_account = Organization(**org_input)
 
         test_account.insert_into_db()
 
@@ -427,7 +497,18 @@ if __name__ == '__main__':
         for row in curs.execute('SELECT * from organization'):
             print(row)
 
-        test_other = Person("joe",  "yeet@boi.com","1233yeet", "02/25/1999", "a man who likes to bool", "574-030-3039", None)
+        inp = {
+            'name': 'joe',
+            'email': 'yeet@boi.com',
+            'password': '123yeet',
+            'dob': '02/25/1999',
+            'bio': 'a man who likes to bool',
+            'phone': '574-030-3039',
+            'address': '123 fake street',
+            'skills': ['killa'],
+        }
+
+        test_other = Person(**inp)
 
         test_other.insert_into_db()
 
