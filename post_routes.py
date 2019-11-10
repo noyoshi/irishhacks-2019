@@ -125,7 +125,7 @@ def create_new_post():
     res['tags'] = res.get('tags', "").split(',')
 
     post = acc.create_post(**res)
-    print("POSTS CREATE NEW")
+    print("POSTS CREATE NEW!")
     post = post.to_dict()
     print(post)
     post['status'] = 'success'
