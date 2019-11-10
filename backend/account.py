@@ -20,6 +20,8 @@ class Account():
     SQL_UPDATE_ACCOUNT = '''UPDATE Account SET name=?, email=?, password=?, is_personal=?, bio=?, phone=?, address=? WHERE uuid=?'''
     SQL_DELETE_ACCOUNT = 'DELETE FROM Account WHERE uuid = ?'
 
+    SQL_SELECT_ALL = 'SELECT * from Account'
+
     SQL_SELECT_EMAIL = 'SELECT * FROM Account WHERE email = ?'
     SQL_CHECK_VALID = 'SELECT * FROM Account WHERE email = ? and password = ?'
 
@@ -109,6 +111,15 @@ class Account():
             curs = conn.cursor()
             curs.execute(Account.SQL_DELETE_ACCOUNT, (uuid,))
     
+    @classmethod
+    def get_all_accounts(cls):
+        ''' returns list of all account '''
+        conn = sqlite3.connect(Account.DEFAULT_PATH)
+        with conn:
+            curs = conn.cursor()
+            curs.execute(Account.SQL_SELECT_ALL)
+            return [Account.init_from_uuid(x[0]) for x in curs.fetchall()]
+
     @classmethod
     def dump_table(cls) -> None:
         conn = sqlite3.connect(Account.DEFAULT_PATH)
@@ -422,3 +433,5 @@ if __name__ == '__main__':
             print(row)
 
         Account.dump_table()
+
+        print(Account.get_all_accounts())
