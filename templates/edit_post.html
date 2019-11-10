@@ -1,29 +1,33 @@
 {% extends "_header.html" %} {% block body %}
+<script src="/static/custom/posts.js"></script>
+
 <div class="container" style="padding-top: 70px;">
   <div class=" container">
     <div class="card" style="padding: 20px">
-      <form onsubmit="addPost()">
-        <div class="form-group">
-          <label for="location">Title</label>
-          <input
-            type="text"
-            id="title"
-            class="form-control"
-            name="title"
-            placeholder="Task Name"
-          />
-        </div>
-        <div class="form-group">
-          <label for="location">Location</label>
-          <input
-            type="text"
-            id="location"
-            class="form-control"
-            name="location"
-            placeholder="1234 Main St"
-          />
-        </div>
-        <!-- <div class="form-group">
+      <!-- <form onsubmit="addPost()" name="form" id="form"> -->
+      <div class="form-group">
+        <label for="location">Title</label>
+        <input
+          type="text"
+          id="title"
+          class="form-control"
+          name="title"
+          placeholder="Task Name"
+          form="form"
+        />
+      </div>
+      <div class="form-group">
+        <label for="location">Location</label>
+        <input
+          type="text"
+          id="location"
+          class="form-control"
+          name="location"
+          placeholder="1234 Main St"
+          form="form"
+        />
+      </div>
+      <!-- <div class="form-group">
           <label for="inputAddress2">Skillset Required</label>
           <input
             type="text"
@@ -33,64 +37,49 @@
             placeholder="Web Development"
           />
         </div> -->
-        <div class="form-row">
-          <div class="form-group col-md-6">
-            <label for="inputCity">Num Volunteers</label>
-            <input
-              type="text"
-              id="num_volunteers"
-              class="form-control"
-              id="inputCity"
-            />
-          </div>
-          <div class="form-group col-md-2">
-            <label for="inputZip">Username </label>
-            <input
-              type="text"
-              id="username"
-              class="form-control"
-              id="inputZip"
-            />
-          </div>
-          <div class="form-group col-md-2">
-            <label for="inputZip">Tags </label>
-            <input type="text" id="tags" class="form-control" id="inputZip" />
-          </div>
-          <div class="form-group col-md-2">
-            <label for="inputZip">Start Date </label>
-            <input
-              type="text"
-              id="start_date"
-              class="form-control"
-              id="inputZip"
-            />
-          </div>
-          <div class="form-group col-md-2">
-            <label for="inputZip">Duration </label>
-            <input
-              type="text"
-              id="duration"
-              class="form-control"
-              id="inputZip"
-            />
-          </div>
-        </div>
-        <div class="input-group">
-          <div class="input-group-prepend">
-            <span class="input-group-text">Description</span>
-          </div>
-          <textarea
+      <div class="form-row">
+        <div class="form-group col-md-6">
+          <label for="inputCity">Num Volunteers</label>
+          <input
+            type="number"
+            id="num_volunteers"
             class="form-control"
-            aria-label="Description"
-            id="description"
-          ></textarea>
+            form="form"
+          />
         </div>
-        <br />
-        <!-- <a href="/posts/create_new/" -->
-        <button class="btn btn-primary">Submit</button>
-      </form>
+        <!-- <div class="form-group col-md-2">
+          <label for="inputZip">Username </label>
+          <input type="text" id="username" class="form-control" form="form" />
+        </div> -->
+        <div class="form-group col-md-2">
+          <label for="inputZip">Tags </label>
+          <input type="text" id="tags" class="form-control" id="inputZip" />
+        </div>
+        <!-- <div class="form-group col-md-2">
+          <label for="inputZip">Start Date </label>
+          <input type="text" id="start_date" class="form-control" form="form" />
+        </div>
+        <div class="form-group col-md-2">
+          <label for="inputZip">Duration </label>
+          <input type="text" id="duration" class="form-control" />
+        </div> -->
+      </div>
+      <div class="input-group">
+        <div class="input-group-prepend">
+          <span class="input-group-text">Description</span>
+        </div>
+        <textarea
+          class="form-control"
+          aria-label="Description"
+          id="description"
+          form="form"
+        ></textarea>
+      </div>
+      <br />
+      <!-- <a href="/posts/create_new/" -->
+      <button class="btn btn-primary" onclick="addPost()">Submit</button>
+      <!-- </form> -->
     </div>
   </div>
 </div>
-<script src="/static/custom/posts.js"></script>
 {% endblock %}

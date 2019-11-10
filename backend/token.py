@@ -7,6 +7,7 @@ from uuid import uuid1
 
 from constants import DATABASE_FILE
 
+
 class TokenTable:
 
     SQL_CREATE_TABLE = '''create TABLE if not exists Tokens (
@@ -23,7 +24,7 @@ class TokenTable:
     SQL_INSERT_TOKEN = 'INSERT INTO Tokens (token, uuid, expire_time) VALUES (?, ?, ?)'
     SQL_DELETE_TOKEN = 'DELETE from Tokens where uuid=?'
 
-    MAX_TTL = 100
+    MAX_TTL = 1000
 
     def __init__(self):
         ''' Initialize SQL Table '''
@@ -51,7 +52,8 @@ class TokenTable:
             curs.execute(self.SQL_EXISTS, (uid, token_id,))
             # check if there is a response
             data = curs.fetchone()
-            if not data: return False
+            if not data:
+                return False
             # check if time is expired or nah
             return self._get_epoch_time() < data[2]
 
@@ -78,9 +80,10 @@ class TokenTable:
             curs.execute(self.SQL_FIND, (token,))
             # check if there is a response
             data = curs.fetchone()
-            if not data: return ""
+            if not data:
+                return ""
             # grab uuid
-            return data[1] 
+            return data[1]
 
     def delete(self, uid: str) -> None:
         ''' Delete token from table by user id '''
@@ -92,9 +95,7 @@ class TokenTable:
             curs.execute(self.SQL_DELETE_TOKEN, (uid))
 
 
-
 # TEST
-
 if __name__ == '__main__':
     test_tok = TokenTable()
 
@@ -107,5 +108,5 @@ if __name__ == '__main__':
     print("checking if in table")
 
     print(test_tok.validate(uid, tok))
-    
+
     print(test_tok.get_uuid(tok))

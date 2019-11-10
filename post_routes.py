@@ -21,6 +21,7 @@ def create_post_view():
 
     res = request.args
     print(res)
+    print(request.form)
     if not res:
         return render_template("edit_post.html")
     res = dict(res)
@@ -31,9 +32,9 @@ def create_post_view():
     res['skill_set'] = res.get('skillset', [])
 
     post = acc.create_post(**res)
-    print("POSTS CREATE NEW")
+    # print("POSTS CREATE NEW")
     post = post.to_dict()
-    print(post)
+    # print(post)
 
     return redirect("/posts")
 
@@ -121,6 +122,7 @@ def create_new_post():
     res['length'] = res.get('duration')
     res['date'] = res.get('start_date')
     res['skill_set'] = res.get('skillset', [])
+    res['tags'] = res.get('tags', "").split(',')
 
     post = acc.create_post(**res)
     print("POSTS CREATE NEW")

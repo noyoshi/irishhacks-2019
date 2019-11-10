@@ -1,5 +1,8 @@
 {% extends "_header.html" %} {% block body %}
 <div class="container"></div>
+<script>
+  function acceptTask() {}
+</script>
 <section class="clean-block about-us"></section>
 <div>
   <div class="container">
@@ -15,7 +18,7 @@
             <!--<a href="/profile/edit/{{ uuid }}">Edit Profile</a>-->
             <p>
               {% if is_request %} Type: Request{% endif %} <br />
-              IS REQUEST: {{ is_request }} {% if not is_request %} Type: Offer
+              {% if not is_request %} Type: Offer
               <br />
               {% endif %} {% if location %} Where: {{ location }}
               <br />
@@ -24,6 +27,23 @@
               {% endif %} {% if num_volunteers %} Volunteeers Required:
               {{ num_volunteers }}<br />
               {% endif %} {% if tags %} Tags: {{ tags }}<br />
+              {% endif %} {% if volunteers_required %}
+              <button
+                type="button"
+                class="btn btn-success"
+                onclick="acceptTask()"
+              >
+                Accept Task
+              </button>
+              {% else %}
+              <button
+                type="button"
+                class="btn btn-secondary"
+                onclick="acceptTask()"
+                disabled
+              >
+                No More Positions!
+              </button>
               {% endif %}
             </p>
             <!-- <div class="icons"><a href="#"><i class="icon-social-facebook"></i></a><a href="#"><i class="icon-social-instagram"></i></a><a href="#"><i class="icon-social-twitter"></i></a></div> -->
