@@ -5,3 +5,11 @@ html body {
 .profile_row {
   background-color: #fff;
 }
+
+.about_us {
+  padding-bottom: 20px;
+}
+
+.dropdown-toggle {
+  background-color: rgb(225, 230, 230);
+}

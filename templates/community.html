@@ -16,7 +16,7 @@
       >
     </div>
     <div class="filter">
-      <select id="skills" form="form" name="skills">
+      <select id="skills" form="form" name="skills" class="selectpicker">
         <option value="skills" disabled selected="true">Skills</option>
         <option value="electrician">Electrician</option>
         <option value="plumbing">Plumbing</option>
@@ -25,18 +25,25 @@
         <option value="general">General</option>
         <option value="other">Other</option>
       </select>
-      <select id="hours" form="form" name="interests">
+      <select id="hours" form="form" name="interests" class="selectpicker">
         <option disabled selected="true">Interests</option>
         <option value="default">Default</option>
       </select>
-      <select id="distance" form="form" name="distance">
+      <select id="distance" form="form" name="distance" class="selectpicker">
         <option disabled selected="true">Distance</option>
         <option value="10">10 miles</option>
         <option value="25">25 miles</option>
         <option value="50">50 miles</option>
       </select>
+      <br />
       <form action="/community" id="form" name="form">
-        <button class="btn btn-secondary" type="submit">SUBMIT</button>
+        <button
+          class="btn btn-secondary"
+          type="submit"
+          style="margin-top: 10px;"
+        >
+          SUBMIT
+        </button>
       </form>
     </div>
 

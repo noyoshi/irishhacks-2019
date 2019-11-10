@@ -48,7 +48,51 @@
           id="password_repeat"
         />
       </div>
-
+      <!-- <div class="form-check">
+        <input
+          class="form-check-input"
+          type="radio"
+          name="exampleRadios"
+          id="individual_radio"
+          value="option1"
+          checked
+        />
+        <label class="form-check-label" for="individual_radio">
+          Individual
+        </label>
+      </div>
+      <div class="form-check">
+        <input
+          class="form-check-input"
+          type="radio"
+          name="exampleRadios"
+          id="org_radio"
+          value="option2"
+        />
+        <label class="form-check-label" for="org_radio">
+          Organization
+        </label>
+      </div> -->
+      <div class="custom-control custom-radio">
+        <input
+          type="radio"
+          id="individual_radio"
+          name="customRadio"
+          class="custom-control-input"
+        />
+        <label class="custom-control-label" for="individual_radio"
+          >Individual</label
+        >
+      </div>
+      <div class="custom-control custom-radio">
+        <input
+          type="radio"
+          id="org_radio"
+          name="customRadio"
+          class="custom-control-input"
+        />
+        <label class="custom-control-label" for="org_radio">Organization</label>
+      </div>
       <div class="form-group">
         <button
           class="btn btn-primary btn-block"
@@ -59,13 +103,15 @@
           Sign Up
         </button>
       </div>
-      <a class="already" href="/login"
-        >You already have an account? Login here.</a
+      <i
+        >Do you already have an account?
+        <a class="" href="/login">Login here</a></i
       >
     </form>
     {% else %}
     <h2 class="text-center" id="msg">
       Already logged in as <strong>{{ name }}</strong>
+      <a href="/logout">Log Out</a>
     </h2>
     {% endif %}
   </div>

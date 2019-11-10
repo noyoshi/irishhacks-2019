@@ -134,6 +134,7 @@ def handle_signin():
     email = request_json.get("email")
     password = request_json.get("password")
     name = request_json.get("name")
+    is_user = request_json.get("is_user")
 
     if not email:
         return json.dumps({"status": "failure", "issue": "no email"})
@@ -149,8 +150,16 @@ def handle_signin():
         return json.dumps({"status": "failure", "issue": "email exists"})
 
     # TODO change for person vs org
-    user = Person(name, 10, email, password)
+    ClassToUse = Person if is_user else Organization
+    user = ClassToUse(name, 10, email, password)
     user.insert_into_db()
+
+    if isinstance(type(ClassToUse), type(Person)):
+        print("made a person")
+    elif isinstance(type(ClassToUse), type(Organization)):
+        print("made an org")
+    else:
+        print("probs an error when crating an entity")
     # TODO set password
 
     user_id = user.get_uuid()
@@ -281,6 +290,13 @@ def view_post(post_id):
         return render_template("post.html")
 
     return render_template("post.html", **post.to_dict())
+
+
+@app.route("/logout")
+def logout():
+    response = make_response(render_template("main.html"))
+    response.set_cookie(TOKEN_NAME, "")
+    return response
 
 
 @app.route("/community")
