@@ -91,6 +91,16 @@ class Post:
             curs.execute(Post.SQL_DELETE_POST, (uuid,))
     
     @classmethod
+    def dump_table(cls) -> None:
+        conn = sqlite3.connect(Post.DEFAULT_PATH)
+        with conn:
+            curs = conn.cursor()
+            print('------ Post -----')
+            for row in curs.execute('SELECT * from Postdb'):
+                print(row)
+            print('--------------------')
+
+    @classmethod
     def get_with_filter(cls, filter: dict):
         # build query
         query = 'SELECT * from Postdb'
@@ -108,6 +118,7 @@ class Post:
 
         # return list
         print('performing query: {}'.format(query))
+        Post.dump_table()
 
         conn = sqlite3.connect(DATABASE_FILE)
         with conn:
@@ -254,10 +265,10 @@ if __name__ == '__main__':
 
         curs.execute(SQL_CREATE_POST_TABLE)
 
-        o = Post("test boinew", "desc", "loc", ['yeet'], 69, True, 'uid69420', ['boiswag'])
+        o = Post("test boinew", "desc", "loc", ['technology'], 69, True, 'uid69420', ['technology'])
         o.insert_into_db()
 
-        o2 = Post("2ndpost", "desc2l", "loc2", ['yeetus'], 420, True, 'uid69420', ['tagyeet', 'yeettag'])
+        o2 = Post("2ndpost", "desc2l", "loc2", ['technology'], 420, True, 'uid69420', ['technology', 'plumbing'])
         o2.insert_into_db()
 
         for row in curs.execute('SELECT * FROM Postdb'):
