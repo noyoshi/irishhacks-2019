@@ -282,9 +282,11 @@ class Post:
     def set_volunteers(self, volunteers: List[str]) -> None:
         self.volunteers = volunteers
 
-    def add_volunteer(self, acc_id: str) -> None:
-        self.volunteers.append(acc_id)
-
+    def add_volunteer(self, acc_id: str) -> bool:
+        if acc_id not in self.volunteers:
+            self.volunteers.append(acc_id)
+            return True
+        return False
 
 if __name__ == '__main__':
     conn = sqlite3.connect(DATABASE_FILE)
