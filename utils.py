@@ -1,7 +1,17 @@
 
-from flask import request
+from flask import request, render_template
 from backend.token import TokenTable
 import json
+
+
+def wrapper(func):
+    def f(*args, **kwargs):
+        kwargs["token_uuid"] = get_userid()
+        return func(*args, **kwargs)
+    return f
+
+
+render_template = wrapper(render_template)
 
 TOKEN_NAME = "custom_token"
 FAIL_MSG = json.dumps({"status": "failure"})

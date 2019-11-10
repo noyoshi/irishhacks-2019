@@ -1,11 +1,42 @@
 #
-from flask import Blueprint, render_template, request
-from utils import get_userid
+from flask import Blueprint,  request, redirect
+from utils import get_userid, TOKEN_NAME, render_template
 from backend.post import Post
 from backend.account import Account
 import json
 
+
 post_api = Blueprint('post_api', __name__)
+
+
+@post_api.route("/posts/create/")
+def create_post_view():
+    user_id = get_userid()
+    if not user_id:
+        print("USER ID WAS BAD")
+        return render_template("login.html")
+    # token_conn = TokenTable()
+    # user_id = token_conn.get_uuid(cookie)
+    acc = Account.init_from_uuid(user_id)
+
+    res = request.args
+    print(res)
+    if not res:
+        return render_template("edit_post.html")
+    res = dict(res)
+
+    res['is_request'] = True
+    res['length'] = res.get('duration')
+    res['date'] = res.get('start_date')
+    res['skill_set'] = res.get('skillset', [])
+
+    post = acc.create_post(**res)
+    print("POSTS CREATE NEW")
+    post = post.to_dict()
+    print(post)
+
+    return redirect("/posts")
+
 
 # TODO if they are logged in, they can respond to the post
 @post_api.route("/posts")
@@ -73,13 +104,6 @@ def view_post(post_id):
 
 @post_api.route("/posts/create_new/", methods=["POST"])
 def create_new_post():
-    cookie = request.cookies.get(TOKEN_NAME)
-
-    # # no cookie
-    if not cookie:
-        print("?")
-        return json.dumps({"status": "failure"})
-
     user_id = get_userid()
     if not user_id:
         print("USER ID WAS BAD")
@@ -90,16 +114,13 @@ def create_new_post():
     acc = Account.init_from_uuid(user_id)
 
     res = request.json
+    res = dict(res)
     print(res)
 
-    inp = {
-        'title': res['title']
-    }
-
     res['is_request'] = True
-    res['length'] = res['duration']
-    res['date'] = res['start_date']
-    res['skill_set'] = res['skillset']
+    res['length'] = res.get('duration')
+    res['date'] = res.get('start_date')
+    res['skill_set'] = res.get('skillset', [])
 
     post = acc.create_post(**res)
     print("POSTS CREATE NEW")

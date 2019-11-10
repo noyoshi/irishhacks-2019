@@ -31,16 +31,6 @@ app.register_blueprint(post_api)
 app.register_blueprint(auth_api)
 
 
-def wrapper(func):
-    def f(*args, **kwargs):
-        kwargs["token_uuid"] = get_userid()
-        return func(*args, **kwargs)
-    return f
-
-
-render_template = wrapper(render_template)
-
-
 def find_distance(location):
     ''' returns mile distance between current user's locaiton and the target location '''
     from geopy.geocoders import Nominatim
@@ -74,11 +64,6 @@ def edit_post(postid):
     post = Post.init_from_uid(postid)
     # TODO edit the post object
     # TODO save the post object
-    return render_template("edit_post.html")
-
-
-@app.route("/posts/create/")
-def create_post_view():
     return render_template("edit_post.html")
 
 
