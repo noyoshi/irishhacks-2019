@@ -4,6 +4,10 @@ function signup() {
   var password = document.getElementById("password").value;
   var password_repeat = document.getElementById("password_repeat").value;
   var name = document.getElementById("name").value;
+  var is_org = document.getElementById("org_radio").checked;
+  var is_user = document.getElementById("individual_radio").checked;
+
+  console.log(is_user);
 
   if (password != password_repeat) {
     alert("passwords should match");
@@ -15,7 +19,8 @@ function signup() {
   postData("/handle_signup", {
     email: email,
     password: password,
-    name: name
+    name: name,
+    is_user: is_user
   }).then(res => {
     if (res.status === "success") {
       // alert("signup success");

@@ -5,6 +5,7 @@ import os
 import sqlite3
 from constants import DATABASE_FILE
 from post import Post
+from hashlib import md5
 
 from typing import List
 
@@ -19,6 +20,8 @@ class Account():
     SQL_INSERT_ACCOUNT = '''INSERT INTO Account VALUES(?, ?, ?, ?, ?, ?, ?, ?)'''
     SQL_UPDATE_ACCOUNT = '''UPDATE Account SET name=?, email=?, password=?, is_personal=?, bio=?, phone=?, address=? WHERE uuid=?'''
     SQL_DELETE_ACCOUNT = 'DELETE FROM Account WHERE uuid = ?'
+
+    SQL_SELECT_ALL = 'SELECT * from Account'
 
     SQL_SELECT_EMAIL = 'SELECT * FROM Account WHERE email = ?'
     SQL_CHECK_VALID = 'SELECT * FROM Account WHERE email = ? and password = ?'
@@ -46,12 +49,15 @@ class Account():
         self.bio = bio
         self.phone = phone
         self.address = address
+        print(self.email)
+        self.hashed_email = md5(self.email.encode('utf-8')).hexdigest()
+
     
     def to_dict(self):
         return {
             "name": self.name, 
             "email": self.email,
-            "is_personal": self.is_personal,
+            "is_personal": 1 if self.is_personal else 0,
             "bio": self.bio, 
             "phone": self.phone,
             "address": self.address,
@@ -110,6 +116,15 @@ class Account():
             curs.execute(Account.SQL_DELETE_ACCOUNT, (uuid,))
     
     @classmethod
+    def get_all_accounts(cls):
+        ''' returns list of all account '''
+        conn = sqlite3.connect(Account.DEFAULT_PATH)
+        with conn:
+            curs = conn.cursor()
+            curs.execute(Account.SQL_SELECT_ALL)
+            return [Account.init_from_uuid(x[0]) for x in curs.fetchall()]
+
+    @classmethod
     def dump_table(cls) -> None:
         conn = sqlite3.connect(Account.DEFAULT_PATH)
         with conn:
@@ -142,10 +157,12 @@ class Account():
             curs.execute(Account.SQL_UPDATE_ACCOUNT, ins_tuple)
 
     def create_post(self, title: str, description: str, location: str,
-            skill_set: List[str], num_volunteers: int, is_request: bool, tags: List[str] = None, volunteers: List[str] = None) -> None:
+            skill_set: List[str], num_volunteers: int, is_request: bool, tags: List[str] = None, volunteers: List[str] = None, date: str = None, length: int = 0) -> None:
         ''' Creates post in DB at attaches it to user account '''
-        new_post = Post(title, description, location, skill_set, num_volunteers, is_request, self.uuid, tags, volunteers)
+        new_post = Post(title, description, location, skill_set, num_volunteers, is_request, self.uuid, tags, volunteers, date, length)
         new_post.insert_into_db()
+
+        return new_post
 
     def get_name(self) -> str:
         ''' gets user name '''
@@ -204,7 +221,7 @@ class Person(Account):
     )'''
 
 
-    def __init__(self, name: str, dob: str, email: str, password: str, bio: str=None, phone: str=None, address: str=None, skills: List[str]=None, uuid: str=""):
+    def __init__(self, name: str, email: str, password: str, dob: str = None,bio: str=None, phone: str=None, address: str=None, skills: List[str]=None, uuid: str=""):
         super(Person, self).__init__(name, email, password, True, bio, phone, address, uuid)
         self.dob = dob
         self.skills = skills
@@ -235,7 +252,7 @@ class Person(Account):
             curs.execute(Person.SQL_SELECT_UUID, (uuid,))
             per_data = curs.fetchone()
             if not per_data: return None
-            return Person(data[1], per_data[1], data[2], data[3], data[5], data[6], data[7], ','.join(per_data[2]) if per_data[2] else None, data[0])
+            return Person(data[1], data[2], data[3], per_data[1], data[5], data[6], data[7], ','.join(per_data[2]) if per_data[2] else None, data[0])
 
     @classmethod
     def init_table(cls) -> None:
@@ -305,7 +322,7 @@ class Organization(Account):
 
 
     def __init__(self, name: str, email: str, password: str, bio: str=None, phone: str=None, address: str=None, industry: str="", uuid: str=""):
-        super(Organization, self).__init__(name, email, password, bio, phone, address, uuid)
+        super(Organization, self).__init__(name, email, password, 0, bio, phone, address, uuid)
         self.industry = industry
     
     def to_dict(self):
@@ -410,7 +427,7 @@ if __name__ == '__main__':
         for row in curs.execute('SELECT * from organization'):
             print(row)
 
-        test_other = Person("joe", "02/25/1999", "yeet@boi.com","1233yeet","a man who likes to bool", "574-030-3039", None)
+        test_other = Person("joe",  "yeet@boi.com","1233yeet", "02/25/1999", "a man who likes to bool", "574-030-3039", None)
 
         test_other.insert_into_db()
 
@@ -422,3 +439,5 @@ if __name__ == '__main__':
             print(row)
 
         Account.dump_table()
+
+        print(Account.get_all_accounts())

@@ -15,6 +15,33 @@ function getList() {
     });
 }
 
+function addPost() {
+    data = {
+        "title": document.getElementById("title").value,
+        "location": document.getElementById("location").value,
+        "skillset": document.getElementById("skillset").value,
+        "num_volunteers": document.getElementById("num_volunteers").value,
+        "username": document.getElementById("username").value,
+        "tags": document.getElementById("tags").value,
+        "start_date": document.getElementById("start_date").value,
+        "duration": document.getElementById("duration").value,
+        "description": document.getElementById("description").value
+    }
+
+    console.log(data)
+    postData("/posts/create_new/", data).then(res => {
+        if (res.status === "success") {
+            window.location.href = '/posts/' + res.uuid;
+            console.log("post filter success");
+            alert("yeet baby");
+        } else {
+            window.location.href = '/signup/'
+            console.log("post filter failure");
+            alert(res.issue);
+        }
+    });
+}
+
 function addVolunteer(postId){
     filters = {
         "postId": postId
