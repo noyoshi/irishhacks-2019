@@ -79,6 +79,7 @@ class Post:
             "volunteers": self.volunteers,
             "length": self.length,
             "post_date": self.date,
+            "volunteers_required": self.num_volunteers - len(self.volunteers)
         }
 
     @classmethod
