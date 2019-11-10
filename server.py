@@ -117,7 +117,7 @@ def user_profile(userid):
     _posts = []
     for p in posts:
         if p:
-            d = {"volunteers": []}
+            d = {"volunteers": [], "uuid": p.get_uuid(), "title": p.get_title()}
             # _posts.append(p.to_dict())
             o = p.get_volunteers()
             if not o:

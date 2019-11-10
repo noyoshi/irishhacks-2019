@@ -29,16 +29,16 @@
       </div>
       <div class="col-md-6">
         <div class="block-heading"></div>
-        <h1>Bio</h1>
         {% if bio %}
+        <h1>Bio</h1>
         <p>{{ bio }}</p>
         {% endif %} {% if token_uuid == uuid %}
         <h1>Posts</h1>
         {% for post in posts %}
         <p>
-          <a href="/posts/{{ post.uuid }}">{{ post.title }}</a>
-          {% if post.volunteers %} {% for v in post.volunteers %}
-          <a href="/profile/{{ v.uuid }}">{{ v.name }}</a>
+          <h3>Post: <a href="/posts/{{ post.uuid }}">{{ post.title }}</a></h3>
+          {% if post.volunteers %}<h5>Volunteers:{% for v in post.volunteers %}
+          <a href="/profile/{{ v.uuid }}">{{ v.name }} </a></h5>
           {% endfor %} {% endif %}
         </p>
         {% endfor %}{% endif %}
