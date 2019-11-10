@@ -1,44 +1,93 @@
 <!DOCTYPE html>
 <html>
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, shrink-to-fit=no"
+    />
     <title>Home - Brand</title>
-    <link rel="stylesheet" href="/static/assets/bootstrap/css/bootstrap.min.css">
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Montserrat:400,400i,700,700i,600,600i">
-    <link rel="stylesheet" href="/static/assets/fonts/font-awesome.min.css">
-    <link rel="stylesheet" href="/static/assets/fonts/simple-line-icons.min.css">
-    <link rel="stylesheet" href="/static/assets/css/-Filterable-Cards-.css">
-    <link rel="stylesheet" href="/static/assets/css/Contact-Form-Clean.css">
-    <link rel="stylesheet" href="/static/assets/css/Filter.css">
-    <link rel="stylesheet" href="/static/assets/css/Footer-Dark.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/baguettebox.js/1.10.0/baguetteBox.min.css">
-    <link rel="stylesheet" href="/static/assets/css/Registration-Form-with-Photo.css">
-    <link rel="stylesheet" href="/static/assets/css/smoothproducts.css">
-</head>
-    
-<body style="height: 800px; padding-top: 40px;">
-    <nav class="navbar navbar-light navbar-expand-lg fixed-top bg-white clean-navbar">
-            <div class="container"><a class="navbar-brand logo" href="/" style="font-family: 'Open Sans', sans-serif;font-size: 28px;"><strong>Volunteer</strong></a><button data-toggle="collapse" class="navbar-toggler" data-target="#navcol-1"><span class="sr-only">Toggle navigation</span><span class="navbar-toggler-icon"></span></button>
-                <div class="collapse navbar-collapse"
-                id="navcol-1">
-                <ul class="nav navbar-nav ml-auto">
-                    <li class="nav-item" role="presentation"><a class="nav-link" href="/posts">Find Tasks</a></li>
-                    <li class="nav-item" role="presentation"><a class="nav-link" href="/community">Community</a></li>
-                    <li class="nav-item" role="presentation"><a class="nav-link" href="/about">About US</a></li>
-                    <li class="nav-item" role="presentation"><a class="nav-link" href="/help">Help</a></li>
-                    {% if not token_uuid %}
-                    <li class="nav-item" role="presentation"><a class="nav-link" href="/signup">Sign Up!</a></li>
-                    {% else %}
-                    <li class="nav-item" role="presentation"><a class="nav-link" href="/profile/{{ token_uuid }}">My Account</a></li>
-                    <li class="nav-item" role="presentation"><a class="nav-link" href="/edit_post">Create / Edit a Posting</a></li>
-                    {% endif %}
-                </ul>
-            </div>
+    <link
+      rel="stylesheet"
+      href="/static/assets/bootstrap/css/bootstrap.min.css"
+    />
+    <link rel="stylesheet" href="/static/custom/custom.css" />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css?family=Montserrat:400,400i,700,700i,600,600i"
+    />
+    <link rel="stylesheet" href="/static/assets/fonts/font-awesome.min.css" />
+    <link
+      rel="stylesheet"
+      href="/static/assets/fonts/simple-line-icons.min.css"
+    />
+    <link rel="stylesheet" href="/static/assets/css/-Filterable-Cards-.css" />
+    <link rel="stylesheet" href="/static/assets/css/Contact-Form-Clean.css" />
+    <link rel="stylesheet" href="/static/assets/css/Filter.css" />
+    <link rel="stylesheet" href="/static/assets/css/Footer-Dark.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/baguettebox.js/1.10.0/baguetteBox.min.css"
+    />
+    <link
+      rel="stylesheet"
+      href="/static/assets/css/Registration-Form-with-Photo.css"
+    />
+    <link rel="stylesheet" href="/static/assets/css/smoothproducts.css" />
+    <link rel="stylesheet" href="/static/custom/custom.css" />
+  </head>
+
+  <body style="height: 800px; padding-top: 40px;">
+    <nav
+      class="navbar navbar-light navbar-expand-lg fixed-top bg-white clean-navbar"
+    >
+      <div class="container">
+        <a
+          class="navbar-brand logo"
+          href="/"
+          style="font-family: 'Open Sans', sans-serif;font-size: 32px;"
+          ><strong>Volunteer</strong></a
+        ><button
+          data-toggle="collapse"
+          class="navbar-toggler"
+          data-target="#navcol-1"
+        >
+          <span class="sr-only">Toggle navigation</span
+          ><span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navcol-1">
+          <ul class="nav navbar-nav ml-auto">
+            <li class="nav-item" role="presentation">
+              <a class="nav-link" href="/posts">Find Tasks</a>
+            </li>
+            <li class="nav-item" role="presentation">
+              <a class="nav-link" href="/community">Community</a>
+            </li>
+            <li class="nav-item" role="presentation">
+              <a class="nav-link" href="/about">About US</a>
+            </li>
+            <li class="nav-item" role="presentation">
+              <a class="nav-link" href="/help">Help</a>
+            </li>
+            {% if not token_uuid %}
+            <li class="nav-item" role="presentation">
+              <a class="nav-link" href="/signup">Sign Up!</a>
+            </li>
+            {% else %}
+            <li class="nav-item" role="presentation">
+              <a class="nav-link" href="/profile/{{ token_uuid }}"
+                >My Account</a
+              >
+            </li>
+            <li class="nav-item" role="presentation">
+              <a class="nav-link" href="/edit_post">Create / Edit a Posting</a>
+            </li>
+            {% endif %}
+          </ul>
         </div>
+      </div>
     </nav>
     <script></script>
-{% block body %}
-{% endblock %}
-</body>
+    {% block body %} {% endblock %}
+  </body>
 </html>

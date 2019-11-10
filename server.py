@@ -17,6 +17,8 @@ FAIL_MSG = json.dumps({"status": "failure"})
 Person.init_table()
 Account.init_table()
 Organization.init_table()
+Post.init_table()
+
 
 def get_userid():
     token_conn = TokenTable()
@@ -63,6 +65,7 @@ def edit_post(postid):
     # TODO edit the post object
     # TODO save the post object
     return "edit post {}".format(postid)
+
 
 @app.route("/handle_login", methods=["POST"])
 def handle_login():
@@ -148,6 +151,7 @@ def handle_signin():
     success.set_cookie(TOKEN_NAME, token_id)
     return success
 
+
 @app.route("/login")
 def login():
     """
@@ -222,8 +226,9 @@ def posts():
     # if they are logged in, they are going to have a small thing saying they are logged in
 
     filter = {}
-    if request.json and 'type' in request.json:
-        filter['type'] = request['type']
+    if request.args and 'type' in request.args:
+        print(request.args)
+        filter['type'] = [request.args['type'].lower()]
 
     filtered = Post.get_with_filter(filter)
 
@@ -244,6 +249,20 @@ def add_to_posts():
     post.update_in_db()
 
     return render_template("posts.html", token_uuid=get_userid())
+
+
+@app.route("/posts/<post_id>")
+def view_post(post_id):
+    """
+    we are going to have some filtering going on...
+    """
+
+    # get post id from request, create post object, add a volunteer to the post object, update
+    post = Post.init_from_uid(post_id)
+    skill_set = ','.join(post.skill_set)
+    tags = ','.join(post.tags)
+
+    return render_template("post.html", post=post, skill_set=skill_set, tags=tags)
 
 
 @app.route("/community")

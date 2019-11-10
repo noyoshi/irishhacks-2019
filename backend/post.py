@@ -42,6 +42,7 @@ class Post:
             skill_set: List[str], num_volunteers: int, is_request: bool, user_id: int, tags: List[str] = None, volunteers: List[str] = None, uuid: str="",
             date: str = None, length: int = 0):
         if not uuid: self.uuid = str(uuid1())
+        else: self.uuid = uuid
         self.title = title
         self.description = description
         self.location = location
@@ -56,6 +57,7 @@ class Post:
 
     def to_dict(self):
         return {
+            "uuid" : self.uuid,
             "title" : self.title,
             "description" : self.description,
             "location" : self.location,
@@ -96,6 +98,16 @@ class Post:
             curs.execute(Post.SQL_DELETE_POST, (uuid,))
     
     @classmethod
+    def dump_table(cls) -> None:
+        conn = sqlite3.connect(Post.DEFAULT_PATH)
+        with conn:
+            curs = conn.cursor()
+            print('------ Post -----')
+            for row in curs.execute('SELECT * from Postdb'):
+                print(row)
+            print('--------------------')
+
+    @classmethod
     def get_with_filter(cls, filter: dict):
         # build query
         query = 'SELECT * from Postdb'
@@ -113,7 +125,12 @@ class Post:
 
         # return list
         print('performing query: {}'.format(query))
-        return [Post.init_from_uid(row[0]).to_dict() for row in curs.execute(query)]
+        Post.dump_table()
+
+        conn = sqlite3.connect(DATABASE_FILE)
+        with conn:
+            curs = conn.cursor()
+            return [Post.init_from_uid(row[0]).to_dict() for row in curs.execute(query)]
 
     @classmethod
     def init_table(cls) -> None:
@@ -249,16 +266,17 @@ if __name__ == '__main__':
                     is_request bool,
                     user_id varchar(100),
                     tags VARCHAR(200),
+                    volunteers VARCHAR(200),
                     date DATE,
                     length int
                 )'''
 
         curs.execute(SQL_CREATE_POST_TABLE)
 
-        o = Post("test boinew", "desc", "loc", ['yeet'], 69, True, 'uid69420', ['boiswag'])
+        o = Post("test boinew", "desc", "loc", ['technology'], 69, True, 'uid69420', ['technology'])
         o.insert_into_db()
 
-        o2 = Post("2ndpost", "desc2l", "loc2", ['yeetus'], 420, True, 'uid69420', ['tagyeet', 'yeettag'])
+        o2 = Post("2ndpost", "desc2l", "loc2", ['technology'], 420, True, 'uid69420', ['technology', 'plumbing'])
         o2.insert_into_db()
 
         for row in curs.execute('SELECT * FROM Postdb'):
@@ -276,4 +294,4 @@ if __name__ == '__main__':
 
         print()
         for post in Post.get_with_filter({'tags': ['boi']}):
-            print(post.tags)
+            print(post['tags'])

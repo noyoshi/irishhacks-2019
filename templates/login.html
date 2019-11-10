@@ -1,29 +1,45 @@
-{% extends "_header.html" %}
-{% block body %}
-    <section class="clean-block clean-form dark" style="height: 711px;">
-        <div class="container">
-            <div class="block-heading">
-                <h2 class="text-info">Log In</h2>
-                <p></p>
-            </div>
-            {% if not logged_in %}
-            <form>
-                <div class="form-group"><label for="email">Email</label><input class="form-control item" type="text" id="email"></div>
-                <div class="form-group"><label for="password">Password</label><input class="form-control" type="password" id="password"></div>
-                <button class="btn btn-primary btn-block" onclick="login()" type="button">Log In</button></form>
-            {% else %}
-            <div class="block-heading">
-                <h2 class="text-info">Hello <b>{{ name }}</b>, you are logged in!</h2>
-                <p></p>
-            </div>            
-            {% endif %}
+{% extends "_header.html" %} {% block body %}
+<div style="background-color: #f1f7fc">
+  <section class="clean-block clean-form" style="height: 711px;">
+    <div class="container">
+      <div class="block-heading">
+        <h2 class="text-info">Log In</h2>
+        <p></p>
+      </div>
+      {% if not logged_in %}
+      <form>
+        <div class="form-group">
+          <label for="email">Email</label
+          ><input class="form-control item" type="text" id="email" />
         </div>
-    </section>
-    <script src="/static/assets/js/jquery.min.js"></script>
-    <script src="/static/assets/bootstrap/js/bootstrap.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/baguettebox.js/1.10.0/baguetteBox.min.js"></script>
-    <script src="/static/assets/js/smoothproducts.min.js"></script>
-    <script src="/static/assets/js/theme.js"></script>
-    <script src="/static/custom/login.js">
-    </script>
+        <div class="form-group">
+          <label for="password">Password</label
+          ><input class="form-control" type="password" id="password" />
+        </div>
+        <button
+          class="btn btn-primary btn-block"
+          onclick="login()"
+          type="button"
+        >
+          Log In
+        </button>
+      </form>
+      {% else %}
+      <div class="block-heading">
+        <h2 class="text-info">
+          Hello <b>{{ name }}</b
+          >, you are logged in!
+        </h2>
+        <p></p>
+      </div>
+      {% endif %}
+    </div>
+  </section>
+</div>
+<script src="/static/assets/js/jquery.min.js"></script>
+<script src="/static/assets/bootstrap/js/bootstrap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/baguettebox.js/1.10.0/baguetteBox.min.js"></script>
+<script src="/static/assets/js/smoothproducts.min.js"></script>
+<script src="/static/assets/js/theme.js"></script>
+<script src="/static/custom/login.js"></script>
 {% endblock %}
