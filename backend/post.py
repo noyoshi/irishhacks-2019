@@ -38,12 +38,21 @@ class Post:
                 length int
             )'''
 
-    def __init__(self, title: str, description: str, location: str,
-                 skill_set: List[str], num_volunteers: int, is_request: bool, user_id: int, tags: List[str] = None, volunteers: List[str] = None, date=None, length=None, uuid: str = ""):
+    # initializer_dict = {
+    #  "title": title,
+    #   "description": description... }
+    # Post(**initializer_dict)
+
+    def __init__(self, title: str = "", description: str = "", location: str = "",
+                 skill_set: List[str] = [], num_volunteers: int = 0, is_request: bool = False,
+                 user_id: int = 0, tags: List[str] = None, volunteers: List[str] = None,
+                 date=None, length=None, uuid: str = ""):
+
         if not uuid:
             self.uuid = str(uuid1())
         else:
             self.uuid = uuid
+
         self.title = title
         self.description = description
         self.location = location
@@ -85,6 +94,9 @@ class Post:
             data = curs.fetchone()
             if not data:
                 return None
+            # initializer = {
+            #     ""
+            # }
             return Post(data[1], data[2], data[3], data[4].split(','), data[5], data[6], data[7], data[8].split(',') if data[8] is not None else None, data[9].split(',') if data[9] else None, data[10], data[11], data[0])
 
     @classmethod
@@ -135,7 +147,8 @@ class Post:
         conn = sqlite3.connect(DATABASE_FILE)
         with conn:
             curs = conn.cursor()
-            ret = [Post.init_from_uid(row[0]).to_dict() for row in curs.execute(query)]
+            ret = [Post.init_from_uid(row[0]).to_dict()
+                   for row in curs.execute(query)]
             print(ret)
             return ret
 
