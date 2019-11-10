@@ -254,8 +254,10 @@ def view_post(post_id):
 
     # get post id from request, create post object, add a volunteer to the post object, update
     post = Post.init_from_uid(post_id)
+    skill_set = ','.join(post.skill_set)
+    tags = ','.join(post.tags)
 
-    return render_template("post.html", post=post)
+    return render_template("post.html", post=post, skill_set=skill_set, tags=tags)
 
 
 @app.route("/community")

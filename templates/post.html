@@ -9,26 +9,30 @@
                     <div class="card clean-card text-center"><img class="card-img-top w-100 d-block" src="/static/assets/img/avatars/avatar1.jpg">
                         <div class="card-body info">
                             <h4 class="card-title">{{ post.title }}</h4>
-                            {% if token_uuid == uuid %}
                             <!--<a href="/profile/edit/{{ uuid }}">Edit Profile</a>-->
                             <p>
-                            {% if dob %} dob: {{ dob }} <br>
+                            {% if post.is_request %} Type: Request <br>
                             {% endif %}
-                            {% if phone %} Phone: {{ phone }}<br>
+                            {% if not post.is_request %} Type: Offer <br>
                             {% endif %}
-                            {% if email %} email: {{ email }}<br>
+                            {% if post.location %} Where: {{ post.location }} <br>
+                            {% endif %}
+                            {% if skill_set %} Desired Skill Set: {{ skill_set }}<br>
+                            {% endif %}
+                            {% if post.num_volunteers %} Volunteeers Required: {{ post.num_volunteers }}<br>
+                            {% endif %}
+                            {% if tags %} Tags: {{ tags }}<br>
                             {% endif %}
                             </p>
-                            {% endif %}
                             <!-- <div class="icons"><a href="#"><i class="icon-social-facebook"></i></a><a href="#"><i class="icon-social-instagram"></i></a><a href="#"><i class="icon-social-twitter"></i></a></div> -->
                         </div>
                     </div>
                 </div>
                 <div class="col-md-6">
                     <div class="block-heading"></div>
-                    <h1>Bio</h1>
-                    {% if bio %}
-                    <p>{{ bio }}</p>
+                    <h1>About</h1>
+                    {% if post.description %}
+                    <p>{{ post.description }}</p>
                     {% endif %}
                 </div>
             </div>
