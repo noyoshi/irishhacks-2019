@@ -23,7 +23,7 @@ Post.init_table()
 
 # init github
 g = Github("0818ef5d2eb1541a675ceca441eca6bd4e450623")
-repo = g.get_repo("irish-issue-bot/test_repo")
+repo = g.get_repo("noyoshi/irishhacks-2019")
 
 def get_userid():
     token_conn = TokenTable()
@@ -85,6 +85,7 @@ def post_issue():
     # name = data['name']
     # comment = data['comment']
     repo.create_issue(title='Question by {}'.format(name), body=comment)
+    open_issues = repo.get_issues(state='open')
     return render_template("end_feedback.html", name=name)
 
 
