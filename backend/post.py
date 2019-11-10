@@ -9,7 +9,6 @@ from typing import List
 
 from constants import DATABASE_FILE
 
-
 class Post:
     '''
     Class to represent a general post.
@@ -320,7 +319,10 @@ class Post:
             self.volunteers = []
         if acc_id not in self.volunteers:
             self.volunteers.append(acc_id)
-            print("?????", self.volunteers)
+            from account import Account
+            accepter = Account.init_from_uuid(acc_id)
+            accepter.add_karma()
+            accepter.update_into_db()
             return True
         return False
 

@@ -17,8 +17,8 @@ class Account():
     DEFAULT_PATH = os.path.expanduser(DATABASE_FILE)
 
     SQL_SELECT_UUID = 'SELECT * FROM Account WHERE uuid = ?'
-    SQL_INSERT_ACCOUNT = '''INSERT INTO Account VALUES(?, ?, ?, ?, ?, ?, ?, ?)'''
-    SQL_UPDATE_ACCOUNT = '''UPDATE Account SET name=?, email=?, password=?, is_personal=?, bio=?, phone=?, address=? WHERE uuid=?'''
+    SQL_INSERT_ACCOUNT = '''INSERT INTO Account VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?)'''
+    SQL_UPDATE_ACCOUNT = '''UPDATE Account SET name=?, email=?, password=?, is_personal=?, bio=?, phone=?, address=?, karma=? WHERE uuid=?'''
     SQL_DELETE_ACCOUNT = 'DELETE FROM Account WHERE uuid = ?'
 
     SQL_SELECT_ALL = 'SELECT * from Account'
@@ -34,10 +34,12 @@ class Account():
             is_personal bool,
             bio TEXT,
             phone CHAR(10),
-            address VARCHAR(100) 
+            address VARCHAR(100),
+            karma int 
         )'''
 
-    def __init__(self, name: str = None, email: str = None, password: str = None, is_personal: bool = None, bio: str=None, phone:str=None, address:str=None, uuid:str=""):
+    def __init__(self, name: str = None, email: str = None, password: str = None, is_personal: bool = None,
+                 bio: str=None, phone:str=None, address:str=None, uuid:str="", karma:int=0):
         # Uuid attached to Accoutn for identification
         if not uuid:
             print("ACCOUNT CREATED")
@@ -49,6 +51,7 @@ class Account():
         self.bio = bio
         self.phone = phone
         self.address = address
+        self.karma = karma
         print(self.email)
         self.hashed_email = md5(self.email.encode('utf-8')).hexdigest()
 
@@ -61,7 +64,8 @@ class Account():
             "bio": self.bio, 
             "phone": self.phone,
             "address": self.address,
-            "uuid": self.uuid
+            "uuid": self.uuid,
+            "karma": self.karma
         }
     
     @classmethod
@@ -146,14 +150,14 @@ class Account():
         conn = sqlite3.connect(Account.DEFAULT_PATH)
         with conn:
             curs = conn.cursor()
-            ins_tuple = (self.uuid, self.name, self.email, self.password, self.is_personal, self.bio, self.phone, self.address)
+            ins_tuple = (self.uuid, self.name, self.email, self.password, self.is_personal, self.bio, self.phone, self.address, self.karma)
             curs.execute(Account.SQL_INSERT_ACCOUNT, ins_tuple)
 
     def update_into_db(self) -> None:
         conn = sqlite3.connect(Account.DEFAULT_PATH)
         with conn:
             curs = conn.cursor()
-            ins_tuple = (self.name, self.email, self.password, self.is_personal, self.bio, self.phone, self.address, self.uuid)
+            ins_tuple = (self.name, self.email, self.password, self.is_personal, self.bio, self.phone, self.address, self.karma, self.uuid)
             curs.execute(Account.SQL_UPDATE_ACCOUNT, ins_tuple)
 
     def create_post(self, title: str = None, description: str = None, location: str=None,
@@ -218,6 +222,12 @@ class Account():
     def set_address(self, address: str) -> None:
         self.address = address
 
+    def get_karma(self) -> int:
+        return self.karma
+    
+    def add_karma(self, amt: int=1) -> None:
+        self.karma += amt
+
 
 class Person(Account):
     '''in db: uuid, email, phone, name, bio, dob, skills'''
@@ -236,7 +246,8 @@ class Person(Account):
     )'''
 
 
-    def __init__(self, name: str = None, email: str = None, password: str = None, dob: str = None,bio: str=None, phone: str=None, address: str=None, skills: List[str]=None, uuid: str=""):
+    def __init__(self, name: str = None, email: str = None, password: str = None, dob: str = None,bio: str=None, phone: str=None,
+                       address: str=None, skills: List[str]=None, karma: int=0, uuid: str=""):
         dic = {
             'name': name,
             'email': email,
@@ -245,7 +256,8 @@ class Person(Account):
             'bio': bio,
             'phone': phone,
             'address': address,
-            'uuid': uuid
+            'uuid': uuid,
+            'karma': karma
         }
         super(Person, self).__init__(**dic)
         self.dob = dob
@@ -287,6 +299,7 @@ class Person(Account):
                 'phone': data[6],
                 'address': data[7],
                 'skills': ','.join(per_data[2]) if per_data[2] else None,
+                'karma': data[8],
                 'uuid': data[0]
             }
 
@@ -359,7 +372,8 @@ class Organization(Account):
     )'''
 
 
-    def __init__(self, name: str=None, email: str=None, password: str=None, bio: str=None, phone: str=None, address: str=None, industry: str="", uuid: str=""):
+    def __init__(self, name: str=None, email: str=None, password: str=None, bio: str=None,
+                       phone: str=None, address: str=None, industry: str="", uuid: str="", karma: int=0):
         dic = {
             'name': name,
             'email': email,
@@ -368,7 +382,8 @@ class Organization(Account):
             'bio': bio,
             'phone': phone,
             'address': address,
-            'uuid': uuid
+            'uuid': uuid,
+            'karma': karma
         }
         super(Organization, self).__init__(**dic)
         self.industry = industry
@@ -433,6 +448,7 @@ class Organization(Account):
                 'phone': data[6],
                 'address': data[7],
                 'industry':  org_data[1],
+                'karma': data[8],
                 'uuid': data[0]
             }
 
@@ -458,6 +474,9 @@ if __name__ == '__main__':
                     phone CHAR(10),
                     name VARCHAR(100),
                     bio TEXT
+                    phone CHAR(10),
+                    address VARCHAR(100),
+                    karma int 
                 )'''
         curs.execute(SQL_CREATE_ACCOUNT_TABLE)
 
