@@ -110,6 +110,12 @@ class Message:
     def set_body(self, body: str) -> None:
         self.body = body
 
+    def get_read(self) -> bool:
+        return self.read
+    
+    def set_read(self, read: bool) -> None:
+        self.read = read
+
 if __name__ == '__main__':
     # init table
     Message.init_table()
