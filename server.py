@@ -6,6 +6,7 @@ from backend.account import Person, Organization, Account
 from backend.post import Post
 from backend.token import TokenTable
 from hashlib import md5
+from github import Github
 
 sys.path.append('./frontend')
 sys.path.append('./backend')
@@ -20,6 +21,9 @@ Account.init_table()
 Organization.init_table()
 Post.init_table()
 
+# init github
+g = Github("0818ef5d2eb1541a675ceca441eca6bd4e450623")
+repo = g.get_repo("irish-issue-bot/test_repo")
 
 def get_userid():
     token_conn = TokenTable()
@@ -60,6 +64,28 @@ def about():
 def help():
     # if they are logged in, they are going to have some small thing saying theya re looged in
     return render_template("help.html", token_uuid=get_userid())
+
+@app.route("/post_help", methods=["POST"])
+def post_issue():
+    '''
+    expects this json
+    {
+    name: "Name",
+    comment: "comment_text"
+    }
+    '''
+    # name = request.args['name']
+    # comment = request.args['comment']
+    # data.form['name']
+    # print(request.form.get('comment'))
+    comment = request.form.get('comment')
+    name = request.form.get('name')
+    # print(request.form.get('name'))
+    # print(comment)
+    # name = data['name']
+    # comment = data['comment']
+    repo.create_issue(title='Question by {}'.format(name), body=comment)
+    return render_template("end_feedback.html", name=name)
 
 
 @app.route("/make_post")
