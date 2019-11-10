@@ -78,8 +78,16 @@ def posts():
     for post_dict in filtered:
         uuid = post_dict["user_id"]
         user = Account.init_from_uuid(uuid)
+        img_file = "meeting.jpg"
+        if "tags" in post_dict and (post_dict["tags"] != None) and "technology" in post_dict["tags"]:
+            img_file = "code.jpg"
+        if "tags" in post_dict and (post_dict["tags"] != None) and "handy" in post_dict["tags"]:
+            img_file = "handy.jpg"
+        if "tags" in post_dict and (post_dict["tags"] != None) and "plumber" in post_dict["tags"]:
+            img_file = "plumb.jpg"
         if user:
             post_dict["personal"] = 1 if user.is_personal else 2
+            post_dict["img"] = img_file
             print("found")
             new_list.append(post_dict)
         else:
@@ -117,7 +125,14 @@ def view_post(post_id):
         print("bad post")
         return render_template("post.html")
     print("/posts/postid")
-    return render_template("post.html", **post.to_dict())
+    img_file = "meeting.jpg"
+    if post.get_tags() and "technology" in post.get_tags():
+        img_file = "code.jpg"
+    if post.get_tags() and "handy" in post.get_tags():
+        img_file = "handy.jpg"
+    if post.get_tags() and "plumber" in post.get_tags():
+        img_file = "plumb.jpg"
+    return render_template("post.html", **post.to_dict(), img_file=img_file)
 
 
 @post_api.route("/posts/create_new/", methods=["POST"])

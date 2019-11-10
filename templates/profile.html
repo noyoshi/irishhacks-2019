@@ -16,7 +16,7 @@
               {% endif %} {% if phone %} Phone: {{ phone }}<br />
               {% endif %} {% if email %} <span class="oi" data-glyph="envelope-closed"></span>
               Email: {{ email }}<br />
-              {% endif %} Karma: {{ karma }}<br />
+              {% endif %} <span class="oi" data-glyph="sun"></span> Karma: {{ karma }}<br />
             </p>
             {% if token_uuid == uuid %}
             <a href="/profile/edit/{{ uuid }}" style="font-size:15px">Edit Profile</a><br />

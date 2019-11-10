@@ -9,6 +9,7 @@ from typing import List
 
 from constants import DATABASE_FILE
 
+
 class Post:
     '''
     Class to represent a general post.
@@ -43,7 +44,7 @@ class Post:
     # Post(**initializer_dict)
 
     def __init__(self, title: str = "", description: str = "", location: str = "",
-                 skill_set: List[str] = [], num_volunteers: int = 0, is_request: bool = False,
+                 skill_set: List[str] = [], num_volunteers: int = 1, is_request: bool = False,
                  user_id: int = 0, tags: List[str] = None, volunteers: List[str] = [],
                  date=None, length=None, uuid: str = ""):
 

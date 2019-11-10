@@ -30,7 +30,7 @@
         <option value="other">Other</option>
       </select>
 
-      <select id="hours" form="form" name="hours" class="selectpicker">
+      <!-- <select id="hours" form="form" name="hours" class="selectpicker">
         <option disabled selected="true">Hours</option>
         <option value="lto"> < 1 hours</option>
         <option value="ott">1 - 3 hours</option>
@@ -42,7 +42,7 @@
         <option value="10">10 miles</option>
         <option value="25">25 miles</option>
         <option value="50">50 miles</option>
-      </select>
+      </select> -->
       <br />
 
       <form action="/posts" id="form" name="form">
@@ -67,12 +67,15 @@
           </div>
           <img
             class="img-fluid card-img w-100 d-block rounded-0"
-            src="/static/assets/img/kelly-sikkema--1_RZL8BGBM-unsplash.jpg"
+            src="/static/assets/img/{{ post.img }}"
           />
           <div class="card-body">
             <p class="card-text">
               {{ post.description }}
               <br />
+              {% if post.tags %} Tags: {{ ",".join(post.tags) }} {% else %}
+              <br />
+              {% endif %}
             </p>
           </div>
           <div class="d-flex card-footer">

@@ -108,10 +108,9 @@ def user_profile(userid):
     """
     # if they are logged in, they are going to have some small thing saying theya re looged in
     account = Account.init_from_uuid(userid)
-    hashed_email = md5(account.get_email().encode('utf-8')).hexdigest()
-    print(hashed_email)
     if not account:
         return "no profile"
+    hashed_email = md5(account.get_email().encode('utf-8')).hexdigest()
 
     posts = Post.get_by_user_id(userid)
     _posts = []
