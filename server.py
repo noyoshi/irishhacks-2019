@@ -1,7 +1,7 @@
 import sys
 import json
 
-from flask import Flask, render_template, make_response, request, redirect, url_for
+from flask import Flask,  make_response, request, redirect, url_for
 from backend.account import Person, Organization, Account
 from backend.post import Post
 from backend.token import TokenTable
@@ -10,7 +10,7 @@ from github_help import github_api
 from post_routes import post_api
 from authentication import auth_api
 import os
-from utils import get_userid, TOKEN_NAME, FAIL_MSG
+from utils import get_userid, TOKEN_NAME, FAIL_MSG, render_template
 
 # app.py
 # profile.py

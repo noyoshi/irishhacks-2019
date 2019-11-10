@@ -1,8 +1,8 @@
 #
 from github import Github
 import os
-from flask import Blueprint, render_template, request
-from utils import get_userid
+from flask import Blueprint, request
+from utils import get_userid, render_template
 
 github_api = Blueprint('github_api', __name__)
 

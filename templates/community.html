@@ -56,7 +56,9 @@
           </div>
           <img
             class="img-fluid card-img w-100 d-block rounded-0"
-            src="https://www.gravatar.com/avatar/{{ account.hashed_email }}.jpg"
+            src="https://www.gravatar.com/avatar/{{
+              account.hashed_email
+            }}.jpg?s=2048"
           />
           <div class="card-body">
             <p class="card-text">{{ account.bio }}<br /></p>
