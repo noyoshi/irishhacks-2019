@@ -18,8 +18,8 @@ class Post:
     DEFAULT_PATH = os.path.expanduser(DATABASE_FILE)
 
     SQL_SELECT_UUID = 'SELECT * FROM Postdb WHERE uuid = ?'
-    SQL_INSERT_POST = 'INSERT INTO Postdb (uuid, title, description, location, skill_set, num_volunteers, is_request, user_id, tags, volunteers, date, length) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)'
-    SQL_UPDATE_POST = 'UPDATE Postdb SET title=?, description=?, location=?, skill_set=?, num_volunteers=?, is_request=?, user_id=?, tags=?, volunteers=?, date=?, length=? WHERE uuid=?'
+    SQL_INSERT_POST = 'INSERT INTO Postdb (uuid, title, description, location, skill_set, num_volunteers, is_request, user_id, tags, volunteers, post_date, length) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)'
+    SQL_UPDATE_POST = 'UPDATE Postdb SET title=?, description=?, location=?, skill_set=?, num_volunteers=?, is_request=?, user_id=?, tags=?, volunteers=?, post_date=?, length=? WHERE uuid=?'
     SQL_DELETE_POST = 'DELETE from Postdb where uuid=?'
     SQL_GET_USER_POSTS = 'SELECT * FROM Postdb WHERE user_id = ?'
 
@@ -34,7 +34,7 @@ class Post:
                 user_id varchar(100),
                 tags VARCHAR(200),
                 volunteers VARCHAR(200),
-                date DATE,
+                post_date DATE,
                 length int
             )'''
 
@@ -58,16 +58,18 @@ class Post:
 
     def to_dict(self):
         return {
-            "uuid": self.uuid,
-            "title": self.title,
-            "description": self.description,
-            "location": self.location,
-            "skill_set": ','.join(self.skill_set),
-            "num_volunteers": self.num_volunteers,
-            "is_request": self.is_request,
-            "user_id": self.user_id,
-            "tags": ','.join(self.tags),
-            "volunteers": self.volunteers
+            "uuid" : self.uuid,
+            "title" : self.title,
+            "description" : self.description,
+            "location" : self.location,
+            "skill_set" : self.skill_set,
+            "num_volunteers" : self.num_volunteers,
+            "is_request" : self.is_request,
+            "user_id" : self.user_id,
+            "tags" : self.tags,
+            "volunteers": self.volunteers,
+            "length": self.length,
+            "post_date": self.date
         }
 
     @classmethod
@@ -272,7 +274,7 @@ if __name__ == '__main__':
                     user_id varchar(100),
                     tags VARCHAR(200),
                     volunteers VARCHAR(200),
-                    date DATE,
+                    post_date DATE,
                     length int
                 )'''
 
