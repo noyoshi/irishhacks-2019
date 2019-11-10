@@ -27,13 +27,17 @@
               {% endif %} {% if volunteers_required %} Volunteeers Required:
               {{ volunteers_required }}<br />
               {% endif %} {% if tags %} Tags: {{ ", ".join(tags) }}<br />
-              {% endif %} {% if volunteers_required %}
+              {% endif %} {% if volunteers_required %} {% if token_uuid %}
               <button
                 type="button"
                 class="btn btn-success"
                 onclick="grabPost()"
               >
-                Accept Task
+                {% else %}  <button
+                  type="button"
+                  class="btn btn-success"
+                  onclick="grabPost()"
+                disabled > {% endif %} Accept Task
               </button>
               {% else %}
               <button
