@@ -85,7 +85,7 @@ class Post:
             data = curs.fetchone()
             if not data:
                 return None
-            return Post(data[1], data[2], data[3], data[4].split(','), data[5], data[6], data[7], data[8].split(',') if data[8] is not None else None, data[9], data[0])
+            return Post(data[1], data[2], data[3], data[4].split(','), data[5], data[6], data[7], data[8].split(',') if data[8] is not None else None, data[9].split(',') if data[9] else None, data[10], data[11], data[0])
 
     @classmethod
     def delete_from_uid(cls, uuid: str = "") -> None:
@@ -135,7 +135,9 @@ class Post:
         conn = sqlite3.connect(DATABASE_FILE)
         with conn:
             curs = conn.cursor()
-            return [Post.init_from_uid(row[0]).to_dict() for row in curs.execute(query)]
+            ret = [Post.init_from_uid(row[0]).to_dict() for row in curs.execute(query)]
+            print(ret)
+            return ret
 
     @classmethod
     def init_table(cls) -> None:
