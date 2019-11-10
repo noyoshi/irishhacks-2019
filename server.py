@@ -121,12 +121,14 @@ def user_profile(userid):
             # _posts.append(p.to_dict())
             o = p.get_volunteers()
             if not o:
+                _posts.append(d)
                 continue
             for volunteer in p.get_volunteers():
                 acc = Account.init_from_uuid(volunteer)
                 d["volunteers"].append(acc.to_dict())
+
             _posts.append(d)
-    print(_posts)
+    print("POSTS", _posts)
     return render_template("profile.html", token_uuid=get_userid(), **account.to_dict(), email_hash=hashed_email, posts=_posts)
 
 

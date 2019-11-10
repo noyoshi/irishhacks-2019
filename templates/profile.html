@@ -34,7 +34,6 @@
         {% endif %} 
       </div>
     <div class="col-md-4">
-        {% if token_uuid == uuid %}
         <h1>Posts</h1>
         {% for post in posts %}
         <p>
@@ -43,7 +42,7 @@
           <a href="/profile/{{ v.uuid }}">{{ v.name }} </a>
           {% endfor %} {% endif %}
         </p>
-        {% endfor %}{% endif %}
+        {% endfor %}
       </div>
     </div>
   </div>
