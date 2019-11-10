@@ -38,13 +38,21 @@ class Post:
                 length int
             )'''
 
-    def __init__(self, title: str=None, description: str=None, location: str=None,
-                 skill_set: List[str]=None, num_volunteers: int=None, is_request: bool=False,
-                 user_id: int=None, tags: List[str] = None, volunteers: List[str] = None, date=None, length=None, uuid: str = ""):
+    # initializer_dict = {
+    #  "title": title,
+    #   "description": description... }
+    # Post(**initializer_dict)
+
+    def __init__(self, title: str = "", description: str = "", location: str = "",
+                 skill_set: List[str] = [], num_volunteers: int = 0, is_request: bool = False,
+                 user_id: int = 0, tags: List[str] = None, volunteers: List[str] = None,
+                 date=None, length=None, uuid: str = ""):
+
         if not uuid:
             self.uuid = str(uuid1())
         else:
             self.uuid = uuid
+
         self.title = title
         self.description = description
         self.location = location
@@ -151,7 +159,8 @@ class Post:
         conn = sqlite3.connect(DATABASE_FILE)
         with conn:
             curs = conn.cursor()
-            ret = [Post.init_from_uid(row[0]).to_dict() for row in curs.execute(query)]
+            ret = [Post.init_from_uid(row[0]).to_dict()
+                   for row in curs.execute(query)]
             print(ret)
             return ret
 

@@ -14,8 +14,9 @@
             <h4 class="card-title">{{ title }}</h4>
             <!--<a href="/profile/edit/{{ uuid }}">Edit Profile</a>-->
             <p>
-              {% if is_request %} Type: Request <br />
-              {% endif %} {% if not is_request %} Type: Offer <br />
+              {% if is_request %} Type: Request{% endif %} <br />
+              IS REQUEST: {{ is_request }} {% if not is_request %} Type: Offer
+              <br />
               {% endif %} {% if location %} Where: {{ location }}
               <br />
               {% endif %} {% if skill_set %} Desired Skill Set: {{ skill_set
