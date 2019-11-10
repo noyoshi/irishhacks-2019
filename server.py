@@ -82,36 +82,6 @@ def create_post_view():
     return render_template("edit_post.html")
 
 
-@app.route("/posts/create_new/", methods=["POST"])
-def create_new_post():
-    cookie = request.cookies.get(TOKEN_NAME)
-
-    # # no cookie
-    if not cookie:
-        print("?")
-        return json.dumps({"status": "failure"})
-
-    user_id = get_userid()
-    if not user_id:
-        print("USER ID WAS BAD")
-        return json.dumps({"status": "failure"})
-
-    # token_conn = TokenTable()
-    # user_id = token_conn.get_uuid(cookie)
-    acc = Account.init_from_uuid(user_id)
-
-    res = request.json
-    print(res)
-    post = acc.create_post(res['title'], res['description'], res['location'], res['skillset'],
-                           res['num_volunteers'], True, res['tags'], [], res['start_date'], res['duration'])
-    print("POSTS CREATE NEW")
-    post = post.to_dict()
-    print(post)
-    post['status'] = 'success'
-
-    return json.dumps(post)
-
-
 @app.route("/logout")
 def logout():
     response = make_response(render_template("main.html"))

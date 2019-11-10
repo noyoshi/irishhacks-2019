@@ -3,6 +3,7 @@ from flask import Blueprint, render_template, request
 from utils import get_userid
 from backend.post import Post
 from backend.account import Account
+import json
 
 post_api = Blueprint('post_api', __name__)
 
@@ -68,3 +69,33 @@ def view_post(post_id):
     print("/posts/postid")
     print(post)
     return render_template("post.html", **post.to_dict(), token_uuid=get_userid())
+
+
+@post_api.route("/posts/create_new/", methods=["POST"])
+def create_new_post():
+    cookie = request.cookies.get(TOKEN_NAME)
+
+    # # no cookie
+    if not cookie:
+        print("?")
+        return json.dumps({"status": "failure"})
+
+    user_id = get_userid()
+    if not user_id:
+        print("USER ID WAS BAD")
+        return json.dumps({"status": "failure"})
+
+    # token_conn = TokenTable()
+    # user_id = token_conn.get_uuid(cookie)
+    acc = Account.init_from_uuid(user_id)
+
+    res = request.json
+    print(res)
+    post = acc.create_post(res['title'], res['description'], res['location'], res['skillset'],
+                           res['num_volunteers'], True, res['tags'], [], res['start_date'], res['duration'])
+    print("POSTS CREATE NEW")
+    post = post.to_dict()
+    print(post)
+    post['status'] = 'success'
+
+    return json.dumps(post)
