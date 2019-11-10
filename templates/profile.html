@@ -6,7 +6,7 @@
         <div class="container">
             <div class="row">
                 <div class="col-md-6">
-                    <div class="card clean-card text-center"><img class="card-img-top w-100 d-block" src="/static/assets/img/avatars/avatar1.jpg">
+			<div class="card clean-card text-center"><img class="card-img-top w-100 d-block" src="https://www.gravatar.com/avatar/{{ email_hash }}.jpg">
                         <div class="card-body info">
                             <h4 class="card-title">{{ name }}</h4>
                             {% if token_uuid == uuid %}
@@ -41,4 +41,12 @@
     <script src="/static/assets/js/-Filterable-Cards-.js"></script>
     <script src="/static/assets/js/theme.js"></script>
     <script src="/static/assets/js/Profile-Edit-Form.js"></script>
+	<script>
+		var url= "/generate_md5";
+		var param= {{ email }};
+		var xhr = new XMLHttpRequest();
+		xhr.open("POST", url, true);
+		xhr.send(param);
+		var obj= {"md5email": }
+	</script>
 {% endblock %}

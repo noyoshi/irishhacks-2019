@@ -5,6 +5,7 @@ from flask import Flask, render_template, make_response, request
 from backend.account import Person, Organization, Account
 from backend.post import Post
 from backend.token import TokenTable
+from hashlib import md5
 
 sys.path.append('./frontend')
 sys.path.append('./backend')
@@ -283,9 +284,11 @@ def user_profile(userid):
     """
     # if they are logged in, they are going to have some small thing saying theya re looged in
     account = Account.init_from_uuid(userid)
+    hashed_email = md5(account.get_email().encode('utf-8')).hexdigest()
+    print(hashed_email)
     if not account:
         return "no profile"
-    return render_template("profile.html", token_uuid=get_userid(), **account.to_dict())
+    return render_template("profile.html", token_uuid=get_userid(), **account.to_dict(), email_hash=hashed_email)
 
 
 # TODO needs authentication
@@ -377,7 +380,6 @@ def get_filtered_posts():
     if req['maxdist'] != 'Distance':
         pass
     return json.dumps({'status': 'success'})
-
 
 if __name__ == '__main__':
     app.run(debug=True, host='127.0.0.1', port='41001')
