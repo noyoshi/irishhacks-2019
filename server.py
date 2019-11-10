@@ -135,6 +135,7 @@ def handle_signin():
     password = request_json.get("password")
     name = request_json.get("name")
     is_user = request_json.get("is_user")
+    print("is user", is_user)
 
     if not email:
         return json.dumps({"status": "failure", "issue": "no email"})
@@ -151,12 +152,12 @@ def handle_signin():
 
     # TODO change for person vs org
     ClassToUse = Person if is_user else Organization
-    user = ClassToUse(name, 10, email, password)
+    user = ClassToUse(name, email, password)
     user.insert_into_db()
 
-    if isinstance(type(ClassToUse), type(Person)):
+    if isinstance(type(Person), type(ClassToUse)):
         print("made a person")
-    elif isinstance(type(ClassToUse), type(Organization)):
+    elif isinstance(type(Organization), type(ClassToUse)):
         print("made an org")
     else:
         print("probs an error when crating an entity")
@@ -203,7 +204,9 @@ def login():
     # user is logged in
     if user_id and cookie and token_conn.validate(user_id, cookie):
         user = Account.init_from_uuid(user_id)
-        return render_template("login.html", logged_in=True, token_uuid=user_id, **user.to_dict())
+        d = user.to_dict() if user else {}
+        print("user_id: {}".format(user_id))
+        return render_template("login.html", logged_in=True, token_uuid=user_id, **d)
 
     print("error?")
     return render_template("login.html")
@@ -250,16 +253,18 @@ def posts():
     filtered = Post.get_with_filter(filter)
 
     # Add the personal thing in to the dict
+    new_list = []
     for post_dict in filtered:
         uuid = post_dict["user_id"]
         user = Account.init_from_uuid(uuid)
         if user:
             post_dict["personal"] = 1 if user.is_personal else 2
             print("found")
+            new_list.append(post_dict)
         else:
-            print("not found")
+            print("not found", post_dict.items())
 
-    return render_template("posts.html", token_uuid=get_userid(), posts=filtered)
+    return render_template("posts.html", token_uuid=get_userid(), posts=new_list)
 
 # TODO if they are logged in, they can respond to the post
 @app.route("/posts/add_to_post")
@@ -292,10 +297,12 @@ def view_post(post_id):
 
     return render_template("post.html", **post.to_dict())
 
+
 @app.route("/posts/create/")
 def create_post_view():
 
     return render_template("edit_post.html")
+
 
 @app.route("/posts/create_new/", methods=["POST"])
 def create_new_post():
@@ -310,11 +317,13 @@ def create_new_post():
     acc = Account.init_from_uuid(user_id)
 
     res = request.json
-    post = acc.create_post(res['title'], res['description'], res['location'], res['skillset'], res['num_volunteers'], True, res['tags'], [], res['start_date'], res['duration'])
+    post = acc.create_post(res['title'], res['description'], res['location'], res['skillset'],
+                           res['num_volunteers'], True, res['tags'], [], res['start_date'], res['duration'])
     post = post.to_dict()
     post['status'] = 'success'
 
     return json.dumps(post)
+
 
 @app.route("/logout")
 def logout():
@@ -332,7 +341,8 @@ def community():
 
     account_dicts = []
     for account in accounts:
-        if account is None: continue
+        if account is None:
+            continue
         user = Account.init_from_uuid(account.get_uuid())
         if not user:
             continue

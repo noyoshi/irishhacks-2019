@@ -5,6 +5,7 @@ import os
 import sqlite3
 from constants import DATABASE_FILE
 from post import Post
+from hashlib import md5
 
 from typing import List
 
@@ -48,6 +49,9 @@ class Account():
         self.bio = bio
         self.phone = phone
         self.address = address
+        print(self.email)
+        self.hashed_email = md5(self.email.encode('utf-8')).hexdigest()
+
     
     def to_dict(self):
         return {
@@ -318,7 +322,7 @@ class Organization(Account):
 
 
     def __init__(self, name: str, email: str, password: str, bio: str=None, phone: str=None, address: str=None, industry: str="", uuid: str=""):
-        super(Organization, self).__init__(name, email, password, bio, phone, address, uuid)
+        super(Organization, self).__init__(name, email, password, 0, bio, phone, address, uuid)
         self.industry = industry
     
     def to_dict(self):
