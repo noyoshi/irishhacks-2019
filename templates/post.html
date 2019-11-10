@@ -17,6 +17,7 @@
             <h4 class="card-title">{{ title }}</h4>
             <!--<a href="/profile/edit/{{ uuid }}">Edit Profile</a>-->
             <p>
+              {% if user_name %} Poster: <a href="/profile/{{ user_id }}">{{ user_name }}</a> <br/>{% endif %}
               {% if is_request %} Type: Request{% endif %} <br />
               {% if not is_request %} Type: Offer
               <br />

@@ -135,14 +135,22 @@ def view_post(post_id):
         print("bad post")
         return render_template("post.html")
     print("/posts/postid")
+    post_d = post.to_dict()
     img_file = "meeting.jpg"
+    user_id = post.user_id
+    user_account = Account.init_from_uuid(user_id)
+    if user_account and user_account.get_name():
+        post_d["user_name"] = user_account.get_name()
+    else:
+        post_d["user_name"] = "No Name"
+
     if post.get_tags() and "technology" in post.get_tags():
         img_file = "code.jpg"
     if post.get_tags() and "handy" in post.get_tags():
         img_file = "handy.jpg"
     if post.get_tags() and "plumber" in post.get_tags():
         img_file = "plumb.jpg"
-    return render_template("post.html", **post.to_dict(), img_file=img_file)
+    return render_template("post.html", **post_d, img_file=img_file)
 
 
 @post_api.route("/posts/create_new/", methods=["POST"])
