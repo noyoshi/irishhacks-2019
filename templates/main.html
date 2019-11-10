@@ -1,45 +1,86 @@
+{% extends "_header.html" %} {% block body %}
+<main class="page landing-page">
+  <section
+    class="clean-block clean-hero"
+    style='background-image: url("/static/assets/img/photo-1511632765486-a01980e01a18.jpg");color: rgba(9, 162, 255, 0.85);height: 700px;'
+  >
+    <div class="text">
+      <h1 style="font-family: 'Open Sans', sans-serif;font-size: 28px;">
+        <strong>Apply your skills for good.</strong>
+      </h2>
+      <p>
+        Give back to your community by doing what you do best.&nbsp;<br />Browse
+        and sign up for volunteer opportunities that match your unique passions
+        and talents.<br />
+      </p>
+      <button
+        class="btn btn-outline-light btn-lg"
+        type="button"
+        onclick="learnMore()"
+      >
+        <strong>Learn More</strong>
+      </button>
+    </div>
+  </section>
+  <section class="clean-block features" style="height: 595px;">
+    <div class="container">
+      <div class="block-heading">
+        <h2
+          class="text-info"
+          style="font-family: 'Open Sans', sans-serif;font-size: 28px;"
+        >
+          About Volunteer
+        </h2>
+        <p>
+          Volunteer provides a platform where organizations and talented members
+          of their community can connect to make a difference.
+        </p>
+      </div>
+      <div class="row justify-content-center">
+        <div class="col-md-5 feature-box">
+          <i class="icon-note icon"></i>
+          <h4>Post Volunteer Requests</h4>
+          <p>
+            Publish a volunteer request for events, projects, and even simple
+            tasks. Specify what skills are required and reach a network of
+            talented volunteers.
+          </p>
+        </div>
+        <div class="col-md-5 feature-box">
+          <i class="icon-emotsmile icon"></i>
+          <h4>Sign Up to Complete Tasks</h4>
+          <p>
+            Maximize your social impact by browsing volunteer requests suited to
+            your individual skill set. Find new organizations, fulfill tasks,
+            and make a difference.
+          </p>
+        </div>
+        <div class="col-md-5 feature-box">
+          <i class="icon-people icon"></i>
+          <h4>Connect with Community</h4>
+          <p>
+            Explore individual and group profiles in your community. Message
+            potential volunteer matches and achieve your goals.
+          </p>
+        </div>
+        <div class="col-md-5 feature-box">
+          <i class="icon-speedometer icon"></i>
+          <h4>Measure Your Impact</h4>
+          <p>
+            Earn points as you complete volunteer requests, track your progress
+            over time, and see the impact in your community.&nbsp;
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+  <script src="/static/assets/js/jquery.min.js"></script>
+  <script src="/static/assets/bootstrap/js/bootstrap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/baguettebox.js/1.10.0/baguetteBox.min.js"></script>
+  <script src="/static/assets/js/smoothproducts.min.js"></script>
+  <script src="/static/assets/js/-Filterable-Cards-.js"></script>
+  <script src="/static/assets/js/theme.js"></script>
+  <script src="/static/custom/main.js"></script>
 
-{% extends "_header.html" %}
-{% block body %}
-    <main class="page landing-page">
-        <section class="clean-block clean-hero" style="background-image: url(&quot;/static/assets/img/photo-1511632765486-a01980e01a18.jpg&quot;);color: rgba(9, 162, 255, 0.85);height: 700px;">
-            <div class="text">
-                <h2><strong>Apply your skills for good.</strong></h2>
-                <p>Give back to your community by doing what you do best.&nbsp;<br>Browse and sign up for volunteer opportunities that match your unique passions and talents.<br></p><button class="btn btn-outline-light btn-lg" type="button" onclick="learnMore()"><strong>Learn More</strong></button></div>
-        </section>
-        <section class="clean-block features" style="height: 595px;">
-            <div class="container">
-                <div class="block-heading">
-                    <h2 class="text-info">About Volunteer</h2>
-                    <p>Volunteer provides a platform where organizations and talented members of their community can connect to make a difference.</p>
-                </div>
-                <div class="row justify-content-center">
-                    <div class="col-md-5 feature-box"><i class="icon-note icon"></i>
-                        <h4>Post Volunteer Requests</h4>
-                        <p>Publish a volunteer request for events, projects, and even simple tasks. Specify what skills are required and reach a network of talented volunteers.</p>
-                    </div>
-                    <div class="col-md-5 feature-box"><i class="icon-emotsmile icon"></i>
-                        <h4>Sign Up to Complete Tasks</h4>
-                        <p>Maximize your social impact by browsing volunteer requests suited to your individual skill set. Find new organizations, fulfill tasks, and make a difference.</p>
-                    </div>
-                    <div class="col-md-5 feature-box"><i class="icon-people icon"></i>
-                        <h4>Connect with Community</h4>
-                        <p>Explore individual and group profiles in your community. Message potential volunteer matches and achieve your goals.</p>
-                    </div>
-                    <div class="col-md-5 feature-box"><i class="icon-speedometer icon"></i>
-                        <h4>Measure Your Impact</h4>
-                        <p>Earn points as you complete volunteer requests, track your progress over time, and see the impact in your community.&nbsp;</p>
-                    </div>
-                </div>
-            </div>
-        </section>
-    <script src="/static/assets/js/jquery.min.js"></script>
-    <script src="/static/assets/bootstrap/js/bootstrap.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/baguettebox.js/1.10.0/baguetteBox.min.js"></script>
-    <script src="/static/assets/js/smoothproducts.min.js"></script>
-    <script src="/static/assets/js/-Filterable-Cards-.js"></script>
-    <script src="/static/assets/js/theme.js"></script>
-    <script src="/static/custom/main.js"></script>
-
-    {% endblock %}
-
+  {% endblock %}
+</main>
