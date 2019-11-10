@@ -88,8 +88,10 @@ def posts():
         if user:
             post_dict["personal"] = 1 if user.is_personal else 2
             post_dict["img"] = img_file
+            print(post_dict)
             print("found")
-            new_list.append(post_dict)
+            if post_dict["volunteers_required"] > 0:
+                new_list.append(post_dict)
         else:
             print("not found", post_dict.items())
 

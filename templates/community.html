@@ -49,7 +49,10 @@
 
     <div class="row filtr-container">
       {% for account in accounts %}
-      <div class="col-md-6 col-lg-4 filtr-item" data-category="2,3">
+      <div
+        class="col-md-6 col-lg-4 filtr-item"
+        data-category="{{ account.is_personal + 1 }}"
+      >
         <div class="card shadow border-dark">
           <div class="shadow card-header bg-dark text-light">
             <h5 class="m-0">{{ account.name }}</h5>

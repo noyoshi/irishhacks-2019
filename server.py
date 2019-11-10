@@ -92,6 +92,7 @@ def community():
 
         hashed_email = md5(user.get_email().encode('utf-8')).hexdigest()
         d["hashed_email"] = hashed_email
+        print(d)
         account_dicts.append(d)
 
     return render_template("community.html", token_uuid=get_userid(), accounts=account_dicts)

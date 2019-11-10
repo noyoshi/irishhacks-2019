@@ -73,9 +73,16 @@
             <p class="card-text">
               {{ post.description }}
               <br />
-              {% if post.tags %} Tags: {{ ",".join(post.tags) }} {% else %}
+              {% if post.tags %} <b>Tags</b>: {{ ",".join(post.tags) }} <br />{%
+              else %}
               <br />
-              {% endif %}
+              {% endif %} {% if post.volunteers_required %}
+              <b>Remaining Volunteers Needed</b>:
+              {{ post.volunteers_required }} {% else %}
+              <br />
+              {% endif %} {% if post.personal %}
+              <b>Type</b>: Personal Request {% else %} <b>Type</b>: Organization
+              Request {% endif %}
             </p>
           </div>
           <div class="d-flex card-footer">
