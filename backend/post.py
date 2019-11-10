@@ -17,8 +17,8 @@ class Post:
     DEFAULT_PATH = os.path.expanduser(DATABASE_FILE)
 
     SQL_SELECT_UUID = 'SELECT * FROM Postdb WHERE uuid = ?'
-    SQL_INSERT_POST = 'INSERT INTO Postdb (uuid, title, description, location, skill_set, num_volunteers, is_request, user_id, tags, volunteers) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)'
-    SQL_UPDATE_POST = 'UPDATE Postdb SET title=?, description=?, location=?, skill_set=?, num_volunteers=?, is_request=?, user_id=?, tags=?, volunteers=? WHERE uuid=?'
+    SQL_INSERT_POST = 'INSERT INTO Postdb (uuid, title, description, location, skill_set, num_volunteers, is_request, user_id, tags, volunteers, date, length) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)'
+    SQL_UPDATE_POST = 'UPDATE Postdb SET title=?, description=?, location=?, skill_set=?, num_volunteers=?, is_request=?, user_id=?, tags=?, volunteers=?, date=?, length=? WHERE uuid=?'
     SQL_DELETE_POST = 'DELETE from Postdb where uuid=?'
     SQL_GET_USER_POSTS = 'SELECT * FROM Postdb WHERE user_id = ?'
 
@@ -33,11 +33,14 @@ class Post:
                 is_request bool,
                 user_id varchar(100),
                 tags VARCHAR(200),
-                volunteers VARCHAR(200)
+                volunteers VARCHAR(200),
+                date DATE,
+                length int
             )'''
 
     def __init__(self, title: str, description: str, location: str,
-            skill_set: List[str], num_volunteers: int, is_request: bool, user_id: int, tags: List[str] = None, volunteers: List[str] = None, uuid: str=""):
+            skill_set: List[str], num_volunteers: int, is_request: bool, user_id: int, tags: List[str] = None, volunteers: List[str] = None, uuid: str="",
+            date: str = None, length: int = 0):
         if not uuid: self.uuid = str(uuid1())
         self.title = title
         self.description = description
@@ -48,6 +51,8 @@ class Post:
         self.user_id = user_id
         self.tags = tags
         self.volunteers = []
+        self.date = date
+        self.length = length
 
     def to_dict(self):
         return {
@@ -59,7 +64,9 @@ class Post:
             "is_request" : self.is_request,
             "user_id" : self.user_id,
             "tags" : self.tags,
-            "volunteers": self.volunteers
+            "volunteers": self.volunteers,
+            "length": self.length,
+            "date": self.date
         }
 
     @classmethod
@@ -73,7 +80,7 @@ class Post:
             curs.execute(Post.SQL_SELECT_UUID, (uuid,))
             data = curs.fetchone()
             if not data: return None
-            return Post(data[1], data[2], data[3], data[4].split(','), data[5], data[6], data[7], data[8].split(',') if data[8] is not None else None, data[9], data[0])
+            return Post(data[1], data[2], data[3], data[4].split(','), data[5], data[6], data[7], data[8].split(',') if data[8] is not None else None, data[9], data[10], data[11], data[0])
 
     @classmethod
     def delete_from_uid(cls, uuid: str="") -> None:
@@ -122,7 +129,7 @@ class Post:
         with conn:
             curs = conn.cursor()
             # create tuple of input
-            data = (self.uuid, self.title, self.description, self.location, ','.join(self.skill_set), self.num_volunteers, self.is_request, self.user_id, ','.join(self.tags) if self.tags else None, ','.join(self.volunteers) if self.volunteers else None)
+            data = (self.uuid, self.title, self.description, self.location, ','.join(self.skill_set), self.num_volunteers, self.is_request, self.user_id, ','.join(self.tags) if self.tags else None, ','.join(self.volunteers) if self.volunteers else None, self.date, self.length)
             # execute SQL insert
             curs.execute(Post.SQL_INSERT_POST, data)
 
@@ -132,7 +139,7 @@ class Post:
         with conn:
             curs = conn.cursor()
             # create input tuple to match SQL_UPDATE_POST's ? operators
-            data = (self.title, self.description, self.location, ','.join(self.skill_set), self.num_volunteers, self.is_request, self.user_id, ','.join(self.tags) if self.tags else None, ','.join(self.volunteers) if self.volunteers else None, self.uuid)
+            data = (self.title, self.description, self.location, ','.join(self.skill_set), self.num_volunteers, self.is_request, self.user_id, ','.join(self.tags) if self.tags else None, ','.join(self.volunteers) if self.volunteers else None, self.date, self.length, self.uuid)
             # perform sql update
             curs.execute(Post.SQL_UPDATE_POST, data)
 
@@ -153,7 +160,6 @@ class Post:
             # call delete
             curs.execute(Post.SQL_GET_USER_POSTS, (user_id, ))
             return curs.fetchall()
-
 
     def get_uuid(self) -> str:
         ''' returns uuid '''
@@ -242,7 +248,9 @@ if __name__ == '__main__':
                     num_volunteers int,
                     is_request bool,
                     user_id varchar(100),
-                    tags VARCHAR(200)
+                    tags VARCHAR(200),
+                    date DATE,
+                    length int
                 )'''
 
         curs.execute(SQL_CREATE_POST_TABLE)
