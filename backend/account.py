@@ -147,6 +147,8 @@ class Account():
         new_post = Post(title, description, location, skill_set, num_volunteers, is_request, self.uuid, tags, volunteers, date, length)
         new_post.insert_into_db()
 
+        return new_post
+
     def get_name(self) -> str:
         ''' gets user name '''
         return self.name

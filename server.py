@@ -1,7 +1,7 @@
 import sys
 import json
 
-from flask import Flask, render_template, make_response, request
+from flask import Flask, render_template, make_response, request, redirect, url_for
 from backend.account import Person, Organization, Account
 from backend.post import Post
 from backend.token import TokenTable
@@ -266,10 +266,34 @@ def view_post(post_id):
     """
 
     # get post id from request, create post object, add a volunteer to the post object, update
+    print('in view')
     post = Post.init_from_uid(post_id)
 
     return render_template("post.html", **post.to_dict())
 
+@app.route("/posts/create/")
+def create_post_view():
+
+    return render_template("edit_post.html")
+
+@app.route("/posts/create_new/", methods=["POST"])
+def create_new_post():
+    cookie = request.cookies.get(TOKEN_NAME)
+
+    # # no cookie
+    if not cookie:
+        return json.dumps({"status": "failure"})
+
+    token_conn = TokenTable()
+    user_id = token_conn.get_uuid(cookie)
+    acc = Account.init_from_uuid(user_id)
+
+    res = request.json
+    post = acc.create_post(res['title'], res['description'], res['location'], res['skillset'], res['num_volunteers'], True, res['tags'], [], res['start_date'], res['duration'])
+    post = post.to_dict()
+    post['status'] = 'success'
+
+    return json.dumps(post)
 
 @app.route("/community")
 def community():
