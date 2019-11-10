@@ -73,8 +73,11 @@
             <p class="card-text">
               {{ post.description }}
               <br />
-              {% if post.tags %} <b>Tags</b>: {{ ",".join(post.tags) }} <br />{%
-              else %}
+              {% if post.tags %}<b>Tags</b>:
+              <span class="badge badge-primary"
+                >{{ ",".join(post.tags) }}
+              </span>
+              <br />{% else %}
               <br />
               {% endif %} {% if post.volunteers_required %}
               <b>Remaining Volunteers Needed</b>:

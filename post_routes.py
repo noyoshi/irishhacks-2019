@@ -90,6 +90,14 @@ def posts():
             post_dict["img"] = img_file
             print(post_dict)
             print("found")
+            tags = post_dict.get("tags", [])
+            new_tags = []
+            if tags:
+                for t in tags:
+                    new_tag = t.capitalize()
+                    new_tags.append(new_tag)
+                post_dict["tags"] = new_tags
+
             if post_dict["volunteers_required"] > 0:
                 new_list.append(post_dict)
         else:
