@@ -308,6 +308,7 @@ def community():
 
     account_dicts = []
     for account in accounts:
+        if account is None: continue
         user = Account.init_from_uuid(account.get_uuid())
         if not user:
             continue

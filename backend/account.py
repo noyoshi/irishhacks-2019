@@ -215,7 +215,7 @@ class Person(Account):
     )'''
 
 
-    def __init__(self, name: str, dob: str, email: str, password: str, bio: str=None, phone: str=None, address: str=None, skills: List[str]=None, uuid: str=""):
+    def __init__(self, name: str, email: str, password: str, dob: str = None,bio: str=None, phone: str=None, address: str=None, skills: List[str]=None, uuid: str=""):
         super(Person, self).__init__(name, email, password, True, bio, phone, address, uuid)
         self.dob = dob
         self.skills = skills
@@ -246,7 +246,7 @@ class Person(Account):
             curs.execute(Person.SQL_SELECT_UUID, (uuid,))
             per_data = curs.fetchone()
             if not per_data: return None
-            return Person(data[1], per_data[1], data[2], data[3], data[5], data[6], data[7], ','.join(per_data[2]) if per_data[2] else None, data[0])
+            return Person(data[1], data[2], data[3], per_data[1], data[5], data[6], data[7], ','.join(per_data[2]) if per_data[2] else None, data[0])
 
     @classmethod
     def init_table(cls) -> None:
@@ -421,7 +421,7 @@ if __name__ == '__main__':
         for row in curs.execute('SELECT * from organization'):
             print(row)
 
-        test_other = Person("joe", "02/25/1999", "yeet@boi.com","1233yeet","a man who likes to bool", "574-030-3039", None)
+        test_other = Person("joe",  "yeet@boi.com","1233yeet", "02/25/1999", "a man who likes to bool", "574-030-3039", None)
 
         test_other.insert_into_db()
 
