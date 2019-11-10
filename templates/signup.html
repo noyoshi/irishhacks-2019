@@ -2,12 +2,16 @@
 <div class="register-photo" style="height: 747px;">
   <div class="container">
     <div class="form-container">
-      <div class="image-holder" size="100%"" style="background-image:
+      {% if not logged_in %} <div class="image-holder" size="100%""
+      style="background-image:
       url(&quot;/static/assets/img/Hands%20In2.jpg&quot;);">
     </div>
+    {% endif %}
     <form method="post">
-      <h2 class="text-center" id="msg"><strong>Create</strong> an account.</h2>
       {% if not logged_in %}
+
+      <h2 class="text-center" id="msg"><strong>Create</strong> an account.</h2>
+
       <div class="form-group">
         <input
           class="form-control"

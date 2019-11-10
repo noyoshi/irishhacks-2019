@@ -32,14 +32,17 @@ def get_userid():
 
     return user_id
 
+
 def find_distance(location):
     ''' returns mile distance between current user's locaiton and the target location '''
     from geopy.geocoders import Nominatim
     from geopy.distance import great_circle
     geolocator = Nominatim(user_agent="volunteersite")
-    user_location = geolocator.geocode(Account.init_from_uuid(get_userid).address)
+    user_location = geolocator.geocode(
+        Account.init_from_uuid(get_userid).address)
     post_location = geolocator.geocode(location)
     return great_circle((user_location.latitude, user_location.longitude), (post_location.latitude, post_location.longitude)).miles
+
 
 @app.route("/")
 def index():
@@ -161,9 +164,9 @@ def login():
     """
     # we need to give the user a cookie, if they are not logged in, so that we can figure out if they are validated?
     # 1. if they are not logged in, then they are prompted to login
-        # after login, they are given the uuid token
+    # after login, they are given the uuid token
     # 2. if they login with an existing email and, check the password to see if it matches, it if does, they get the cookie with uuid
-        # if the password does not match, they are again prompted to this page
+    # if the password does not match, they are again prompted to this page
     # TODO the login route should also have info about the route they were trying to go down before, so tif they are logged in /
     # when they are logged in, it should send them to the right place
 
@@ -214,7 +217,7 @@ def signup():
     # if they are logge din with valid cookie
     if user_id and cookie and token_conn.validate(user_id, cookie):
         return render_template("signup.html", token_uuid=get_userid(), logged_in=True, **account.to_dict())
-    
+
     return render_template("signup.html")
 
 
@@ -260,10 +263,8 @@ def view_post(post_id):
 
     # get post id from request, create post object, add a volunteer to the post object, update
     post = Post.init_from_uid(post_id)
-    skill_set = ','.join(post.skill_set)
-    tags = ','.join(post.tags)
 
-    return render_template("post.html", post=post, skill_set=skill_set, tags=tags)
+    return render_template("post.html", **post.to_dict())
 
 
 @app.route("/community")
@@ -272,6 +273,7 @@ def community():
     returns a list of the people in the community!
     """
     return render_template("community.html", token_uuid=get_userid())
+
 
 @app.route("/profile/<userid>")
 def user_profile(userid):
@@ -302,7 +304,8 @@ def edit_profile(userid):
 
     account = Account.init_from_uuid(userid)
     if not account:
-        print("Nontype account for token user id {} and userid {}".format(token_user_id, userid))
+        print("Nontype account for token user id {} and userid {}".format(
+            token_user_id, userid))
         return render_template("login.html")
     if isinstance(type(Person), type(account)):
         # we are a person
@@ -332,12 +335,12 @@ def save_profile_edits():
         if not data["firstname"] and not data["lastname"]:
             pass
         else:
-            account.set_name(data.get("firstname", "") + " " + data.get("lastname", ""))
-    
+            account.set_name(data.get("firstname", "") +
+                             " " + data.get("lastname", ""))
 
     if "email" in data and data["email"]:
         account.set_email(data["email"])
-    
+
     if "bio" in data and data["bio"]:
         account.set_bio(data["bio"])
 
@@ -347,7 +350,7 @@ def save_profile_edits():
 
     if "phone_number" in data and data["phone_number"]:
         account.set_phone(data["phone_number"])
-    
+
     account.update_into_db()
 
     Person.dump_table()
