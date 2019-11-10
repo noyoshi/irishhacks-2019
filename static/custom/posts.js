@@ -45,7 +45,7 @@ function addPost() {
     if (res.status === "success") {
       window.location.href = "/posts/" + res.uuid;
       console.log("post filter success");
-      alert("yeet baby");
+      // alert("yeet baby");
     } else {
       window.location.href = "/signup/";
       console.log("post filter failure");
