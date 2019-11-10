@@ -304,7 +304,20 @@ def community():
     """
     returns a list of the people in the community!
     """
-    return render_template("community.html", token_uuid=get_userid())
+    accounts = Account.get_all_accounts()
+
+    account_dicts = []
+    for account in accounts:
+        user = Account.init_from_uuid(account.get_uuid())
+        if not user:
+            continue
+        d = user.to_dict()
+
+        hashed_email = md5(user.get_email().encode('utf-8')).hexdigest()
+        d["hashed_email"] = hashed_email
+        account_dicts.append(d)
+
+    return render_template("community.html", token_uuid=get_userid(), accounts=account_dicts)
 
 
 @app.route("/profile/<userid>")
