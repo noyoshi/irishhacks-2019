@@ -58,18 +58,18 @@ class Post:
 
     def to_dict(self):
         return {
-            "uuid" : self.uuid,
-            "title" : self.title,
-            "description" : self.description,
-            "location" : self.location,
-            "skill_set" : self.skill_set,
-            "num_volunteers" : self.num_volunteers,
-            "is_request" : self.is_request,
-            "user_id" : self.user_id,
-            "tags" : self.tags,
+            "uuid": self.uuid,
+            "title": self.title,
+            "description": self.description,
+            "location": self.location,
+            "skill_set": self.skill_set,
+            "num_volunteers": self.num_volunteers,
+            "is_request": self.is_request,
+            "user_id": self.user_id,
+            "tags": self.tags,
             "volunteers": self.volunteers,
             "length": self.length,
-            "post_date": self.date
+            "post_date": self.date,
         }
 
     @classmethod

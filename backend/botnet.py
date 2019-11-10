@@ -14,7 +14,7 @@ ADDR  = ('123 fake street', '200 alumni hall', '1600 pennsylvania av.')
 skills = (['dank'], ['test'])
 
 def dummy_user():
-    return Person(random.choice(NAMES), '6969', random.choice(EMAIL), random.choice(PASS), random.choice(BIO),
+    return Person(random.choice(NAMES),random.choice(EMAIL), random.choice(PASS),  '6969', random.choice(BIO),
                   random.choice(PHONE), random.choice(ADDR), random.choice(skills))
 
 
@@ -43,4 +43,5 @@ if __name__ == '__main__':
         user.insert_into_db()
         create_post(user)
     Account.dump_table()
+    Person.dump_table()
     Post.dump_table()

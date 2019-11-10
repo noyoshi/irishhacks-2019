@@ -64,7 +64,7 @@ def help():
 
 @app.route("/make_post")
 def new_post():
-    return render_template("edit_post.html")
+    return render_template("edit_post.html", token_uuid=get_userid())
 
 # TODO needs authentication
 @app.route("/edit/post/<postid>")
@@ -134,6 +134,7 @@ def handle_signin():
     email = request_json.get("email")
     password = request_json.get("password")
     name = request_json.get("name")
+    is_user = request_json.get("is_user")
 
     if not email:
         return json.dumps({"status": "failure", "issue": "no email"})
@@ -149,8 +150,16 @@ def handle_signin():
         return json.dumps({"status": "failure", "issue": "email exists"})
 
     # TODO change for person vs org
-    user = Person(name, 10, email, password)
+    ClassToUse = Person if is_user else Organization
+    user = ClassToUse(name, 10, email, password)
     user.insert_into_db()
+
+    if isinstance(type(ClassToUse), type(Person)):
+        print("made a person")
+    elif isinstance(type(ClassToUse), type(Organization)):
+        print("made an org")
+    else:
+        print("probs an error when crating an entity")
     # TODO set password
 
     user_id = user.get_uuid()
@@ -240,6 +249,16 @@ def posts():
 
     filtered = Post.get_with_filter(filter)
 
+    # Add the personal thing in to the dict
+    for post_dict in filtered:
+        uuid = post_dict["user_id"]
+        user = Account.init_from_uuid(uuid)
+        if user:
+            post_dict["personal"] = 1 if user.is_personal else 2
+            print("found")
+        else:
+            print("not found")
+
     return render_template("posts.html", token_uuid=get_userid(), posts=filtered)
 
 # TODO if they are logged in, they can respond to the post
@@ -268,6 +287,8 @@ def view_post(post_id):
     # get post id from request, create post object, add a volunteer to the post object, update
     print('in view')
     post = Post.init_from_uid(post_id)
+    if not post:
+        return render_template("post.html")
 
     return render_template("post.html", **post.to_dict())
 
@@ -295,12 +316,33 @@ def create_new_post():
 
     return json.dumps(post)
 
+@app.route("/logout")
+def logout():
+    response = make_response(render_template("main.html"))
+    response.set_cookie(TOKEN_NAME, "")
+    return response
+
+
 @app.route("/community")
 def community():
     """
     returns a list of the people in the community!
     """
-    return render_template("community.html", token_uuid=get_userid())
+    accounts = Account.get_all_accounts()
+
+    account_dicts = []
+    for account in accounts:
+        if account is None: continue
+        user = Account.init_from_uuid(account.get_uuid())
+        if not user:
+            continue
+        d = user.to_dict()
+
+        hashed_email = md5(user.get_email().encode('utf-8')).hexdigest()
+        d["hashed_email"] = hashed_email
+        account_dicts.append(d)
+
+    return render_template("community.html", token_uuid=get_userid(), accounts=account_dicts)
 
 
 @app.route("/profile/<userid>")

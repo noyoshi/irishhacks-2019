@@ -1,52 +1,54 @@
-{% extends "_header.html" %}
-{% block body %}
-    <div class="container"></div>
-    <section class="clean-block about-us"></section>
-    <div>
-        <div class="container">
-            <div class="row">
-                <div class="col-md-6">
-			<div class="card clean-card text-center"><img class="card-img-top w-100 d-block" src="https://www.gravatar.com/avatar/{{ email_hash }}.jpg">
-                        <div class="card-body info">
-                            <h4 class="card-title">{{ name }}</h4>
-                            {% if token_uuid == uuid %}
-                            <a href="/profile/edit/{{ uuid }}">Edit Profile</a>
-                            <p>
-                            {% if dob %} dob: {{ dob }} <br>
-                            {% endif %}
-                            {% if phone %} Phone: {{ phone }}<br>
-                            {% endif %}
-                            {% if email %} email: {{ email }}<br>
-                            {% endif %}
-                            </p>
-                            {% endif %}
-                            <!-- <div class="icons"><a href="#"><i class="icon-social-facebook"></i></a><a href="#"><i class="icon-social-instagram"></i></a><a href="#"><i class="icon-social-twitter"></i></a></div> -->
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-6">
-                    <div class="block-heading"></div>
-                    <h1>Bio</h1>
-                    {% if bio %}
-                    <p>{{ bio }}</p>
-                    {% endif %}
-                </div>
-            </div>
+{% extends "_header.html" %} {% block body %}
+<div class="container"></div>
+<section class="clean-block about-us"></section>
+<div>
+  <div class="container">
+    <div class="row">
+      <div class="col-md-6">
+        <div class="card clean-card text-center">
+          <img
+            class="card-img-top w-100 d-block"
+            src="https://www.gravatar.com/avatar/{{ email_hash }}.jpg"
+          />
+          <div class="card-body info">
+            <h4 class="card-title">{{ name }}</h4>
+            {% if token_uuid == uuid %}
+            <a href="/profile/edit/{{ uuid }}">Edit Profile</a>
+            <a href="/logout">Logout</a>
+            <p>
+              {% if dob %} dob: {{ dob }} <br />
+              {% endif %} {% if phone %} Phone: {{ phone }}<br />
+              {% endif %} {% if email %} email: {{ email }}<br />
+              {% endif %}
+            </p>
+            {% endif %}
+            <!-- <div class="icons"><a href="#"><i class="icon-social-facebook"></i></a><a href="#"><i class="icon-social-instagram"></i></a><a href="#"><i class="icon-social-twitter"></i></a></div> -->
+          </div>
         </div>
+      </div>
+      <div class="col-md-6">
+        <div class="block-heading"></div>
+        <h1>Bio</h1>
+        {% if bio %}
+        <p>{{ bio }}</p>
+        {% endif %}
+      </div>
     </div>
-    <script src="/static/assets/js/jquery.min.js"></script>
-    <script src="/static/assets/bootstrap/js/bootstrap.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/baguettebox.js/1.10.0/baguetteBox.min.js"></script>
-    <script src="/static/assets/js/smoothproducts.min.js"></script>
-    <script src="/static/assets/js/-Filterable-Cards-.js"></script>
-    <script src="/static/assets/js/theme.js"></script>
-    <script src="/static/assets/js/Profile-Edit-Form.js"></script>
-	<script>
-		var url= "/generate_md5";
-		var param= {{ email }};
-		var xhr = new XMLHttpRequest();
-		xhr.open("POST", url, true);
-		xhr.send(param);
-		var obj= {"md5email": }
-	</script>
+  </div>
+</div>
+<script src="/static/assets/js/jquery.min.js"></script>
+<script src="/static/assets/bootstrap/js/bootstrap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/baguettebox.js/1.10.0/baguetteBox.min.js"></script>
+<script src="/static/assets/js/smoothproducts.min.js"></script>
+<script src="/static/assets/js/-Filterable-Cards-.js"></script>
+<script src="/static/assets/js/theme.js"></script>
+<script src="/static/assets/js/Profile-Edit-Form.js"></script>
+<script>
+  var url= "/generate_md5";
+  var param= {{ email }};
+  var xhr = new XMLHttpRequest();
+  xhr.open("POST", url, true);
+  xhr.send(param);
+  var obj= {"md5email": }
+</script>
 {% endblock %}

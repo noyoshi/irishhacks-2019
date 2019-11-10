@@ -1,3 +1,15 @@
 html body {
   background-color: #f1f7fc;
 }
+
+.profile_row {
+  background-color: #fff;
+}
+
+.about_us {
+  padding-bottom: 20px;
+}
+
+.dropdown-toggle {
+  background-color: rgb(225, 230, 230);
+}
