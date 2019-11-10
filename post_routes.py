@@ -91,8 +91,17 @@ def create_new_post():
 
     res = request.json
     print(res)
-    post = acc.create_post(res['title'], res['description'], res['location'], res['skillset'],
-                           res['num_volunteers'], True, res['tags'], [], res['start_date'], res['duration'])
+
+    inp = {
+        'title': res['title']
+    }
+
+    res['is_request'] = True
+    res['length'] = res['duration']
+    res['date'] = res['start_date']
+    res['skill_set'] = res['skillset']
+
+    post = acc.create_post(**res)
     print("POSTS CREATE NEW")
     post = post.to_dict()
     print(post)
