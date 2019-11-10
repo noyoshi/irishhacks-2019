@@ -3,7 +3,7 @@
 <div class="clearfix"></div>
 <section class="py-5" style="margin-top: 30px;">
   <div class="container">
-    <h1 class="text-center mb-4">Open Tasks</h1>
+    <h1 class="text-center mb-4"><strong>Tasks</strong></h1>
     <div class="filtr-controls text-center lead text-uppercase mb-3">
       <span
         class="active d-inline-block mx-3 py-1 position-relative"
@@ -16,10 +16,6 @@
       >
     </div>
     <div class="filter">
-      <form action="/posts" id="form" name="form">
-        <button class="btn btn-dark">Submit Me</button>
-      </form>
-
       <select id="type" form="form" name="type">
         <option value="Type" disabled selected="true">Type</option>
         <option value="electrician">Electrician</option>
@@ -43,10 +39,16 @@
         <option value="25">25 miles</option>
         <option value="50">50 miles</option>
       </select>
+      <form action="/posts" id="form" name="form">
+        <button class="btn btn-secondary" type="submit">SUBMIT</button>
+      </form>
     </div>
     <div class="row filtr-container">
       {% for post in posts %}
-      <div class="filtr-item col-md-6 col-lg-4 " data-category="2,3">
+      <div
+        class="filtr-item col-md-6 col-lg-4 "
+        data-category="{{ post.personal }}"
+      >
         <div class="card shadow border-dark">
           <div class="shadow card-header bg-dark text-light">
             <h5 class="m-0">{{ post.title }}</h5>

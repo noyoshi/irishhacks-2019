@@ -51,7 +51,7 @@ class Account():
         return {
             "name": self.name, 
             "email": self.email,
-            "is_personal": self.is_personal,
+            "is_personal": 1 if self.is_personal else 0,
             "bio": self.bio, 
             "phone": self.phone,
             "address": self.address,

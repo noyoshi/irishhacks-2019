@@ -64,7 +64,7 @@ def help():
 
 @app.route("/make_post")
 def new_post():
-    return render_template("edit_post.html")
+    return render_template("edit_post.html", token_uuid=get_userid())
 
 # TODO needs authentication
 @app.route("/edit/post/<postid>")
@@ -240,6 +240,16 @@ def posts():
 
     filtered = Post.get_with_filter(filter)
 
+    # Add the personal thing in to the dict
+    for post_dict in filtered:
+        uuid = post_dict["user_id"]
+        user = Account.init_from_uuid(uuid)
+        if user:
+            post_dict["personal"] = 1 if user.is_personal else 2
+            print("found")
+        else:
+            print("not found")
+
     return render_template("posts.html", token_uuid=get_userid(), posts=filtered)
 
 # TODO if they are logged in, they can respond to the post
@@ -267,6 +277,8 @@ def view_post(post_id):
 
     # get post id from request, create post object, add a volunteer to the post object, update
     post = Post.init_from_uid(post_id)
+    if not post:
+        return render_template("post.html")
 
     return render_template("post.html", **post.to_dict())
 
