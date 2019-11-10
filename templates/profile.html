@@ -4,42 +4,43 @@
 <div>
   <div class="container">
     <div class="row">
-      <div class="col-md-6">
+      <div class="col-md-4">
         <div class="card clean-card text-center">
           <img
             class="card-img-top w-100 d-block"
             src="https://www.gravatar.com/avatar/{{ email_hash }}.jpg?s=2048"
           />
-          <div class="card-body info">
-            <h4 class="card-title">{{ name }}</h4>
-            {% if token_uuid == uuid %}
-            <a href="/profile/edit/{{ uuid }}">Edit Profile</a><br />
-            <a href="/logout">Logout</a>
-
-            {% endif %}
-            <p>
+          <div class="card-body info" style="font-size:20px">
+            Name:<h4 class="card-title">{{ name }}</h4>
               {% if dob %} dob: {{ dob }} <br />
               {% endif %} {% if phone %} Phone: {{ phone }}<br />
-              {% endif %} {% if email %} email: {{ email }}<br />
+              {% endif %} {% if email %} <span class="oi" data-glyph="envelope-closed"></span>
+              Email: {{ email }}<br />
               {% endif %} Karma: {{ karma }}<br />
-
             </p>
+            {% if token_uuid == uuid %}
+            <a href="/profile/edit/{{ uuid }}" style="font-size:15px">Edit Profile</a><br />
+            <a href="/logout" style="font-size:15px">Logout</a>
+
+            {% endif %}
             <!-- <div class="icons"><a href="#"><i class="icon-social-facebook"></i></a><a href="#"><i class="icon-social-instagram"></i></a><a href="#"><i class="icon-social-twitter"></i></a></div> -->
           </div>
         </div>
       </div>
-      <div class="col-md-6">
-        <div class="block-heading"></div>
+      <div class="col-md-4">
         {% if bio %}
         <h1>Bio</h1>
         <p>{{ bio }}</p>
-        {% endif %} {% if token_uuid == uuid %}
+        {% endif %} 
+      </div>
+    <div class="col-md-4">
+        {% if token_uuid == uuid %}
         <h1>Posts</h1>
         {% for post in posts %}
         <p>
           <h3>Post: <a href="/posts/{{ post.uuid }}">{{ post.title }}</a></h3>
-          {% if post.volunteers %}<h5>Volunteers:{% for v in post.volunteers %}
-          <a href="/profile/{{ v.uuid }}">{{ v.name }} </a></h5>
+          {% if post.volunteers %}<h5>Volunteers:</h5>{% for v in post.volunteers %}
+          <a href="/profile/{{ v.uuid }}">{{ v.name }} </a>
           {% endfor %} {% endif %}
         </p>
         {% endfor %}{% endif %}
