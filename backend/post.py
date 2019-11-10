@@ -79,7 +79,7 @@ class Post:
             "volunteers": self.volunteers,
             "length": self.length,
             "post_date": self.date,
-            "volunteers_required": int(self.num_volunteers) if self.num_volunteers else 0 - len(self.volunteers)
+            "volunteers_required": int(self.num_volunteers) if str(self.num_volunteers).isdigit() else 0 - len(self.volunteers)
         }
 
     @classmethod
