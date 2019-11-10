@@ -1,12 +1,31 @@
 #
 from flask import Blueprint,  request, redirect
-from utils import get_userid, TOKEN_NAME, render_template
+from utils import get_userid, TOKEN_NAME, render_template, FAIL_MSG
 from backend.post import Post
 from backend.account import Account
 import json
 
 
 post_api = Blueprint('post_api', __name__)
+
+
+@post_api.route("/grab_post", methods=["POST"])
+def grab_post():
+    user_id = get_userid()
+    if not user_id:
+        return FAIL_MSG
+
+    user = Account.init_from_uuid(user_id)
+    if not user:
+        return FAIL_MSG
+
+    post_id = request.json["post_id"]
+    post = Post.init_from_uid(post_id)
+    if not post.add_volunteer(user_id):
+        return FAIL_MSG
+    print("!!!!!!!!!!!!!!!!!!!!!!!!!")
+    post.update_in_db()
+    return json.dumps({"status": "success"})
 
 
 @post_api.route("/posts/create/")
@@ -66,7 +85,7 @@ def posts():
         else:
             print("not found", post_dict.items())
 
-    return render_template("posts.html", token_uuid=get_userid(), posts=new_list)
+    return render_template("posts.html", posts=new_list)
 
 # TODO if they are logged in, they can respond to the post
 @post_api.route("/posts/add_to_post")
@@ -82,7 +101,7 @@ def add_to_posts():
     post.add_volunteer(uuid)
     post.update_in_db()
 
-    return render_template("posts.html", token_uuid=get_userid())
+    return render_template("posts.html")
 
 
 @post_api.route("/posts/<post_id>")
@@ -92,15 +111,13 @@ def view_post(post_id):
     """
 
     # get post id from request, create post object, add a volunteer to the post object, update
-    print('in view')
     post = Post.init_from_uid(post_id)
-    Post.dump_table()
+    # Post.dump_table()
     if not post:
         print("bad post")
         return render_template("post.html")
     print("/posts/postid")
-    print(post)
-    return render_template("post.html", **post.to_dict(), token_uuid=get_userid())
+    return render_template("post.html", **post.to_dict())
 
 
 @post_api.route("/posts/create_new/", methods=["POST"])

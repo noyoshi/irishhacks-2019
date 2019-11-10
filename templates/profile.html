@@ -13,15 +13,16 @@
           <div class="card-body info">
             <h4 class="card-title">{{ name }}</h4>
             {% if token_uuid == uuid %}
-            <a href="/profile/edit/{{ uuid }}">Edit Profile</a>
+            <a href="/profile/edit/{{ uuid }}">Edit Profile</a><br />
             <a href="/logout">Logout</a>
+
+            {% endif %}
             <p>
               {% if dob %} dob: {{ dob }} <br />
               {% endif %} {% if phone %} Phone: {{ phone }}<br />
               {% endif %} {% if email %} email: {{ email }}<br />
               {% endif %}
             </p>
-            {% endif %}
             <!-- <div class="icons"><a href="#"><i class="icon-social-facebook"></i></a><a href="#"><i class="icon-social-instagram"></i></a><a href="#"><i class="icon-social-twitter"></i></a></div> -->
           </div>
         </div>
@@ -31,7 +32,16 @@
         <h1>Bio</h1>
         {% if bio %}
         <p>{{ bio }}</p>
-        {% endif %}
+        {% endif %} {% if token_uuid == uuid %}
+        <h1>Posts</h1>
+        {% for post in posts %}
+        <p>
+          <a href="/posts/{{ post.uuid }}">{{ post.title }}</a>
+          {% if post.volunteers %} {% for v in post.volunteers %}
+          <a href="/profile/{{ v.uuid }}">{{ v.name }}</a>
+          {% endfor %} {% endif %}
+        </p>
+        {% endfor %}{% endif %}
       </div>
     </div>
   </div>
@@ -43,12 +53,5 @@
 <script src="/static/assets/js/-Filterable-Cards-.js"></script>
 <script src="/static/assets/js/theme.js"></script>
 <script src="/static/assets/js/Profile-Edit-Form.js"></script>
-<script>
-  var url= "/generate_md5";
-  var param= {{ email }};
-  var xhr = new XMLHttpRequest();
-  xhr.open("POST", url, true);
-  xhr.send(param);
-  var obj= {"md5email": }
-</script>
+<script></script>
 {% endblock %}

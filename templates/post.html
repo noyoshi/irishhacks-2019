@@ -24,14 +24,14 @@
               <br />
               {% endif %} {% if skill_set %} Desired Skill Set: {{ skill_set
               }}<br />
-              {% endif %} {% if num_volunteers %} Volunteeers Required:
-              {{ num_volunteers }}<br />
-              {% endif %} {% if tags %} Tags: {{ tags }}<br />
+              {% endif %} {% if volunteers_required %} Volunteeers Required:
+              {{ volunteers_required }}<br />
+              {% endif %} {% if tags %} Tags: {{ ", ".join(tags) }}<br />
               {% endif %} {% if volunteers_required %}
               <button
                 type="button"
                 class="btn btn-success"
-                onclick="acceptTask()"
+                onclick="grabPost()"
               >
                 Accept Task
               </button>
@@ -39,7 +39,7 @@
               <button
                 type="button"
                 class="btn btn-secondary"
-                onclick="acceptTask()"
+                onclick="grabPost()"
                 disabled
               >
                 No More Positions!
@@ -67,4 +67,5 @@
 <script src="/static/assets/js/-Filterable-Cards-.js"></script>
 <script src="/static/assets/js/theme.js"></script>
 <script src="/static/assets/js/Profile-Edit-Form.js"></script>
+<script src="/static/custom/posts.js"></script>
 {% endblock %}

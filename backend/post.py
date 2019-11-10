@@ -45,7 +45,7 @@ class Post:
 
     def __init__(self, title: str = "", description: str = "", location: str = "",
                  skill_set: List[str] = [], num_volunteers: int = 0, is_request: bool = False,
-                 user_id: int = 0, tags: List[str] = None, volunteers: List[str] = None,
+                 user_id: int = 0, tags: List[str] = None, volunteers: List[str] = [],
                  date=None, length=None, uuid: str = ""):
 
         if not uuid:
@@ -61,12 +61,15 @@ class Post:
         self.is_request = is_request
         self.user_id = user_id
         self.tags = tags
-        self.volunteers = []
+        self.volunteers = volunteers
         self.date = date
         self.length = length
 
     def to_dict(self):
-        return {
+        n_vols = int(
+            self.num_volunteers) if str(self.num_volunteers).isdigit() else 0
+        other_vols = len(self.volunteers) if self.volunteers else 0
+        x = {
             "uuid": self.uuid,
             "title": self.title,
             "description": self.description,
@@ -79,8 +82,10 @@ class Post:
             "volunteers": self.volunteers,
             "length": self.length,
             "post_date": self.date,
-            "volunteers_required": int(self.num_volunteers) if str(self.num_volunteers).isdigit() else 0 - len(self.volunteers)
+            "volunteers_required": n_vols - other_vols
         }
+        print('to dict', x)
+        return x
 
     @classmethod
     def init_from_uid(cls, uuid: str = ""):
@@ -105,11 +110,12 @@ class Post:
                 "num_volunteers": data[5],
                 "is_request": data[6],
                 "user_id": data[7],
-                "tags": data[8] if data[8] else None,
+                "tags": data[8].split(",") if data[8] else None,
                 "volunteers": data[9].split(',') if data[9] else None,
                 "length": data[10],
                 "date": data[11],
             }
+            print("OOF", data[9])
             return Post(**post_input)
 
     @classmethod
@@ -190,10 +196,16 @@ class Post:
         with conn:
             curs = conn.cursor()
             # create input tuple to match SQL_UPDATE_POST's ? operators
-            data = (self.title, self.description, self.location, ','.join(self.skill_set), self.num_volunteers, self.is_request,
-                    self.user_id, ','.join(self.tags) if self.tags else None, ','.join(self.volunteers) if self.volunteers else None, self.date, self.length, self.uuid)
+            print("BEFORE INSERT", self.to_dict())
+            data = (self.title, self.description, self.location, ','.join(self.skill_set) if self.skill_set else None, self.num_volunteers, self.is_request,
+                    self.user_id, ','.join(self.tags) if self.tags else None, ','.join(self.volunteers) if self.volunteers else [], self.date, self.length, self.uuid)
             # perform sql update
+            #     SQL_UPDATE_POST = 'UPDATE Postdb SET title=?, description=?, location=?, skill_set=?, num_volunteers=?, is_request=?, user_id=?, tags=?, volunteers=?, post_date=?, length=? WHERE uuid=?'
+            print(data)
+            print(self.volunteers)
             curs.execute(Post.SQL_UPDATE_POST, data)
+
+        Post.dump_table()
 
     def delete_in_db(self) -> None:
         """ Deletes object from database """
@@ -211,7 +223,26 @@ class Post:
             curs = conn.cursor()
             # call delete
             curs.execute(Post.SQL_GET_USER_POSTS, (user_id, ))
-            return curs.fetchall()
+            res = curs.fetchall()
+            z = []
+            for data in res:
+                post_input = {
+                    "uuid": data[0],
+                    "title": data[1],
+                    "description": data[2],
+                    "location": data[3],
+                    "skill_set": data[4].split(',') if data[4] else None,
+                    "num_volunteers": data[5],
+                    "is_request": data[6],
+                    "user_id": data[7],
+                    "tags": data[8].split(",") if data[8] else None,
+                    "volunteers": data[9].split(',') if data[9] else None,
+                    "length": data[10],
+                    "date": data[11],
+                }
+                print("OOF", data[9])
+                z.append(Post(**post_input))
+            return z
 
     def get_uuid(self) -> str:
         ''' returns uuid '''
@@ -284,10 +315,15 @@ class Post:
         self.volunteers = volunteers
 
     def add_volunteer(self, acc_id: str) -> bool:
+        if not self.volunteers:
+            print("UHOH")
+            self.volunteers = []
         if acc_id not in self.volunteers:
             self.volunteers.append(acc_id)
+            print("?????", self.volunteers)
             return True
         return False
+
 
 if __name__ == '__main__':
     conn = sqlite3.connect(DATABASE_FILE)

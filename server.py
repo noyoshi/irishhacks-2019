@@ -112,7 +112,22 @@ def user_profile(userid):
     print(hashed_email)
     if not account:
         return "no profile"
-    return render_template("profile.html", token_uuid=get_userid(), **account.to_dict(), email_hash=hashed_email)
+
+    posts = Post.get_by_user_id(userid)
+    _posts = []
+    for p in posts:
+        if p:
+            d = {"volunteers": []}
+            # _posts.append(p.to_dict())
+            o = p.get_volunteers()
+            if not o:
+                continue
+            for volunteer in p.get_volunteers():
+                acc = Account.init_from_uuid(volunteer)
+                d["volunteers"].append(acc.to_dict())
+            _posts.append(d)
+    print(_posts)
+    return render_template("profile.html", token_uuid=get_userid(), **account.to_dict(), email_hash=hashed_email, posts=_posts)
 
 
 # TODO needs authentication

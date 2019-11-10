@@ -7,10 +7,22 @@ function getList() {
   postData("/posts/handle_post_filter", filters).then(res => {
     if (res.status === "success") {
       console.log("post filter success");
-      alert("yeet baby");
+      // alert("yeet baby");
     } else {
       console.log("post filter failure");
       alert(res.issue);
+    }
+  });
+}
+
+function grabPost() {
+  var post_id = window.location.href.split("/").pop();
+  postData("/grab_post", { post_id: post_id }).then(res => {
+    if (res.status === "success") {
+      console.log("success");
+      document.location.reload();
+    } else {
+      console.log("fail");
     }
   });
 }
